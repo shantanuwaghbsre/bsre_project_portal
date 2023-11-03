@@ -1,0 +1,177 @@
+<div>
+    <h1>{{ quotation_number }}</h1>
+    <table>
+        <tbody>
+            <tr>
+                <td>Date:</td>
+                <td>{{ timestamp }}</td>
+            </tr>
+            <tr>
+                <td>State:</td>
+                <td>
+                    {{ state_or_territory }}
+                </td>
+            </tr>
+            <tr>
+                <td>Agent ID</td>
+                <td>
+                        {{ agent_code }}
+                </td>
+            </tr>
+            <tr>
+                <td>Agent Name</td>
+                <td>
+                    {{ agent_name }}
+                </td>
+            </tr>
+            <tr>
+                <td>Customer Name:</td>
+                <td>
+                    {{ consumer_name }}
+                </td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>
+                    {{ consumer_address }}
+                </td>
+            </tr>
+            <tr>
+                <td>Mobile No.:</td>
+                <td>
+                    {{ consumer_mobile_number }}
+                </td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>
+                    {{ consumer_email }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <table border="2">
+        <thead>
+            <tr>
+                <td>SR. NO.</td>
+                <td>ITEM DESCRIPTION</td>
+                <td>MAKE</td>
+                <td>DESCRIPTION</td>
+                <td>QTY.</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Solar Module</td>
+                <td>
+                    {{solar_module}}
+                </td>
+                <td>{{ solarModuleWattage }}</td>
+                <td>
+                    {{ number_of_panels }}
+                    <br />
+                    <br />
+                    <label>Total Kilowatts - </label>&nbsp;{{ total_kilowatts }} kW
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Solar Inverter</td>
+                <td>
+                    {{solar_inverter_make}}
+                </td>
+                <td>As per availability</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Module Mounting Structure</td>
+                <td>
+                    {{ mounting_structure_make }}
+                </td>
+                <td>
+                    {{ mounting_description }}
+                </td>
+                <td>
+                    {{ mounting_quantity }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <table border="2">
+        <thead>
+            <tr>
+                <td>SR. NO.</td>
+                <td>DESCRIPTION</td>
+                <td>KW POWER</td>
+                <td>STRUCTURE</td>
+                <td>TOTAL</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>GUVNL RATE PER KW FOR DESIGN, SUPPLY, INSTALLATION &amp; COMMISIONING OF SOLAR ROOFTOP SYSTEM</td>
+                <td width="1%">{{ total_kilowatts }} kW</td>
+                <td>
+                    {{ structure }}
+                    <br />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>SUBSIDY</td>
+                <td colspan="2">{{ total_kilowatts }}</td>
+                <td>{{ subsidy }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">GUVNL SYSTEM AMOUNT</td>
+                <td colspan="3">{{ guvnl_amount }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">TOTAL SUBSIDY AMOUNT</td>
+                <td colspan="3">{{ subsidy }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">NET GUVNL SYSTEM PRICE</td>
+                <td colspan="3">{{ (guvnl_amount - subsidy) }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">{{ structure }} FT ELEVATED STRUCTURE</td>
+                <td colspan="3">INCLUDING</td>
+            </tr>
+            <tr>
+                <td colspan="2">DISCOM Charges (IF SINGLE PHASE) Connection RGPR (IT MAY BE CHANGED AS PER DISCOM ESTIMATES)</td>
+                <td colspan="2">
+                    <label id="demo-row-radio-buttons-group-label">Type - </label>
+                        {{discom_or_torrent}} &nbsp; {{phase}} phase
+                </td>
+                <td>{{ discom_or_torrent_charges }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">Installation AC MCB Switch charges</td>
+                <td colspan="3">
+                    {{installation_ac_mcb_switch_charges}}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">GEB AGREEMENT FEES</td>
+                <td colspan="3">
+                    {{geb_agreement_fees}}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">PROJECT COST</td>
+                <td colspan="3">{{ project_cost }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
