@@ -74,6 +74,7 @@ def getAgents():
 
 @blueprint.route('/submitQuotation', methods=['POST'])
 def submitQuotation():
+
   response = {}
   last_quotation = make_db_call(query=queries['get_last_quotation_number'], parameters={"location":request.json["agent_code"][:3]+'%'}, type_="select")[0][0]
   quotation_number = request.json['agent_code'][:3] + '/' + datetime.datetime.now().strftime("%d%m%y") + "/" 
@@ -87,8 +88,6 @@ def submitQuotation():
 
   request.json["quotation_number"] = quotation_number
   request.json["timestamp"] = datetime.datetime.now()
-  request.json["quotation_number"] = quotation_number
-
   
   response["completed"] = make_db_call(query=queries['insert_quotation'], parameters=request.json, type_="insert")
   if response["completed"]:
@@ -96,9 +95,7 @@ def submitQuotation():
 
   html_file_path = create_html_from_template(request.json)
   create_encrypted_pdf_from_html(html_file_path, request.json)
-  
-
-  
+  mail_to_consumer(request.json)
 
   return response
   

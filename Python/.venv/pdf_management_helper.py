@@ -4,7 +4,7 @@ import pdfkit
 from pypdf import PdfReader, PdfWriter
 
 def create_html_from_template(context):
-    environment = Environment(loader=FileSystemLoader(os.getcwd()+"/.venv/templates/"))
+    environment = Environment(loader=FileSystemLoader(os.getcwd()+"/Python/.venv/templates/"))
     template = environment.get_template("residentialQuotation.html")
     context['guvnl_amount'] = int(context['guvnl_amount'])
     context['subsidy'] = int(context['subsidy'])
@@ -17,7 +17,6 @@ def create_html_from_template(context):
 
 def create_encrypted_pdf_from_html(html_file_path, context):
     pdfkit.from_file(html_file_path, 'temp.pdf')
-
     reader = PdfReader('temp.pdf')
     writer = PdfWriter()
     writer.append_pages_from_reader(reader)
