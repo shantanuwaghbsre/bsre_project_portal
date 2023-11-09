@@ -29,6 +29,3 @@ def make_db_call(query, type_, parameters=None):
         if e:
             raise e
         raise ValueError("Could not perform query")
-    
-
-make_db_call('''select * from public."Agents"''', "select")
