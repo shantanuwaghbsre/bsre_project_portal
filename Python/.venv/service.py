@@ -1,10 +1,13 @@
 import psycopg2
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-conn = psycopg2.connect(database = "postgres", 
-                        user = "postgres", 
-                        host= 'localhost',
-                        password = "bsre@1234",
-                        port = 5432)
+conn = psycopg2.connect(database = os.getenv("DATABASE"),
+                        user = os.getenv("USER"),
+                        host= os.getenv("HOST"),
+                        password = os.getenv("PASSWORD"),
+                        port = os.getenv("PORT"))
 
 cur = conn.cursor()
 
@@ -27,3 +30,5 @@ def make_db_call(query, type_, parameters=None):
             raise e
         raise ValueError("Could not perform query")
     
+
+make_db_call('''select * from public."Agents"''', "select")

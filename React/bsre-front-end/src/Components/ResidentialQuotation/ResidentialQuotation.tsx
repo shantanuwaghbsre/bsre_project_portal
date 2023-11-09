@@ -188,7 +188,7 @@ const ResidentialQuotation = () => {
         discomOrTorrent: formData["discomOrTorrent"],
         phase: formData["phase"],
       }
-      console.log("isFormValid", isFormValid)
+
       axios.post(urls["calculateURL"], postObject)
       .then(function (response) {
 
@@ -203,7 +203,7 @@ const ResidentialQuotation = () => {
         console.log(error);
       });
     }
-  }, [isFormValid])
+  }, [formData["solarModule"], formData["solarModuleType"], formData["solarModuleWattage"], formData["totalKiloWatts"], formData["numberOfPanels"], formData["solarInverter"], formData["moduleMountingStructureMake"], formData["moduleMountingStructureDescription"], formData["moduleMountingStructureQuantity"], formData["stateOrTerritory"], formData["agentID"], formData["agentName"], formData["customerName"], formData["customerPhoneNumber"], formData["customerAddress"], formData["structure"], formData["discomOrTorrent"], formData["phase"], formData["installmentAcMcbSwitchCharge"], formData["gebAgreementFees"], formData["projectCost"], formData["customerEmail"]])
 
   useEffect(() => {
     handleFormChange("totalKiloWatts", formData["numberOfPanels"]*formData["solarModuleWattage"]/1000);
@@ -242,36 +242,7 @@ const ResidentialQuotation = () => {
   }
 
   const handleSubmit = () => {
-    const postObject = {
-      "consumer_mobile_number": formData["customerPhoneNumber"],
-      "consumer_address" : formData["customerAddress"],
-      "solar_module_wattage" : formData["solarModuleWattage"], //rename
-      "total_kilowatts" : formData["totalKiloWatts"],
-      "number_of_panels" : formData["numberOfPanels"],
-      "subsidy" : formData["calculatedSubsidy"],
-      "guvnl_amount" : formData["calculatedGUVNLAmount"],
-      "net_guvnl_system_price" : formData["calculatedGUVNLAmount"]-formData["calculatedSubsidy"],
-      "discom_or_torrent_charges" : formData["calculatedDISCOMCharges"], // rename this
-      "discom_or_torrent" : formData["discomOrTorrent"], //add this
-      "phase" : formData["phase"], // add this
-      "installation_ac_mcb_switch_charges" : formData["installmentAcMcbSwitchCharge"],
-      "geb_agreement_fees" : formData["gebAgreementFees"],
-      "project_cost" : formData["projectCost"],
-      "quotation_type" : "Residential",
-      "agent_code" : formData["agentID"], // try\
-      "agent_name" : formData["agentName"],
-      "state_or_territory" : formData["stateOrTerritory"], //change this
-      "structure" : formData["structure"],
-      "mounting_quantity" : formData["moduleMountingStructureQuantity"],
-      "mounting_description" : formData["moduleMountingStructureDescription"],
-      "mounting_structure_make" : formData["moduleMountingStructureMake"],
-      "solar_inverter_make" : formData["solarInverter"],
-      "solar_panel_type" : formData["solarModuleType"],
-      "solar_module_name" : formData["solarModule"],
-      "consumer_name" : formData["customerName"],
-      "consumer_email" : formData["customerEmail"]
-    }
-    axios.post(urls["submitURL"], postObject)
+    axios.post(urls["submitURL"], formData)
       .then(function (response) {
         if (response.data.completed) {
           resetForm()
@@ -309,61 +280,61 @@ const ResidentialQuotation = () => {
 </Snackbar>}
           
 <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableBody>
-                    <TableRow>
-                        <TableCell>Date:</TableCell>
-                        <TableCell>{currentDate}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>State:</TableCell>
-                        <TableCell>
-                            <TextField type="text" name="state" value={formData["stateOrTerritory"]} onChange={(e) => handleFormChange("stateOrTerritory", e.target.value)} />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Agent ID</TableCell>
-                        <TableCell>
-                            <Select value={formData["agentID"]} onChange={(e) => handleAgentSelect(e)}>
-                                {agentOptions.map((option) => (
-                                    <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
-                                        {option["agent_id"]}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Agent Name</TableCell>
-                        <TableCell>
-                            {formData["agentName"]}
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Customer Name:</TableCell>
-                        <TableCell>
-                            <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) => handleFormChange("customerName", e.target.value)} />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Address:</TableCell>
-                        <TableCell>
-                            <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) => handleFormChange("customerAddress", e.target.value)} />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Mobile No.:</TableCell>
-                        <TableCell>
-                            <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) => handleFormChange("customerPhoneNumber", e.target.value)} />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Email:</TableCell>
-                        <TableCell>
-                            <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) => handleFormChange("customerEmail", e.target.value)} />
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
+  <Table aria-label="simple table">
+      <TableBody>
+          <TableRow>
+              <TableCell>Date:</TableCell>
+              <TableCell>{currentDate}</TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>State:</TableCell>
+              <TableCell>
+                  <TextField type="text" name="state" value={formData["stateOrTerritory"]} onChange={(e) => handleFormChange("stateOrTerritory", e.target.value)} />
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Agent ID</TableCell>
+              <TableCell>
+                  <Select value={formData["agentID"]} onChange={(e) => handleAgentSelect(e)}>
+                      {agentOptions.map((option) => (
+                          <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
+                              {option["agent_id"]}
+                          </MenuItem>
+                      ))}
+                  </Select>
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Agent Name</TableCell>
+              <TableCell>
+                  {formData["agentName"]}
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Customer Name:</TableCell>
+              <TableCell>
+                  <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) => handleFormChange("customerName", e.target.value)} />
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Address:</TableCell>
+              <TableCell>
+                  <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) => handleFormChange("customerAddress", e.target.value)} />
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Mobile No.:</TableCell>
+              <TableCell>
+                  <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) => handleFormChange("customerPhoneNumber", e.target.value)} />
+              </TableCell>
+          </TableRow>
+          <TableRow>
+              <TableCell>Email:</TableCell>
+              <TableCell>
+                  <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) => handleFormChange("customerEmail", e.target.value)} />
+              </TableCell>
+          </TableRow>
+      </TableBody>
             </Table>
         </TableContainer>
           <TableContainer component={Paper}>
