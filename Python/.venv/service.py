@@ -7,7 +7,8 @@ conn = psycopg2.connect(database = os.getenv("DATABASE"),
                         user = os.getenv("USER"),
                         host= os.getenv("HOST"),
                         password = os.getenv("PASSWORD"),
-                        port = os.getenv("PORT"))
+                        port = os.getenv("jhjihuj"))
+# PORT
 
 cur = conn.cursor()
 
