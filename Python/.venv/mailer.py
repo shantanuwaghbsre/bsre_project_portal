@@ -11,6 +11,7 @@ print(os.getenv('inquiry_email'))
 
 
 def mail_to_consumer(inputs):
+    inputs["quotation_number"] = inputs['quotation_number'].replace('/', '_')
 # Email details
     from_email = os.getenv('FROM_EMAIL')
     subject = "Email with PDF Attachment"
@@ -40,9 +41,8 @@ def mail_to_consumer(inputs):
         server.login(from_email, os.getenv('FROM_EMAIL_PASSWORD'))  # Enter your password here
         text = msg.as_string()
         server.sendmail(from_email, inputs["consumer_email"], text)
-        server.quit()
-        os.remove(filename)
-        return("Email sent successfully.")
+        server.quit()  
+        return(["Email sent successfully.", filename])
     except Exception as e:
-        os.remove(filename)
-        return("Error: unable to send email:", e)
+        raise e
+        # return("Error: unable to send email:", e)

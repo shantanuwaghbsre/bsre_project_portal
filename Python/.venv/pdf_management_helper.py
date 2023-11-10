@@ -9,10 +9,11 @@ def create_html_from_template(context):
     context['guvnl_amount'] = int(context['guvnl_amount'])
     context['subsidy'] = int(context['subsidy'])
 
-    html_file_path = f"Quotation number %s for %s.html" % (context['quotation_number'].replace('/', '_'), context['consumer_name'])
+    html_file_path = os.getcwd() + f"/Quotation number %s for %s.html" % (context['quotation_number'].replace('/', '_'), context['consumer_name'])
     with open(html_file_path, mode="w+", encoding="utf-8") as results:
         results.write(template.render(context))
         print(f"... wrote {html_file_path}") 
+        results.close()
     return html_file_path
 
 def create_encrypted_pdf_from_html(html_file_path, context):
@@ -24,6 +25,7 @@ def create_encrypted_pdf_from_html(html_file_path, context):
 
     with open(html_file_path.rstrip('.html')+'.pdf', "wb") as out_file:
         writer.write(out_file)
+        out_file.close()
     
     os.remove('temp.pdf')
     os.remove(html_file_path)

@@ -242,7 +242,36 @@ const ResidentialQuotation = () => {
   }
 
   const handleSubmit = () => {
-    axios.post(urls["submitURL"], formData)
+    const postObject = {
+      "consumer_mobile_number" : formData["customerPhoneNumber"],
+      "consumer_address" : formData["customerAddress"],
+      "solar_module_wattage" : formData["solarModuleWattage"], //rename
+      "total_kilowatts" : formData["totalKiloWatts"],
+      "number_of_panels" : formData["numberOfPanels"],
+      "subsidy" : formData["calculatedSubsidy"],
+      "guvnl_amount" : formData["calculatedGUVNLAmount"],
+      "net_guvnl_system_price" : formData["calculatedGUVNLAmount"]-formData["calculatedSubsidy"],
+      "discom_or_torrent_charges" : formData["calculatedDISCOMCharges"], // rename this
+      "discom_or_torrent" : formData["discomOrTorrent"], //add this
+      "phase" : formData["phase"], // add this
+      "installation_ac_mcb_switch_charges" : formData["installmentAcMcbSwitchCharge"],
+      "geb_agreement_fees" : formData["gebAgreementFees"],
+      "project_cost" : formData["projectCost"],
+      "quotation_type" : "Residential",
+      "agent_code" : formData["agentID"], // try\
+      "agent_name" : formData["agentName"],
+      "state_or_territory" : formData["stateOrTerritory"], //change this
+      "structure" : formData["structure"],
+      "mounting_quantity" : formData["moduleMountingStructureQuantity"],
+      "mounting_description" : formData["moduleMountingStructureDescription"],
+      "mounting_structure_make" : formData["moduleMountingStructureMake"],
+      "solar_inverter_make" : formData["solarInverter"],
+      "solar_panel_type" : formData["solarModuleType"],
+      "solar_module_name" : formData["solarModule"],
+      "consumer_name" : formData["customerName"],
+      "consumer_email" : formData["customerEmail"]
+    }
+    axios.post(urls["submitURL"], postObject)
       .then(function (response) {
         if (response.data.completed) {
           resetForm()

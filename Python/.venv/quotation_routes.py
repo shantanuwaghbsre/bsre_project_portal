@@ -4,7 +4,8 @@ import datetime
 from datetime import timezone
 import pytz
 from pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template
-
+from mailer import mail_to_consumer
+import os
 
 # Create a Blueprint object
 blueprint = Blueprint('quotation_routes', __name__)
@@ -22,11 +23,11 @@ queries = {
 	and system_capacity_lower_limit < %(totalKiloWatts)s and %(totalKiloWatts)s <= system_capacity_upper_limit and phase like %(phase)s)	or	(system_capacity_upper_limit is null
 	and system_capacity_lower_limit < %(totalKiloWatts)s and phase like %(phase)s);''',
     "get_guvnl_charges": '''SELECT guvnl_price FROM public."Residential_GUVNL_prices" where number_of_panels=%(numberOfPanels)s and type_of_structure like %(structure)s and kilowatts=%(totalKiloWatts)s;''',
-    "get_last_quotation_number":'''select quotation_number from public."Quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
+    "get_last_quotation_number":'''select quotation_number from public."Residential_quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
     "get_agents": '''SELECT agent_code, agent_name, agent_mobile_number, agent_address, agent_state FROM public."Agents";''',
-    "insert_quotation": """INSERT INTO "Quotations" ( quotation_number, consumer_mobile_number, consumer_email, consumer_address, timestamp, solar_module_wattage, total_kilowatts, number_of_panels, subsidy, guvnl_amount, net_guvnl_system_price, discom_or_torrent_charges, discom_or_torrent, phase, installation_ac_mcb_switch_charges, geb_agreement_fees, project_cost, quotation_type, agent_name, agent_code, state_or_territory, structure, mounting_quantity, mounting_description, mounting_structure_make, solar_inverter_make, solar_panel_type, solar_module_name, consumer_name) VALUES ( %(quotation_number)s, %(consumer_mobile_number)s, %(consumer_email)s, %(consumer_address)s, %(timestamp)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(number_of_panels)s, %(subsidy)s, %(guvnl_amount)s, %(net_guvnl_system_price)s, %(discom_or_torrent_charges)s, %(discom_or_torrent)s, %(phase)s, %(installation_ac_mcb_switch_charges)s, %(geb_agreement_fees)s, %(project_cost)s, %(quotation_type)s, %(agent_name)s, %(agent_code)s, %(state_or_territory)s, %(structure)s, %(mounting_quantity)s, %(mounting_description)s, %(mounting_structure_make)s, %(solar_inverter_make)s, %(solar_panel_type)s, %(solar_module_name)s, %(consumer_name)s);""",
-    "getAllQuotations" : """select * from public."Quotations" order by timestamp desc limit %(limit)s offset %(lower)s""",
-    "countPages" : '''select count(*) from public."Quotations"''',
+    "insert_quotation": """INSERT INTO "Residential_quotations" ( quotation_number, consumer_mobile_number, consumer_email, consumer_address, timestamp, solar_module_wattage, total_kilowatts, number_of_panels, subsidy, guvnl_amount, net_guvnl_system_price, discom_or_torrent_charges, discom_or_torrent, phase, installation_ac_mcb_switch_charges, geb_agreement_fees, project_cost, quotation_type, agent_name, agent_code, state_or_territory, structure, mounting_quantity, mounting_description, mounting_structure_make, solar_inverter_make, solar_panel_type, solar_module_name, consumer_name) VALUES ( %(quotation_number)s, %(consumer_mobile_number)s, %(consumer_email)s, %(consumer_address)s, %(timestamp)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(number_of_panels)s, %(subsidy)s, %(guvnl_amount)s, %(net_guvnl_system_price)s, %(discom_or_torrent_charges)s, %(discom_or_torrent)s, %(phase)s, %(installation_ac_mcb_switch_charges)s, %(geb_agreement_fees)s, %(project_cost)s, %(quotation_type)s, %(agent_name)s, %(agent_code)s, %(state_or_territory)s, %(structure)s, %(mounting_quantity)s, %(mounting_description)s, %(mounting_structure_make)s, %(solar_inverter_make)s, %(solar_panel_type)s, %(solar_module_name)s, %(consumer_name)s);""",
+    "getAllQuotations" : """select * from public."Residential_quotations" order by timestamp desc limit %(limit)s offset %(lower)s""",
+    "countPages" : '''select count(*) from public."Residential_quotations"''',
 }
 
 
@@ -95,8 +96,8 @@ def submitQuotation():
 
   html_file_path = create_html_from_template(request.json)
   create_encrypted_pdf_from_html(html_file_path, request.json)
-  mail_to_consumer(request.json)
-
+  message, filename = mail_to_consumer(request.json)
+  os.remove(filename)
   return response
   
 @blueprint.route('/getAllQuotations', methods=['GET'])
