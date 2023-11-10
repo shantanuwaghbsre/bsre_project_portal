@@ -25,9 +25,11 @@ queries = {
     "get_guvnl_charges": '''SELECT guvnl_price FROM public."Residential_GUVNL_prices" where number_of_panels=%(numberOfPanels)s and type_of_structure like %(structure)s and kilowatts=%(totalKiloWatts)s;''',
     "get_last_quotation_number":'''select quotation_number from public."Residential_quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
     "get_agents": '''SELECT agent_code, agent_name, agent_mobile_number, agent_address, agent_state FROM public."Agents";''',
-    "insert_quotation": """INSERT INTO "Residential_quotations" ( quotation_number, consumer_mobile_number, consumer_email, consumer_address, timestamp, solar_module_wattage, total_kilowatts, number_of_panels, subsidy, guvnl_amount, net_guvnl_system_price, discom_or_torrent_charges, discom_or_torrent, phase, installation_ac_mcb_switch_charges, geb_agreement_fees, project_cost, quotation_type, agent_name, agent_code, state_or_territory, structure, mounting_quantity, mounting_description, mounting_structure_make, solar_inverter_make, solar_panel_type, solar_module_name, consumer_name) VALUES ( %(quotation_number)s, %(consumer_mobile_number)s, %(consumer_email)s, %(consumer_address)s, %(timestamp)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(number_of_panels)s, %(subsidy)s, %(guvnl_amount)s, %(net_guvnl_system_price)s, %(discom_or_torrent_charges)s, %(discom_or_torrent)s, %(phase)s, %(installation_ac_mcb_switch_charges)s, %(geb_agreement_fees)s, %(project_cost)s, %(quotation_type)s, %(agent_name)s, %(agent_code)s, %(state_or_territory)s, %(structure)s, %(mounting_quantity)s, %(mounting_description)s, %(mounting_structure_make)s, %(solar_inverter_make)s, %(solar_panel_type)s, %(solar_module_name)s, %(consumer_name)s);""",
+    "insert_residential_quotation": """INSERT INTO "Residential_quotations" ( quotation_number, consumer_mobile_number, consumer_email, consumer_address, timestamp, solar_module_wattage, total_kilowatts, number_of_panels, subsidy, guvnl_amount, net_guvnl_system_price, discom_or_torrent_charges, discom_or_torrent, phase, installation_ac_mcb_switch_charges, geb_agreement_fees, project_cost, quotation_type, agent_name, agent_code, state_or_territory, structure, mounting_quantity, mounting_description, mounting_structure_make, solar_inverter_make, solar_panel_type, solar_module_name, consumer_name) VALUES ( %(quotation_number)s, %(consumer_mobile_number)s, %(consumer_email)s, %(consumer_address)s, %(timestamp)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(number_of_panels)s, %(subsidy)s, %(guvnl_amount)s, %(net_guvnl_system_price)s, %(discom_or_torrent_charges)s, %(discom_or_torrent)s, %(phase)s, %(installation_ac_mcb_switch_charges)s, %(geb_agreement_fees)s, %(project_cost)s, %(quotation_type)s, %(agent_name)s, %(agent_code)s, %(state_or_territory)s, %(structure)s, %(mounting_quantity)s, %(mounting_description)s, %(mounting_structure_make)s, %(solar_inverter_make)s, %(solar_panel_type)s, %(solar_module_name)s, %(consumer_name)s);""",
     "getAllQuotations" : """select * from public."Residential_quotations" order by timestamp desc limit %(limit)s offset %(lower)s""",
     "countPages" : '''select count(*) from public."Residential_quotations"''',
+    "insert_industrial_commercial_quotation" : '''INSERT INTO public."Industrial_commercial_quotations"( quotation_number, "timestamp", state_or_territory, quotation_type, agent_code, agent_name, consumer_name, consumer_address, consumer_mobile_number, consumer_email, solar_module_name, solar_panel_type, number_of_panels, solar_module_wattage, total_kilowatts, solar_inverter_make, number_of_inverters, grid_tie_inverter_make, number_of_grid_tie_inverters, solar_cable, switch_and_gear_protection_make, sprinkler_installation, rate_per_watt, gst_per_watt, electricity_unit_rate, inflation_in_unit_rate, is_loan, loan_amount_on_project, loan_term, interest_rate_on_loan, reinvestment_rate, any_extra_cost_on_add_on_work, gst_on_add_on_work, is_subsidy, subsidy_per_watt) 	VALUES ( %(quotation_number)s, %(timestamp)s, %(state_or_territory)s, %(quotation_type)s, %(agent_code)s, %(agent_name)s, %(consumer_name)s, %(consumer_address)s, %(consumer_mobile_number)s, %(consumer_email)s, %(solar_module_name)s, %(solar_panel_type)s, %(number_of_panels)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(solar_inverter_make)s, %(number_of_inverters)s, %(grid_tie_inverter_make)s, %(number_of_grid_tie_inverters)s, %(solar_cable)s, %(switch_and_gear_protection_make)s, %(sprinkler_installation)s, %(rate_per_watt)s, %(gst_per_watt)s, %(electricity_unit_rate)s, %(inflation_in_unit_rate)s, %(is_loan)s, %(loan_amount_on_project)s, %(loan_term)s, %(interest_rate_on_loan)s, %(reinvestment_rate)s, %(any_extra_cost_on_add_on_work)s, %(gst_on_add_on_work)s, %(is_subsidy)s, %(subsidy_per_watt)s );''',
+    "get_last_industrial_commercial_quotation_number": '''select quotation_number from public."Industrial_commercial_quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
 }
 
 
@@ -73,24 +75,24 @@ def getAgents():
       })
   return response
 
-@blueprint.route('/submitQuotation', methods=['POST'])
-def submitQuotation():
+@blueprint.route('/submitResidentialQuotation', methods=['POST'])
+def submitResidentialQuotation():
 
   response = {}
   last_quotation = make_db_call(query=queries['get_last_quotation_number'], parameters={"location":request.json["agent_code"][:3]+'%'}, type_="select")[0][0]
-  quotation_number = request.json['agent_code'][:3] + '/' + datetime.datetime.now().strftime("%d%m%y") + "/" 
+  quotation_number = request.json['agent_code'][:3] + "/" + request.json["quotation_type"][0] + "/" + datetime.datetime.now().strftime("%d%m%y") + "/" 
   if last_quotation:
-    if last_quotation[4:10] == datetime.datetime.now().strftime("%d%m%y"):
-        quotation_number += f"{int(last_quotation[11:15])+1:04d}"
+    if last_quotation[6:12] == datetime.datetime.now().strftime("%d%m%y"):
+        quotation_number += f"{int(last_quotation[-4:])+1:04d}"
     else:
       quotation_number += f"{1:04d}" 
   else:
-      quotation_number += f"{1:04d}"
+    quotation_number += f"{1:04d}"
 
   request.json["quotation_number"] = quotation_number
   request.json["timestamp"] = datetime.datetime.now()
   
-  response["completed"] = make_db_call(query=queries['insert_quotation'], parameters=request.json, type_="insert")
+  response["completed"] = make_db_call(query=queries['insert_residential_quotation'], parameters=request.json, type_="insert")
   if response["completed"]:
     response["quotation_number"] = quotation_number
 
@@ -99,7 +101,36 @@ def submitQuotation():
   message, filename = mail_to_consumer(request.json)
   os.remove(filename)
   return response
+
+@blueprint.route('/submitIndustrialCommercialQuotation', methods=['POST'])
+def submitIndustrialCommercialQuotation():
+
+  response = {}
+  last_quotation = make_db_call(query=queries['get_last_industrial_commercial_quotation_number'], parameters={"location":request.json["agent_code"][:3]+'%'}, type_="select")[0][0]
+  quotation_number = request.json['agent_code'][:3] + "/" + request.json["quotation_type"][0] + "/" + datetime.datetime.now().strftime("%d%m%y") + "/" 
+  if last_quotation:
+    print(last_quotation[6:12])
+    if last_quotation[6:12] == datetime.datetime.now().strftime("%d%m%y"):
+        quotation_number += f"{int(last_quotation[-4:])+1:04d}"
+    else:
+      quotation_number += f"{1:04d}" 
+  else:
+      quotation_number += f"{1:04d}"
+
+  request.json["quotation_number"] = quotation_number
+  request.json["timestamp"] = datetime.datetime.now()
   
+  response["completed"] = make_db_call(query=queries['insert_industrial_commercial_quotation'], parameters=request.json, type_="insert")
+  if response["completed"]:
+    response["quotation_number"] = quotation_number
+
+  html_file_path = create_html_from_template(request.json)
+  create_encrypted_pdf_from_html(html_file_path, request.json)
+  message, filename = mail_to_consumer(request.json)
+  os.remove(filename)
+  return response
+
+
 @blueprint.route('/getAllQuotations', methods=['GET'])
 def getAllQuotations():
   response = {

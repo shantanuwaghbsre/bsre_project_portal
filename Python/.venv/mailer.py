@@ -7,8 +7,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-print(os.getenv('inquiry_email'))
-
 
 def mail_to_consumer(inputs):
     inputs["quotation_number"] = inputs['quotation_number'].replace('/', '_')

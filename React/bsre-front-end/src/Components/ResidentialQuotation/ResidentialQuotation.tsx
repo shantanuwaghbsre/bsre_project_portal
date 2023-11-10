@@ -237,7 +237,7 @@ const ResidentialQuotation = () => {
 
   const urls = {
     "calculateURL": "http://localhost:5000/calculate",
-    "submitURL": "http://localhost:5000/submitQuotation",
+    "submitURL": "http://localhost:5000/submitResidentialQuotation",
     "getAgentsURL": "http://localhost:5000/getAgents",
   }
 

@@ -5,9 +5,12 @@ from pypdf import PdfReader, PdfWriter
 
 def create_html_from_template(context):
     environment = Environment(loader=FileSystemLoader(os.getcwd()+"/Python/.venv/templates/"))
-    template = environment.get_template("residentialQuotation.html")
-    context['guvnl_amount'] = int(context['guvnl_amount'])
-    context['subsidy'] = int(context['subsidy'])
+    if context["quotation_type"] == "Residential":
+        template = environment.get_template("residentialQuotation.html")  
+        context['guvnl_amount'] = int(context['guvnl_amount'])
+        context['subsidy'] = int(context['subsidy'])
+    else: 
+        template = environment.get_template("industrialQuotation.html")
 
     html_file_path = os.getcwd() + f"/Quotation number %s for %s.html" % (context['quotation_number'].replace('/', '_'), context['consumer_name'])
     with open(html_file_path, mode="w+", encoding="utf-8") as results:
@@ -25,6 +28,7 @@ def create_encrypted_pdf_from_html(html_file_path, context):
 
     with open(html_file_path.rstrip('.html')+'.pdf', "wb") as out_file:
         writer.write(out_file)
+        writer.close()
         out_file.close()
     
     os.remove('temp.pdf')

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Quotation Details</h2>
+
+    <h3>Consumer Details</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>State or Territory</td>
+            <td>{{ state_or_territory }}</td>
+        </tr>
+        <tr>
+            <td>Quotation Type</td>
+            <td>{{ quotation_type }}</td>
+        </tr>
+        <tr>
+            <td>Agent Code</td>
+            <td>{{ agent_code }}</td>
+        </tr>
+        <tr>
+            <td>Agent Name</td>
+            <td>{{ agent_name }}</td>
+        </tr>
+        <tr>
+            <td>Consumer Name</td>
+            <td>{{ consumer_name }}</td>
+        </tr>
+        <tr>
+            <td>Consumer Address</td>
+            <td>{{ consumer_address }}</td>
+        </tr>
+        <tr>
+            <td>Consumer Mobile Number</td>
+            <td>{{ consumer_mobile_number }}</td>
+        </tr>
+        <tr>
+            <td>Consumer Email</td>
+            <td>{{ consumer_email }}</td>
+        </tr>
+    </table>
+
+    <h3>Solar Panel Details</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Solar Module Name</td>
+            <td>{{ solar_module_name }}</td>
+        </tr>
+        <tr>
+            <td>Solar Panel Type</td>
+            <td>{{ solar_panel_type }}</td>
+        </tr>
+        <tr>
+            <td>Number of Panels</td>
+            <td>{{ number_of_panels }}</td>
+        </tr>
+        <tr>
+            <td>Solar Module Wattage</td>
+            <td>{{ solar_module_wattage }}</td>
+        </tr>
+        <tr>
+            <td>Total Kilowatts</td>
+            <td>{{ total_kilowatts }}</td>
+        </tr>
+        <tr>
+            <td>Solar Inverter Make</td>
+            <td>{{ solar_inverter_make }}</td>
+        </tr>
+        <tr>
+            <td>Number of Inverters</td>
+            <td>{{ number_of_inverters }}</td>
+        </tr>
+    </table>
+
+    <h3>Inverter and System Details</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Grid Tie Inverter Make</td>
+            <td>{{ grid_tie_inverter_make }}</td>
+        </tr>
+        <tr>
+            <td>Number of Grid Tie Inverters</td>
+            <td>{{ number_of_grid_tie_inverters }}</td>
+        </tr>
+        <tr>
+            <td>Solar Cable</td>
+            <td>{{ solar_cable }}</td>
+        </tr>
+        <tr>
+            <td>Switch and Gear Protection Make</td>
+            <td>{{ switch_and_gear_protection_make }}</td>
+        </tr>
+        <tr>
+            <td>Sprinkler Installation</td>
+            <td>{{ sprinkler_installation }}</td>
+        </tr>
+    </table>
+
+    <h3>Calculation Details</h3>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Rate per Watt</td>
+            <td>{{ rate_per_watt }}</td>
+        </tr>
+        <tr>
+            <td>GST per Watt</td>
+            <td>{{ gst_per_watt }}</td>
+        </tr>
+        <tr>
+            <td>Electricity Unit Rate</td>
+            <td>{{ electricity_unit_rate }}</td>
+        </tr>
+        <tr>
+            <td>Inflation in Unit Rate</td>
+            <td>{{ inflation_in_unit_rate }}</td>
+        </tr>
+        <tr>
+            <td>Reinvestment Rate</td>
+            <td>{{ reinvestment_rate }}</td>
+        </tr>
+        <tr>
+            <td>Loan Amount on Project</td>
+            <td>{{ loan_amount_on_project }}</td>
+        </tr>
+        <tr>
+            <td>Interest Rate on Loan</td>
+            <td>{{ interest_rate_on_loan }}</td>
+        </tr>
+        <tr>
+            <td>Loan Term</td>
+            <td>{{ loan_term }}</td>
+        </tr>
+        <tr>
+            <td>Installment of Loan per Month</td>
+            <td>{{ installment_of_loan_per_month }}</td>
+        </tr>
+        <tr>
+            <td>Any Extra Cost on Add-On Work</td>
+            <td>{{ any_extra_cost_on_add_on_work }}</td>
+        </tr>
+        <tr>
+            <td>GST on Add-On Work</td>
+            <td>{{ gst_on_add_on_work }}</td>
+        </tr>
+        <tr>
+            <td>Is Loan?</td>
+            <td>{{ is_loan }}</td>
+        </tr>
+        <tr>
+            <td>Is Subsidy?</td>
+            <td>{{ is_subsidy }}</td>
+        </tr>
+        <tr>
+            <td>Subsidy per Watt</td>
+            <td>{{ subsidy_per_watt }}</td>
+        </tr>
+    </table>
+
+</body>
+</html>

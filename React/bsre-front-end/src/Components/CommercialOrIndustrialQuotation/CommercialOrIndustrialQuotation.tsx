@@ -283,13 +283,49 @@ const CommercialOrIndustrialQuotation = () => {
 
   const urls = {
     "calculateURL": "http://localhost:5000/calculate",
-    "submitURL": "http://localhost:5000/submitQuotation",
+    "submitURL": "http://localhost:5000/submitIndustrialCommercialQuotation",
     "getAgentsURL": "http://localhost:5000/getAgents",
   }
 
   const handleSubmit = () => {
 
-    axios.post(urls["submitURL"], formData)
+   const postObject = {
+      "state_or_territory" : formData.stateOrTerritory,
+      "quotation_type" : formData.quotationType,
+      "agent_code" : formData.agentID,
+      "agent_name" : formData.agentName,
+      "consumer_name" : formData.customerName,
+      "consumer_address" : formData.customerAddress,
+      "consumer_mobile_number" : formData.customerPhoneNumber,
+      "consumer_email" : formData.customerEmail,
+      "solar_module_name" : formData.solarModule,
+      "solar_panel_type" : formData.solarModuleType,
+      "number_of_panels" : formData.numberOfPanels,
+      "solar_module_wattage" : formData.solarModuleWattage,
+      "total_kilowatts" : formData.totalKiloWatts,
+      "solar_inverter_make" : formData.solarInverter,
+      "number_of_inverters" : formData.numberOfInverters,
+      "grid_tie_inverter_make" : formData.gridTieInverter,
+      "number_of_grid_tie_inverters" : formData.numberOfGridTieInverters,
+      "solar_cable" : formData.solarCableSelect,
+      "switch_and_gear_protection_make" : formData.switchGearAndProtection,
+      "sprinkler_installation" : formData.sprinklerInstallation,
+      "rate_per_watt" : calculationData.ratePerWatt,
+      "gst_per_watt" : calculationData.gstPerWatt,
+      "electricity_unit_rate" : calculationData.electricityUnitRate,
+      "inflation_in_unit_rate" : calculationData.inflationInUnitRate,
+      "is_loan" : calculationData.isLoan,
+      "loan_amount_on_project" : calculationData.loanAmountOnProject,
+      "loan_term" : calculationData.loanTerm,
+      "interest_rate_on_loan" : calculationData.interestRateOnLoan,
+      "reinvestment_rate" : calculationData.reinvestmentRate,
+      "any_extra_cost_on_add_on_work" : calculationData.anyExtraCostOnAddOnWork,
+      "gst_on_add_on_work" : calculationData.gstOnAddOnWork,
+      "is_subsidy" : calculationData.isSubsidy,
+      "subsidy_per_watt" : calculationData.subsidyPerWatt,
+   }
+
+    axios.post(urls["submitURL"], postObject)
       .then(function (response) {
         if (response.data.completed) {
           resetForm()
@@ -462,7 +498,7 @@ const CommercialOrIndustrialQuotation = () => {
                    {formData["solarModuleWattage"]} W
                 </TableCell>
                 <TableCell>
-                   <TextField value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}}
+                   <TextField label="Number of Panels" value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}}
                     />
                    <br />
                    <br />
@@ -486,7 +522,7 @@ const CommercialOrIndustrialQuotation = () => {
                    </FormControl>
                 </TableCell>
                 <TableCell>
-                   <TextField value={formData["numberOfInverters"]} type="number" name="numberOfInverters" placeholder="Enter number of Inverters" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
+                   <TextField  label="Number of Inverters" value={formData["numberOfInverters"]} type="number" name="numberOfInverters" placeholder="Enter number of Inverters" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
                 </TableCell>
              </TableRow>
              <TableRow>
@@ -506,7 +542,7 @@ const CommercialOrIndustrialQuotation = () => {
                    </FormControl>
                 </TableCell>
                 <TableCell>
-                   <TextField value={formData["numberOfGridTieInverters"]} type="number" name="numberOfGridTieInverters" placeholder="Number of grid tie inverter" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfGridTieInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
+                   <TextField label="Number of Grid Tie Inverters" value={formData["numberOfGridTieInverters"]} type="number" name="numberOfGridTieInverters" placeholder="Number of grid tie inverter" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfGridTieInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
                 </TableCell>
              </TableRow>
              <TableRow>
@@ -622,7 +658,7 @@ const CommercialOrIndustrialQuotation = () => {
                </TableRow>
              <TableRow>
               <TableCell>Total Rate</TableCell>
-              <TableCell colSpan={3}>{isNaN(Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100}</TableCell>
+              <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
               </TableRow>
           
           <TableRow>
@@ -630,23 +666,11 @@ const CommercialOrIndustrialQuotation = () => {
                 <TableCell>
                   <TextField value={calculationData["electricityUnitRate"]} type="number" name="electricityUnitRate" onChange={handleCalculationDataChange}/>
                    </TableCell>
-                <TableCell>Subsidy per watt</TableCell>
-                <TableCell>
-                <TextField value={calculationData["subsidyPerWatt"]} type="number" name="subsidyPerWatt" onChange={handleCalculationDataChange} />
-                </TableCell>
-             </TableRow>
-             <TableRow>
                 <TableCell>Inflation in unit rate</TableCell>
                 <TableCell>
                 <TextField value={calculationData["inflationInUnitRate"]} type="number" name="inflationInUnitRate" onChange={handleCalculationDataChange}/>
-                   %
                 </TableCell>
-                <TableCell colSpan={2}></TableCell>
              </TableRow>
-             <TableRow>
-              <TableCell>Total Subsidy</TableCell>
-              <TableCell colSpan={3}>{isNaN(Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100}</TableCell>
-              </TableRow>
              <TableRow>
               <TableCell>Loan (Yes/No)</TableCell>
               <TableCell colSpan={3}>
@@ -677,11 +701,11 @@ const CommercialOrIndustrialQuotation = () => {
                 <TableCell><TextField value={calculationData["interestRateOnLoan"]} type="number" name="interestRateOnLoan" onChange={handleCalculationDataChange}/>
                 </TableCell>
                 <TableCell>Installment of Loan per month</TableCell>
-                <TableCell>{isNaN(Math.round(((calculationData["loanAmountOnProject"]*(1+(calculationData["interestRateOnLoan"]*calculationData["loanTerm"])/1200)/12) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["loanAmountOnProject"]*(1+(calculationData["interestRateOnLoan"]*calculationData["loanTerm"])/1200)/12) + Number.EPSILON) * 100) / 100}</TableCell>
+                <TableCell>{(isNaN(Math.round(((calculationData["loanAmountOnProject"]*(1+(calculationData["interestRateOnLoan"]*calculationData["loanTerm"])/1200)/12) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["loanAmountOnProject"]*(1+(calculationData["interestRateOnLoan"]*calculationData["loanTerm"])/1200)/12) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
              </TableRow></>}
              <TableRow>
                 <TableCell>Total GST</TableCell>
-                <TableCell>{isNaN(Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100}</TableCell>
+                <TableCell>{(isNaN(Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
                 <TableCell>Reinvestment Rate</TableCell>
                 <TableCell><TextField value={calculationData["reinvestmentRate"]} type="number" name="reinvestmentRate" onChange={handleCalculationDataChange}/>
                   </TableCell>
@@ -698,22 +722,54 @@ const CommercialOrIndustrialQuotation = () => {
              </TableRow>
              <TableRow>
                 <TableCell>Total add-on amount</TableCell>
-                <TableCell colSpan={3}>{isNaN(Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) /100)?0:Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) /100}</TableCell>
+                <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) /100)?0:Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) /100).toLocaleString('en-IN')}</TableCell>
              </TableRow>
              <TableRow>
                 <TableCell>Value of project without Gst</TableCell>
-                <TableCell colSpan={3}>{isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100}</TableCell>
+                <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
              </TableRow>
              <TableRow>
                 <TableCell>Value of project with Gst</TableCell>
-                <TableCell colSpan={3}>{isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100}</TableCell>
+                <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
              </TableRow>
              
              <TableRow>
                 <TableCell>Final cost of project incl. add-on work</TableCell>
-                <TableCell colSpan={3}>{isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100)?0:Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100}</TableCell>
+                <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"])  + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100)?0:Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
              </TableRow>
              
+             {formData["quotationType"]=="Industrial" && <TableRow>
+              <TableCell>Subsidy</TableCell>
+              <TableCell colSpan={3}>
+              <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="isSubsidy"
+                      value={calculationData["isSubsidy"]}
+                      onChange={handleCalculationDataChange}
+                      >
+                      <FormControlLabel value={true} control={
+                      <Radio />
+                      } label="Yes" />
+                      <FormControlLabel value={false} control={
+                      <Radio />
+                      } label="No" />
+                   </RadioGroup>
+              </TableCell>
+              </TableRow>}
+             {(calculationData["isSubsidy"] && formData["quotationType"]=="Industrial") && <><TableRow>
+             <TableCell>Subsidy per watt</TableCell>
+                <TableCell>
+                <TextField value={calculationData["subsidyPerWatt"]} type="number" name="subsidyPerWatt" onChange={handleCalculationDataChange} />
+                </TableCell>
+                <TableCell>Total Subsidy</TableCell>
+              <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100)?0:Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+              
+             </TableRow>
+             <TableRow>
+                <TableCell>Total value of project after subsidy</TableCell>
+                <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100)?0:Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+             </TableRow></>}
              {/* <TableRow>
                 <TableCell></TableCell>
                 <TableCell colSpan={3}>{calculationData[""]}</TableCell>
@@ -730,7 +786,7 @@ const CommercialOrIndustrialQuotation = () => {
     <br/>
     <br/>
     <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
-    {isFormValid && <Button variant="contained" >Submit</Button>}
+    {isFormValid && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
  </div>
 
   );
