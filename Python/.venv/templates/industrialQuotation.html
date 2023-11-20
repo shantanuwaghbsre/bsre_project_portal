@@ -159,6 +159,23 @@
             <td>{{ reinvestment_rate }}</td>
         </tr>
         <tr>
+            <td>Any Extra Cost on Add-On Work</td>
+            <td>{{ any_extra_cost_on_add_on_work }}</td>
+        </tr>
+        <tr>
+            <td>GST on Add-On Work</td>
+            <td>{{ gst_on_add_on_work }}</td>
+        </tr>
+        <tr>
+            <td>Total add-on amount</td>
+            <td>{{ "%.2f"|format(any_extra_cost_on_add_on_work + gst_on_add_on_work) }}</td>
+        </tr>
+        <tr>
+            <td>Is Loan?</td>
+            <td>{{ is_loan }}</td>
+        </tr>
+        {% if is_loan %}
+        <tr>
             <td>Loan Amount on Project</td>
             <td>{{ loan_amount_on_project }}</td>
         </tr>
@@ -174,27 +191,46 @@
             <td>Installment of Loan per Month</td>
             <td>{{ installment_of_loan_per_month }}</td>
         </tr>
+        {% endif %}
         <tr>
-            <td>Any Extra Cost on Add-On Work</td>
-            <td>{{ any_extra_cost_on_add_on_work }}</td>
+            <td>Total add-on amount</td>
+            <td>{{ "%.2f"|format(any_extra_cost_on_add_on_work + gst_on_add_on_work) }}</td>
         </tr>
         <tr>
-            <td>GST on Add-On Work</td>
-            <td>{{ gst_on_add_on_work }}</td>
+            <td>Value of project without Gst</td>
+            <td>{{ "%.2f"|format(rate_per_watt * 1000 * total_kilowatts) }}</td>
         </tr>
         <tr>
-            <td>Is Loan?</td>
-            <td>{{ is_loan }}</td>
+            <td>Value of project with Gst</td>
+            <td>{{ "%.2f"|format((rate_per_watt + gst_per_watt) * 1000 * total_kilowatts) }}</td>
         </tr>
+        <tr>
+            <td>Final cost of project incl. add-on work</td>
+            <td>{{ "%.2f"|format(((rate_per_watt + gst_per_watt) * 1000 * total_kilowatts) + (any_extra_cost_on_add_on_work + gst_on_add_on_work)) }}</td>
+        </tr>        
         <tr>
             <td>Is Subsidy?</td>
             <td>{{ is_subsidy }}</td>
         </tr>
+        {% if is_subsidy %}
         <tr>
             <td>Subsidy per Watt</td>
             <td>{{ subsidy_per_watt }}</td>
         </tr>
+        <tr>
+            <td>Total value of project after subsidy</td>
+            <td>{{ "%.2f"|format(((rate_per_watt + gst_per_watt) * 1000 * total_kilowatts) - 
+                (subsidy_per_watt * 1000 * total_kilowatts) + 
+                (any_extra_cost_on_add_on_work + gst_on_add_on_work)) }}</td>
+        </tr>
+        {% endif %}
     </table>
 
 </body>
 </html>
+
+
+<tr>
+    <td></td>
+    <td></td>
+</tr>

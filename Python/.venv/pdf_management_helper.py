@@ -4,12 +4,15 @@ import pdfkit
 from pypdf import PdfReader, PdfWriter
 
 def create_html_from_template(context):
-    environment = Environment(loader=FileSystemLoader(os.getcwd()+"/Python/.venv/templates/"))
+    # print(os.getcwd())
+    environment = Environment(loader=FileSystemLoader(os.getcwd()+"/templates/"))
+    
     if context["quotation_type"] == "Residential":
         template = environment.get_template("residentialQuotation.html")  
         context['guvnl_amount'] = int(context['guvnl_amount'])
         context['subsidy'] = int(context['subsidy'])
     else: 
+        # print(environment.list_templates())
         template = environment.get_template("industrialQuotation.html")
 
     html_file_path = os.getcwd() + f"/Quotation number %s for %s.html" % (context['quotation_number'].replace('/', '_'), context['consumer_name'])
