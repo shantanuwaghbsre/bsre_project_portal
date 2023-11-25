@@ -23,6 +23,11 @@
         th {
             background-color: #f2f2f2;
         }
+
+        .next-page {
+        page-break-before: always;
+        }
+
     </style>
 </head>
 <body>
@@ -35,8 +40,8 @@
             <th>Value</th>
         </tr>
         <tr>
-            <td>State or Territory</td>
-            <td>{{ state_or_territory }}</td>
+            <td>location</td>
+            <td>{{ location }}</td>
         </tr>
         <tr>
             <td>Quotation Type</td>
@@ -102,8 +107,14 @@
             <td>Number of Inverters</td>
             <td>{{ number_of_inverters }}</td>
         </tr>
-    </table>
+        <tr>
+            <td>Solar Structure</td>
+            <td>{{ solar_structure }}</td>
+        </tr>
+        
 
+    </table>
+    <p class="next-page"></p>
     <h3>Inverter and System Details</h3>
     <table>
         <tr>
@@ -225,12 +236,49 @@
         </tr>
         {% endif %}
     </table>
-
+    <p class="next-page"></p>
+    <img src="{{ GRAPHS_FOLDER }}page3.1.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}page3.2.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}page3.3.png" width="1000" height="600">
+    <p class="next-page"></p>
+    <h2>Irradiation tables for location: {{ city }} lat: {{ latitude }}, long: {{ longitude }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Month</th>
+                <th>Sun Irradiation in kW/m2/day</th>
+                <th>Unit production in kw</th>
+                <th>production in Rs.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(months | length) %}
+            
+            <tr>
+                <td>{{i+1}}</td>
+                <td>{{ months[i] }}</td>
+                <td>{{ irradiation_data[i] }}</td>
+                <td>{{ monthly_production[i] }}</td>
+                <td>{{ monthly_earnings[i] }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td>Total (per year)</td>
+                <td>{{ yearly_irradiation }}</td>
+                <td>{{ annual_production }}</td>
+                <td>{{ annual_earnings}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="next-page"></p>
+    
 </body>
 </html>
 
 
-<tr>
+<!-- <tr>
     <td></td>
     <td></td>
-</tr>
+</tr> -->

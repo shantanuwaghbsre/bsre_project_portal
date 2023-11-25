@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, FormLabel, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, InputLabel, FormHelperText, FormControl, } from "@mui/material"
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, InputLabel, FormControl, } from "@mui/material"
 import axios from 'axios'
 import './styles.css'
-import { BorderClear, Label } from "@mui/icons-material";
 
 const CommercialOrIndustrialQuotation = () => {
   
@@ -14,10 +13,10 @@ const CommercialOrIndustrialQuotation = () => {
   ]
 
   const solarStructureOptions = [
-    {value:"Hot dip galvanized structure", type: "Hot dip galvanized structure"},
-    {value:"Single axis GI structure", type: "Single axis GI structure"},
-    {value:"Dual axis GI structure", type: "Dual axis GI structure"},
-    {value:"Aluminium structure", type: "Aluminium structure"}
+    {value:"Hot dip galvanized structure"},
+    {value:"Single axis GI structure"},
+    {value:"Dual axis GI structure"},
+    {value:"Aluminium structure"}
   ]
 
   const quotationTypeOptions = [
@@ -32,11 +31,11 @@ const CommercialOrIndustrialQuotation = () => {
   ]
 
   const solarModuleTypeOptions = [
-    {value: '', text: '--Choose panel type--'},
-    {value: 'Poly', text: 'Poly'},
-    {value: 'Mono Perc', text: 'Mono Perc'},
-    {value: 'Mono Perc Bifacial', text: 'Mono Perc Bifacial'},
-    {value: 'Topcon', text: 'Topcon'},
+    {value: '', text: '--Choose panel type--', area: 1},
+    {value: 'Poly', text: 'Poly' , area: 1.94, pr_ratio:0.75, efficiency: 0.18 },
+    {value: 'Mono Perc', text: 'Mono Perc' , area: 2.54, pr_ratio:0.85, efficiency: 0.22 },
+    {value: 'Mono Perc Bifacial', text: 'Mono Perc Bifacial', area: 2.54, pr_ratio: 0.9, efficiency: 0.23},
+    {value: 'Topcon', text: 'Topcon' , area: 2.54, pr_ratio: 0.95, efficiency: 0.25 },
   ]
 
 
@@ -56,16 +55,6 @@ const CommercialOrIndustrialQuotation = () => {
     {value : "Grow watt", text: 'Grow watt'},
   ]
 
-  const installmentAcMcbSwitchChargeOptions = [
-    {value:500, text:"500"},
-    {value:1000, text:"1,000"},
-  ]
-
-  const gebAgreementFeesOptions = [
-    {value:300, text:"300"},
-    {value:600, text:"600"},
-  ]
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const date = new Date();
   let currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
@@ -74,10 +63,11 @@ const CommercialOrIndustrialQuotation = () => {
    solarModule: "",
    solarModuleType: "",
    solarModuleWattage: 0,
+   solarStructure: "",
    totalKiloWatts: 0,
    numberOfPanels: 0,
    solarInverter: "",
-   stateOrTerritory: "Gujarat",
+   location: "",
    agentID: "",
    agentName: "",
    customerName: "",
@@ -133,6 +123,7 @@ const CommercialOrIndustrialQuotation = () => {
   }
 
   const [agentOptions, setAgentOptions] = useState([])
+  const [locationOptions, setLocationOptions] = useState([])
   const [errorMessage, setErrorMessage] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
   const [isFormValid, setIsFormValid] = useState<Boolean>(false)
@@ -145,10 +136,11 @@ const CommercialOrIndustrialQuotation = () => {
       solarModule: "",
       solarModuleType: "",
       solarModuleWattage: 0,
+      solarStructure: "",
       totalKiloWatts: 0,
       numberOfPanels: 0,
       solarInverter: "",
-      stateOrTerritory: "Gujarat",
+      location: "",
       agentID: "",
       agentName: "",
       customerName: "",
@@ -196,6 +188,9 @@ const CommercialOrIndustrialQuotation = () => {
     }
     else if (!formData["gridTieInverter"]) {
       setErrorMessage("Please select a grid tie inverter.");
+    }
+    else if (!formData["solarStructure"]) {
+      setErrorMessage("Please select a solar structure.");
     }
     else if (!formData["switchGearAndProtection"]) {
       setErrorMessage("Please select a Switch Gear And Protection.");
@@ -265,32 +260,28 @@ const CommercialOrIndustrialQuotation = () => {
       .catch(function (error) {
         console.log(error);
       });
+      axios.get(urls["getLocationsURL"])
+      .then(function (response) {
+         setLocationOptions(response.data);
+      })
   }, [])
 
   useEffect(() => {
     setIsFormValid(false);
   }, [formData, calculationData])
 
-  useEffect(() => {
-    if (formData["solarModuleType"] === "Poly") {
-      handleFormChange("solarModuleWattage",  335);
-    }
-    else if (formData["solarModuleType"] === "Mono Perc" || formData["solarModuleType"] === "Mono Perc Bifacial" || formData["solarModuleType"] ==="Topcon") {
-      handleFormChange("solarModuleWattage",  540);
-    }
-  }, [formData["solarModuleType"]]);  
-
 
   const urls = {
     "calculateURL": "http://localhost:5000/calculate",
     "submitURL": "http://localhost:5000/submitIndustrialCommercialQuotation",
     "getAgentsURL": "http://localhost:5000/getAgents",
+    "getLocationsURL": "http://localhost:5000/getLocations"
   }
 
   const handleSubmit = () => {
 
    const postObject = {
-      "state_or_territory" : formData.stateOrTerritory,
+      "location" : formData.location,
       "quotation_type" : formData.quotationType,
       "agent_code" : formData.agentID,
       "agent_name" : formData.agentName,
@@ -302,6 +293,7 @@ const CommercialOrIndustrialQuotation = () => {
       "solar_panel_type" : formData.solarModuleType,
       "number_of_panels" : formData.numberOfPanels,
       "solar_module_wattage" : formData.solarModuleWattage,
+      "solar_structure": formData.solarStructure,
       "total_kilowatts" : formData.totalKiloWatts,
       "solar_inverter_make" : formData.solarInverter,
       "number_of_inverters" : formData.numberOfInverters,
@@ -340,7 +332,7 @@ const CommercialOrIndustrialQuotation = () => {
       });
 }
   
-  function handleAgentSelect(e: SelectChangeEvent<string>): void {
+  const handleAgentSelect = (e: SelectChangeEvent<string>): void => {
     handleFormChange("agentID", e.target.value);
     for (let i = 0; i <agentOptions.length; i++) {
       if (agentOptions[i]["agent_id"] === e.target.value) {
@@ -348,6 +340,17 @@ const CommercialOrIndustrialQuotation = () => {
       }
     }
   }
+
+
+
+  const handleLocationSelect = (e: SelectChangeEvent<string>): void => {
+   handleFormChange("location", e.target.value);
+   for (let i = 0; i <locationOptions.length; i++) {
+     if (locationOptions[i]["city"] === e.target.value) {
+       handleFormChange("location", locationOptions[i]["city"]);
+     }
+   }
+ }
 
   const handleQuotationTypeSelect = (e: SelectChangeEvent<string>): void => {
     handleFormChange("quotationType", e.target.value);
@@ -357,6 +360,7 @@ const CommercialOrIndustrialQuotation = () => {
       }
     }
   }
+
 
   return (
    
@@ -381,10 +385,17 @@ const CommercialOrIndustrialQuotation = () => {
                 <TableCell>{currentDate}</TableCell>
              </TableRow>
              <TableRow>
-                <TableCell>State:</TableCell>
+                <TableCell>Location:</TableCell>
                 <TableCell>
-                   <TextField type="text" name="state" value={formData["stateOrTerritory"]} onChange={(e) =>
-                   handleFormChange("stateOrTerritory", e.target.value)} />
+                <InputLabel>Location</InputLabel>
+                   <Select label="Location" value={formData["location"]} MenuProps={{style: {maxHeight: 300}}} onChange={(e) =>
+                      handleLocationSelect(e)}>
+                      {locationOptions.map((option) => (
+                      <MenuItem key={option["city"]} value={option["city"]}>
+                         {option["city"]}
+                      </MenuItem>
+                      ))}
+                   </Select>
                 </TableCell>
              </TableRow>
              <TableRow>
@@ -494,12 +505,16 @@ const CommercialOrIndustrialQuotation = () => {
                       ))}
                    </Select>
                    </FormControl>
-                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   {formData["solarModuleWattage"]} W
                 </TableCell>
                 <TableCell>
-                   <TextField label="Number of Panels" value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}}
-                    />
+                <TextField label="Solar Module Wattage" value={formData["solarModuleWattage"]} 
+                   type="number" name="solarModuleWattage" placeholder="Solar Module Wattage" 
+                   onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; 
+                     handleFormChange("solarModuleWattage", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}}/> &nbsp; W <br/><br/>
+                   <TextField label="Number of Panels" value={formData["numberOfPanels"]} 
+                   type="number" name="numberOfPanels" placeholder="Enter number of panels" 
+                   onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; 
+                   handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}}/>
                    <br />
                    <br />
                    <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
@@ -545,8 +560,24 @@ const CommercialOrIndustrialQuotation = () => {
                    <TextField label="Number of Grid Tie Inverters" value={formData["numberOfGridTieInverters"]} type="number" name="numberOfGridTieInverters" placeholder="Number of grid tie inverter" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfGridTieInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
                 </TableCell>
              </TableRow>
-             <TableRow>
-                <TableCell>4</TableCell>
+               <TableRow>
+                  <TableCell>4</TableCell>
+                  <TableCell>Solar Structure</TableCell>
+                  <TableCell colSpan={2}><FormControl sx={{ m: 1, minWidth: 250 }}>
+                   <InputLabel>Solar Structure</InputLabel>
+                   <Select label="Solar Structure" value={formData["solarStructure"]} onChange={(e) =>
+                      handleFormChange("solarStructure", e.target.value)}>
+                      {solarStructureOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                         {option.value}
+                      </MenuItem>
+                      ))}
+                   </Select>
+                   </FormControl>
+                   </TableCell>
+               </TableRow>
+               <TableRow>
+                <TableCell>5</TableCell>
                 <TableCell>Solar Cable</TableCell>
                 <TableCell>KEI</TableCell>
                 <TableCell>
@@ -570,7 +601,7 @@ const CommercialOrIndustrialQuotation = () => {
              <TableRow>
                 <TableCell>6</TableCell>
                 <TableCell>Switch Gear and Protection</TableCell>
-                <TableCell>
+                <TableCell colSpan={2}>
                    <FormControl sx={{ m: 1, minWidth: 220 }}>
                    <InputLabel>Switch Gear & Protection</InputLabel>
                    <Select label="switchGearAndProtection" value={formData["switchGearAndProtection"]} onChange={(e) =>
@@ -583,7 +614,6 @@ const CommercialOrIndustrialQuotation = () => {
                    </Select>
                    </FormControl>
                 </TableCell>
-                <TableCell></TableCell>
              </TableRow>
              <TableRow>
                 <TableCell>7</TableCell>

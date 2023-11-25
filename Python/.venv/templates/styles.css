@@ -1,0 +1,5 @@
+@media print {
+    .next-page {
+      page-break-before: always;
+    }
+  }
