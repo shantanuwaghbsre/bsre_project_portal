@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, InputLabel, FormControl, } from "@mui/material"
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, InputLabel, FormControl, FormLabel, } from "@mui/material"
 import axios from 'axios'
 import './styles.css'
 
@@ -153,9 +153,25 @@ const CommercialOrIndustrialQuotation = () => {
       gridTieInverter: "",
       solarCableSelect: "Yes",
       switchGearAndProtection: "",
-      sprinklerInstallation: "",
-
+      sprinklerInstallation: "Yes",
     });
+
+    setCalculationData({
+      ratePerWatt: 0,
+      gstPerWatt: 0,
+      electricityUnitRate: 0,
+      subsidyPerWatt: 0,
+      inflationInUnitRate: 2,
+      reinvestmentRate: 7,
+      loanAmountOnProject: 0,
+      interestRateOnLoan: 0,
+      loanTerm: 60,
+      installmentOfLoanPerMonth: 0,
+      anyExtraCostOnAddOnWork: 0,
+      gstOnAddOnWork: 0,
+      isLoan: false,
+      isSubsidy: false
+    })
     setErrorMessage("");
     setIsFormValid(false);
   };
@@ -179,9 +195,6 @@ const CommercialOrIndustrialQuotation = () => {
     }
     else if (!formData["solarModuleType"]) {
       setErrorMessage("Please select a solar module type.");
-    }
-    else if (formData["numberOfPanels"]<4 || formData["numberOfPanels"]==7 || formData["numberOfPanels"]==12 || formData["numberOfPanels"]==14 || formData["numberOfPanels"]==16 || formData["numberOfPanels"]==17 || formData["numberOfPanels"]>18) {
-      setErrorMessage("Please select correct number of panels.");
     }
     else if (!formData["solarInverter"]) {
       setErrorMessage("Please select a solar inverter.");
@@ -385,9 +398,10 @@ const CommercialOrIndustrialQuotation = () => {
                 <TableCell>{currentDate}</TableCell>
              </TableRow>
              <TableRow>
-                <TableCell>Location:</TableCell>
-                <TableCell>
-                <InputLabel>Location</InputLabel>
+             <TableCell>Location</TableCell>
+             <TableCell>
+               <FormControl sx={{ m: 1, minWidth: 220 }}>
+                   <InputLabel>Location</InputLabel>
                    <Select label="Location" value={formData["location"]} MenuProps={{style: {maxHeight: 300}}} onChange={(e) =>
                       handleLocationSelect(e)}>
                       {locationOptions.map((option) => (
@@ -396,11 +410,13 @@ const CommercialOrIndustrialQuotation = () => {
                       </MenuItem>
                       ))}
                    </Select>
+                   </FormControl>
                 </TableCell>
              </TableRow>
              <TableRow>
                 <TableCell>Quotation Type</TableCell>
                 <TableCell>
+                  <FormControl sx={{ m: 1, minWidth: 220 }}>
                    <InputLabel>Quotation Type</InputLabel>
                    <Select label="Quotation Type" value={formData["quotationType"]} onChange={(e) =>
                       handleQuotationTypeSelect(e)}>
@@ -410,11 +426,13 @@ const CommercialOrIndustrialQuotation = () => {
                       </MenuItem>
                       ))}
                    </Select>
+                   </FormControl>
                 </TableCell>
              </TableRow>
              <TableRow>
                 <TableCell>Agent ID</TableCell>
                 <TableCell>
+                  <FormControl sx={{ m: 1, minWidth: 220 }}>
                    <InputLabel>Agent ID</InputLabel>
                    <Select label="AgentID" value={formData["agentID"]} onChange={(e) =>
                       handleAgentSelect(e)}>
@@ -424,6 +442,7 @@ const CommercialOrIndustrialQuotation = () => {
                       </MenuItem>
                       ))}
                    </Select>
+                   </FormControl>
                 </TableCell>
              </TableRow>
              <TableRow>
@@ -815,6 +834,7 @@ const CommercialOrIndustrialQuotation = () => {
     </TableContainer>
     <br/>
     <br/>
+    <Button variant="contained" onClick={() => resetForm()}>Reset</Button>&nbsp;
     <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
     {isFormValid && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
  </div>

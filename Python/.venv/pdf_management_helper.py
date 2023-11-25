@@ -6,7 +6,26 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 load_dotenv()
 
-def create_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, figsize_=(10, 8)):
+def create_line_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, figsize_=(10, 8)):
+    """
+    Create and display a line graph.
+
+    Args:
+        x_data (list): List of x-axis data points.
+        y_data (list): List of y-axis data points.
+        x_label (str): Label for the x-axis.
+        y_label (str): Label for the y-axis.
+        title (str): Title of the graph.
+    """
+    plt.figure(figsize=figsize_)
+    plt.plot(X_data, Y_data, color=color_, linewidth=width_)
+    plt.xlabel(X_label)
+    plt.ylabel(Y_label)
+    plt.title(title)
+    # Save the graph to a file
+    plt.savefig(os.environ.get("GRAPHS_FOLDER") + filename)
+
+def create_bar_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, individual_bar_values_requested, figsize_=(10, 8)):
     """
     Create and save a bar graph.
 
@@ -35,8 +54,9 @@ def create_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filena
     plt.ylabel(Y_label)
 
     # Add the data values on top of the bars
-    for i in range(len(X_data)):
-        plt.text(i, Y_data[i] // 2, Y_data[i], ha='center')
+    if individual_bar_values_requested:
+        for i in range(len(X_data)):
+            plt.text(i, Y_data[i] // 2, Y_data[i], ha='center')
 
     # Set the graph title
     plt.title(title)

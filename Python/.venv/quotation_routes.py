@@ -3,7 +3,7 @@ from service import make_db_call
 import datetime
 from datetime import timezone
 import pytz
-from pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template, create_graph
+from pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template, create_bar_graph, create_line_graph
 from mailer import mail_to_consumer
 import os
 from dotenv import load_dotenv
@@ -336,60 +336,129 @@ def submitIndustrialCommercialQuotation():
 
     # Calculate monthly production based on irradiation data, pr_ratio, efficiency, area, and number of panels
     request.json["monthly_production"] = [
-        float('{0:.2f}'.format(i * pr_ratio * efficiency * area * request.json['number_of_panels'] *
-                               list(request.json["months"].values())[idx]))
+        round(i * pr_ratio * efficiency * area * request.json['number_of_panels'] *
+                               list(request.json["months"].values())[idx], 2)
         for idx, i in enumerate(request.json["irradiation_data"])
     ]
 
     # Calculate monthly earnings based on monthly production and rate
     request.json["monthly_earnings"] = [
-        float('{0:.2f}'.format(i * request.json["rate_per_watt"])) for i in request.json["monthly_production"]
+        round(i * request.json["rate_per_watt"], 2) for i in request.json["monthly_production"]
     ]
     
 
     # Calculate the sum of the values in the "irradiation_data" list of the JSON request and multiply it by month days to find total monthly irradiation
-    request.json["yearly_irradiation"] = float('{0:.2f}'.format(sum([request.json["irradiation_data"][i] * list(request.json["months"].values())[i] for i in range(len(request.json["irradiation_data"]))])))
+    request.json["yearly_irradiation"] = round(sum([request.json["irradiation_data"][i] * list(request.json["months"].values())[i] for i in range(len(request.json["irradiation_data"]))]), 2)
                                           
     # Calculate the sum of the values in the "monthly_production" list of the JSON request
-    request.json["annual_production"] = float('{0:.2f}'.format(sum(request.json["monthly_production"])))
+    request.json["annual_production"] = round(sum(request.json["monthly_production"]), 2)
     
     # Calculate the sum of the values in the "monthly_earnings" list of the JSON request
-    request.json["annual_earnings"] = float('{0:.2f}'.format(sum(request.json["monthly_earnings"])))
+    request.json["annual_earnings"] = round(sum(request.json["monthly_earnings"]), 2)
+
+    # Degradation calculations
+    # Calculate the total cost based on various parameters
+    request.json["total_cost"] = round(((request.json["rate_per_watt"] + request.json["gst_per_watt"] - request.json["subsidy_per_watt"]) * 1000 * request.json["total_kilowatts"]) + (request.json["any_extra_cost_on_add_on_work"] + request.json["gst_on_add_on_work"]), 2)
+    print(request.json["total_cost"])
+    # Calculate the production degradation over a period of 24 years
+    request.json["production_degradation"] = [request.json["annual_production"], round(request.json["annual_production"]*0.98, 2)] + [round(request.json["annual_production"]*0.98 * 0.996 ** i, 2) for i in range(1, 25)]
+    
+    # Calculate the earnings degradation based on the production degradation
+    request.json["earnings_degradation"] = [round(i * 7.5, 2) for i in request.json["production_degradation"]]
+    
+    # Calculate the breakeven point over a period of 24 years
+    request.json["breakeven"] = [-request.json["total_cost"] + request.json["earnings_degradation"][0]] 
+    for i in range(1, 25):
+      request.json["breakeven"].append(round(request.json["breakeven"][i - 1] + request.json["earnings_degradation"][i],2))
 
     # Create graphs
     graphs = [
         {
-            "data": request.json['irradiation_data'],
+            "X_data": request.json["months"].keys(),
+            "Y_data": request.json['irradiation_data'],
             "x_label": "Months",
             "y_label": "kWh/m2",
             "color": "maroon",
             "width": 0.8,
             "title": "Avg. Daily Irradiation per square metre",
-            "filename": "page3.1.png"
+            "filename": "Industrial_Commercial_Graph_1.png",
+            "type": "bar",
+            "individual_bar_values_requested": True
         },
         {
-            "data": request.json["monthly_production"],
+            "X_data": request.json["months"].keys(),
+            "Y_data": [round(i / 100, 2) for i in request.json["monthly_production"]],
             "x_label": "Months",
-            "y_label": "KiloWatts",
+            "y_label": "MegaWatts",
             "color": "orange",
             "width": 0.8,
             "title": "Avg. production per month",
-            "filename": "page3.2.png"
+            "filename": "Industrial_Commercial_Graph_2.png",
+            "type": "bar",
+            "individual_bar_values_requested": True
         },
         {
-            "data": request.json["monthly_earnings"],
+            "X_data": request.json["months"].keys(),
+            "Y_data": [round(i / 100000, 2) for i in request.json["monthly_earnings"]],
             "x_label": "Months",
             "y_label": "Rs. (in lakhs)",
             "color": "green",
             "width": 0.8,
             "title": "Avg. earnings per month",
-            "filename": "page3.3.png"
+            "filename": "Industrial_Commercial_Graph_3.png",
+            "type": "bar",
+            "individual_bar_values_requested": True
+        },
+        {
+            "X_data": [str(i) for i in range(1, 26)],
+            "Y_data": request.json["production_degradation"][:25],
+            "x_label": "years",
+            "y_label": "kiloWatts",
+            "color": "midnightblue",
+            "width": 1.5,
+            "title": "Production degradation",
+            "filename": "Industrial_Commercial_Graph_4.png",
+            "type": "line"
+        },
+        {
+            "X_data": [str(i) for i in range(1, 26)],
+            "Y_data": request.json["earnings_degradation"][:25],
+            "x_label": "years",
+            "y_label": "Rs.",
+            "color": "purple",
+            "width": 1.5,
+            "title": "Earnings degradation",
+            "filename": "Industrial_Commercial_Graph_5.png",
+            "type": "line"
+        },
+        {
+            "X_data": [str(i) for i in range(1, 26)],
+            "Y_data": request.json["breakeven"],
+            "x_label": "years",
+            "y_label": "ROI",
+            "color": "lightgreen",
+            "width": 0.8,
+            "title": "Breakeven",
+            "filename": "Industrial_Commercial_Graph_6.png",
+            "type": "bar",
+            "individual_bar_values_requested": False
         }
     ]
 
     for graph in graphs:
-        create_graph(X_data=request.json["months"].keys(), 
-                    Y_data=graph["data"], 
+        if graph["type"] == "bar":
+          create_bar_graph(X_data=graph["X_data"], 
+                    Y_data=graph["Y_data"], 
+                    X_label=graph["x_label"], 
+                    Y_label=graph["y_label"], 
+                    color_=graph["color"], 
+                    width_=graph["width"], 
+                    title=graph["title"], 
+                    filename=graph["filename"],
+                    individual_bar_values_requested=graph["individual_bar_values_requested"])
+        else:
+          create_line_graph(X_data=graph["X_data"], 
+                    Y_data=graph["Y_data"], 
                     X_label=graph["x_label"], 
                     Y_label=graph["y_label"], 
                     color_=graph["color"], 

@@ -28,6 +28,14 @@
         page-break-before: always;
         }
 
+        ol {
+        list-style-type: number;
+        }
+
+        ul {
+        list-style-type: square;
+        }
+
     </style>
 </head>
 <body>
@@ -237,9 +245,9 @@
         {% endif %}
     </table>
     <p class="next-page"></p>
-    <img src="{{ GRAPHS_FOLDER }}page3.1.png" width="1000" height="600">
-    <img src="{{ GRAPHS_FOLDER }}page3.2.png" width="1000" height="600">
-    <img src="{{ GRAPHS_FOLDER }}page3.3.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_1.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_2.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_3.png" width="1000" height="600">
     <p class="next-page"></p>
     <h2>Irradiation tables for location: {{ city }} lat: {{ latitude }}, long: {{ longitude }}</h2>
     <table>
@@ -273,7 +281,74 @@
         </tbody>
     </table>
     <p class="next-page"></p>
-    
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_4.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_5.png" width="1000" height="600">
+    <img src="{{ GRAPHS_FOLDER }}Industrial_Commercial_Graph_6.png" width="1000" height="600">
+    <p class="next-page"></p>
+    <h2>Financial Calculations</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Production in kw</th>
+                <th>Cash flow</th>
+                <th>Break even point</th>
+                <th></th>
+                <th>Reinvestment amount</th>
+                <th>Interest rate</th>
+                <th>Interest amount</th>
+                <th>Final value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>0</td>
+                <td></td>
+                <td></td>
+                <td>{{-total_cost}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% for i in range(25) %}
+            <tr>
+                <td>{{i+1}}</td>
+                <td>{{ production_degradation[i] }}</td>
+                <td>{{ earnings_degradation[i] }}</td>
+                <td>{{ breakeven[i] }}</td>
+                <td></td>
+                <td>{{ earnings_degradation[i] }}</td>
+                <td>{{ reinvestment_rate }} %</td>
+                <td>{{ (earnings_degradation[i] * reinvestment_rate * 0.01) | round(2) }}</td>
+                <td>{{ (earnings_degradation[i] + (earnings_degradation[i] * reinvestment_rate * 0.01)) | round(2) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="next-page"></p>
+    <h1>TERMS & CONDITIONS</h1>
+    <div>
+        <ol>
+            <li>If any additional structure work require that will charge Extra.</li>
+            <li>Customer can do payment via NEFT/ RTGS or cheque.</li>
+            <li>Payment Terms: 100% advance with Order.</li>
+            <li>13.8% GST Inclusive in prices Solar.</li>
+            <li>GEDA application fees paid by customer Rs. 15,340/- in favourable "Bap Sitaram Renewable Energy"</li>
+            <li>GEB Meter Charges Extra as per GEB estimate.</li>
+            <li>Scope of Client:</li>
+            <ul>
+            <li>The Shadow free area for installation of SPV Module on the rooftop.</li>
+            <li>Permission for structure fitting with anchor fastening and grouting on the terrace and wall.</li>
+            <li>Provide safe space for earthing without any underground piping or cabling. In case the entire compound is paved, the client has to make opening for earthing at a specified space.</li>
+            <li>Net Metering Inter Connection Agreement Franking of  Rs. 600 in Commercial.</li>
+            <li>Client have to handle the local issues.</li>
+            </ul>
+            <li>This price valid for 7 days of date issue.</li>
+            <li>MOST IMP solar system will supply & install as per the DISCOM Feasibility Approved.</li>
+        </ol>
+    </div>
 </body>
 </html>
 
