@@ -33,16 +33,22 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
         ValueError: If the query execution fails.
     """
     try:
+        print(query, parameters)
         cur.execute(query, parameters)
 
         if type_ == "select":
             data = cur.fetchall()
             if not data:
                 data = [[None]]
+            
             return data
         else:
             conn.commit()
             return True
 
     except Exception as e:
+        cur.execute("ROLLBACK")
+        conn.commit()
         raise e or ValueError("Could not perform query")
+
+# print(make_db_call('select column_name from information_schema.columns where table_name = %(table_name)s', 'select', parameters={"table_name": 'Project_phase_2'}))

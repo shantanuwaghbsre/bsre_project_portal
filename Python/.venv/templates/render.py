@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 irr_data = [5.17, 5.96, 6.61, 7.14, 7.18, 5.68, 4.28, 4.25, 5.13, 5.75, 5.09, 4.64]
-with open(os.environ.get('TEMPLATES_FOLDER') + 'industrialQuotation.html') as f:
+with open(os.environ.get('TEMPLATES_FOLDER') + 'industrialQuotationcopy.html') as f:
     rendered = Template(f.read()).render({
     "state_or_territory": "Gujarat",
     "quotation_type": "Industrial",
@@ -43,7 +43,10 @@ with open(os.environ.get('TEMPLATES_FOLDER') + 'industrialQuotation.html') as f:
     "GRAPHS_FOLDER": os.environ.get("GRAPHS_FOLDER"),
     'irradiation_data': irr_data,
     "production_data": [i*30*0.54 for i in irr_data],
-    "profit_data": [i*0.07*30*0.54 for i in irr_data]
+    "profit_data": [i*0.07*30*0.54 for i in irr_data],
+    "production_degradation": [i*0.02*30*0.54 for i in irr_data],
+    "earnings_degradation": [i*0.01*30*0.54 for i in irr_data],
+    "breakeven": [i*0.01*30*0.54 for i in irr_data],
     })
 with open(os.environ.get('TEMPLATES_FOLDER') + "my_new_file.html", "w") as fh:
     fh.write(rendered)

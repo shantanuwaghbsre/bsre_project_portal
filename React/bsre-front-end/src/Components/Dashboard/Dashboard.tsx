@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
-const ViewQuotations = () => {
-  const [quotations, setQuotations] = useState([]);
+const Dashboard = () => {
+    const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -12,10 +12,11 @@ const ViewQuotations = () => {
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(`http://localhost:5000/getAllQuotations?page=${page+1}&limit=${limit}`);
-      setQuotations(response.data['quotations']);
+      const response = await axios.get(`http://localhost:5000/getAllProjects?page=${page+1}&limit=${limit}`);
+      setProjects(response.data['projects']);
       setTotalPages(response.data['totalPages']);
       setLoading(false);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
@@ -43,19 +44,19 @@ const ViewQuotations = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              {quotations.length?Object.keys(quotations[0]).map((key) => (
+              {projects.length ? Object.keys(projects[0]).map((key) => (
                 <TableCell key={key}>{key}</TableCell>
-              )): <TableCell/>}
+              )) : null}
             </TableRow>
           </TableHead>
           <TableBody>
-            {quotations.length?quotations.map((row, index) => (
+            {projects.length?projects.map((row, index) => (
               <TableRow key={index}>
-                {Object.values(row).map((value, index) => (
-                  <TableCell key={index}>{value?String(value):""}</TableCell>
+                {Object.keys(row).map((key) => (
+                  <TableCell key={key}>{row[key]?String(row[key]):""}</TableCell>
                 ))}
                 <TableCell>
-                  <Button component={Link} to={{ pathname: '/ConsumerOnboarding',  }} state={{"quotation":quotations[index]}}>Onboard this Customer</Button>
+                <Button component={Link} to={{ pathname: '/ViewProject' }} state={{"consumer_number":projects[index].consumer_number, "project_in_phase":projects[index].project_in_phase, "for_consumer_id":projects[index].for_consumer_id}}>View this Project</Button>
                   </TableCell>
               </TableRow>
               
@@ -74,6 +75,5 @@ const ViewQuotations = () => {
       />
     </div>
   );
-};
-
-export default ViewQuotations;
+}
+export default Dashboard

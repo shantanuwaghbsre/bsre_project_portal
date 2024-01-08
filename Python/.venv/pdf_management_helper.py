@@ -1,5 +1,13 @@
+import win32com.client
+import pythoncom
 from jinja2 import Environment, FileSystemLoader
+import sys
 import os
+from docx import Document
+from docx.text.run import Run
+import datetime
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_COLOR_INDEX
+from docx.shared import Pt, RGBColor
 import pdfkit
 from pypdf import PdfReader, PdfWriter
 import matplotlib.pyplot as plt
@@ -145,3 +153,111 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     # Remove the temporary PDF file and the HTML file
     os.remove(temp_pdf_path)
     os.remove(html_file_path)
+
+def create_pdf_from_doc(doc_file_name, context):
+    """
+    Create a PDF file from a Word document.
+
+    Args:
+        docx_file_path (str): The file path of the Word document.
+
+    Returns:
+        None
+    """
+
+    d = Document(os.environ.get("TEMPLATES_FOLDER") + doc_file_name + '.docx')
+    if d.sections is not None and len(d.sections) > 0:
+        for s in d.sections:
+            for id_, hp in enumerate(s.header.paragraphs):
+                if "{{ " in hp.text:
+                    para_text = hp.text
+                    hp.clear()
+                    for run in para_text.split("  "):
+                        hp.add_run(run)
+                        for idx, run in enumerate(hp.runs):
+                            for i in range(run.text.count("{{ ")):
+                                run.text = run.text.split("{{ ", 1)[0] + context[run.text.split("{{ ", 1)[1].split(" }}")[0]] + (run.text.split("{{ ", 1)[1].split(" }}", 1)[1] if len(run.text.split("{{ ", 1)[1].split(" }}", 1)[1]) > 1 else '')
+                            if idx == 1:
+                                run.font.highlight_color = WD_COLOR_INDEX.BLACK
+                                run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                        if not idx:
+                            run.text += " | "
+                        elif idx == 2:
+                            run.text = " | " + run.text
+
+    for p in d.paragraphs:
+        placeholder_count = p.text.count("{{")
+        if placeholder_count:
+            whole_para_text = p.text
+            p.clear()
+            for i in range(placeholder_count):
+                split_para = whole_para_text.split("{{ ", 1)
+                if len(split_para[0]):
+                    before_para = p.add_run(split_para[0])
+                    before_para.bold = False
+                print(len(context[split_para[1].split(" }}", 1)[0]]))
+                styled_run = p.add_run(context[split_para[1].split(" }}", 1)[0]])
+                styled_run.bold = True
+                styled_run.underline = True
+                styled_run.font.size = Pt(12)
+                whole_para_text = split_para[1].split(" }}", 1)[1]
+            after_para = p.add_run(whole_para_text)
+            after_para.bold = False
+    
+    for t in d.tables:
+        for r in t.rows:
+            for c in r.cells:
+                placeholder_count = c.text.count("{{")
+                if placeholder_count:
+                    whole_para_text = c.text
+                    for paragraph in c.paragraphs:
+                        c._element.remove(paragraph._element)
+                    p = c.add_paragraph()
+                    p.clear()
+                    p.alignment=WD_ALIGN_PARAGRAPH.CENTER
+                    for i in range(placeholder_count):
+                        split_para = whole_para_text.split("{{ ", 1)
+                        if len(split_para[0]):
+                            before_para = p.add_run(split_para[0])
+                            before_para.bold = False
+                        try:
+                            styled_run = p.add_run(context[split_para[1].split(" }}", 1)[0]])
+                            styled_run.bold = True
+                            styled_run.underline = True
+                            styled_run.font.size = Pt(12)
+                        except:
+                            # print("passed")
+                            pass
+                        try:
+                            whole_para_text = split_para[1].split(" }}", 1)[1]
+                        except:
+                            whole_para_text = ''
+                    after_para = p.add_run(whole_para_text)
+                    after_para.bold = False
+    
+    d.save(os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.docx')
+
+    wdFormatPDF = 17
+
+    in_file = os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.docx'
+
+    out_file = os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf'
+
+    pythoncom.CoInitialize()
+
+    word_app = win32com.client.Dispatch("Word.Application")
+
+    # Open the DOCX file
+    doc = word_app.Documents.Open(in_file)
+
+    # Save as PDF
+    doc.SaveAs(out_file, FileFormat=17)  # 17 corresponds to PDF format
+
+    # Close the document
+    doc.Close()
+
+    # Quit Word application
+    word_app.Quit()
+    pythoncom.CoUninitialize()
+
+    return os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf'

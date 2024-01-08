@@ -3,9 +3,14 @@ import ResidentialQuotation from './Components/ResidentialQuotation/ResidentialQ
 import Navbar from './Components/Navbar/Navbar'
 import {  BrowserRouter,  Routes,  Route,} from "react-router-dom";
 import ViewQuotations from './Components/ViewQuotations/ViewQuotations';
-import CustomerOnboarding from './Components/CustomerOnboarding/CustomerOnboarding';
+import ConsumerOnboarding from './Components/ConsumerOnboarding/ConsumerOnboarding';
 import CommercialOrIndustrialQuotation from './Components/CommercialOrIndustrialQuotation/CommercialOrIndustrialQuotation';
-
+import FileDownloader from './Components/Trial/Trial';
+import ViewAllConsumers from './Components/ViewAllConsumers/ViewAllConsumers';
+import ViewConsumer from './Components/ViewConsumer/ViewConsumer';
+import StartProject from './Components/StartProject/StartProject';
+import Dashboard from './Components/Dashboard/Dashboard';
+import ViewProject from './Components/ViewProject/ViewProject';
 
 function App() {
 
@@ -17,9 +22,15 @@ function App() {
         {/* <Route exact path="/" component={} /> */}
         <Route path="/ResidentialQuotation" element={<ResidentialQuotation/>} />
         <Route path="/ViewQuotations" element={<ViewQuotations/>} />
-        <Route path="/CustomerOnboarding" element={<CustomerOnboarding/>} />
-        <Route path='CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation/>} />
-        {/* <Route path="/faq" component={Faq} /> */}
+        <Route path="/ConsumerOnboarding" element={<ConsumerOnboarding/>} />
+        <Route path='/CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation/>} />
+        <Route path='/ViewAllConsumers' element={<ViewAllConsumers/>} />
+        <Route path='/ViewConsumer' element={<ViewConsumer/>} />
+        <Route path='/StartProject' element={<StartProject/>} />
+        <Route path="/contact" element={<FileDownloader/>} />
+        <Route path="/" element={<Dashboard/>} />
+        <Route path="/Dashboard" element={<Dashboard/>} />
+        <Route path="/ViewProject" element={<ViewProject/>} />
       </Routes>
     </BrowserRouter>
       {/* {choice.length === 0 && <><FormLabel id="demo-row-radio-buttons-group-label">Type of Quotation</FormLabel>

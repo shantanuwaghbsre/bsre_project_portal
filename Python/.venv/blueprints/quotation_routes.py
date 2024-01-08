@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, request, jsonify
+from flask import Blueprint, Flask, request, jsonify, send_file
 from service import make_db_call
 import datetime
 from datetime import timezone
@@ -16,11 +16,6 @@ blueprint = Blueprint('quotation_routes', __name__)
 ist = pytz.timezone('Asia/Kolkata')
 gmt = pytz.timezone('GMT')
 
-
-# Read the JSON file
-import os
-import json
-
 file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_quotations.json'
 
 try:
@@ -32,36 +27,9 @@ try:
 except Exception as e:
     print("An error occurred:", str(e))
 
-# queries = {
-#     "add_agent":"INSERT INTO public.'Agents'(agent_name, agent_mobile_number, agent_address, agent_state) VALUES (%s,%s,%s,%s);",
-    
-#     "get_discom_charges":'''select total_amount from public."DISCOM_charges" where 	(system_capacity_upper_limit is not null and system_capacity_lower_limit < %(totalKiloWatts)s and %(totalKiloWatts)s <= system_capacity_upper_limit)	or	(system_capacity_upper_limit is null and system_capacity_lower_limit < %(totalKiloWatts)s);''',
-    
-#     "get_torrent_charges":'''select charge from public."Torrent_charges" where 	(system_capacity_upper_limit is not null and system_capacity_lower_limit < %(totalKiloWatts)s and %(totalKiloWatts)s <= system_capacity_upper_limit and phase like %(phase)s)	or	(system_capacity_upper_limit is null and system_capacity_lower_limit < %(totalKiloWatts)s and phase like %(phase)s);''',
-    
-#     "get_guvnl_charges": '''SELECT guvnl_price FROM public."Residential_GUVNL_prices" where number_of_panels=%(numberOfPanels)s and type_of_structure like %(structure)s and kilowatts=%(totalKiloWatts)s;''',
-    
-#     "get_last_quotation_number":'''select quotation_number from public."Residential_quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
-    
-#     "get_agents": '''SELECT agent_code, agent_name, agent_mobile_number, agent_address, agent_state FROM public."Agents";''',
-    
-#     "insert_residential_quotation": """INSERT INTO "Residential_quotations" ( quotation_number, consumer_mobile_number, consumer_email, consumer_address, timestamp, solar_module_wattage, total_kilowatts, number_of_panels, subsidy, guvnl_amount, net_guvnl_system_price, discom_or_torrent_charges, discom_or_torrent, phase, installation_ac_mcb_switch_charges, geb_agreement_fees, project_cost, quotation_type, agent_name, agent_code, location, structure, mounting_quantity, mounting_description, mounting_structure_make, solar_inverter_make, solar_panel_type, solar_module_name, consumer_name) VALUES ( %(quotation_number)s, %(consumer_mobile_number)s, %(consumer_email)s, %(consumer_address)s, %(timestamp)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(number_of_panels)s, %(subsidy)s, %(guvnl_amount)s, %(net_guvnl_system_price)s, %(discom_or_torrent_charges)s, %(discom_or_torrent)s, %(phase)s, %(installation_ac_mcb_switch_charges)s, %(geb_agreement_fees)s, %(project_cost)s, %(quotation_type)s, %(agent_name)s, %(agent_code)s, %(location)s, %(structure)s, %(mounting_quantity)s, %(mounting_description)s, %(mounting_structure_make)s, %(solar_inverter_make)s, %(solar_panel_type)s, %(solar_module_name)s, %(consumer_name)s);""",
-    
-#     "getAllQuotations" : """select * from public."Residential_quotations" order by timestamp desc limit %(limit)s offset %(lower)s""",
-    
-#     "countPages" : '''select count(*) from public."Residential_quotations"''',
-    
-#     "insert_industrial_commercial_quotation" : '''INSERT INTO public."Industrial_commercial_quotations"( quotation_number, "timestamp", location, quotation_type, agent_code, agent_name, consumer_name, consumer_address, consumer_mobile_number, consumer_email, solar_module_name, solar_panel_type, number_of_panels, solar_module_wattage, total_kilowatts, solar_inverter_make, number_of_inverters, grid_tie_inverter_make, number_of_grid_tie_inverters, solar_cable, switch_and_gear_protection_make, sprinkler_installation, rate_per_watt, gst_per_watt, electricity_unit_rate, inflation_in_unit_rate, is_loan, loan_amount_on_project, loan_term, interest_rate_on_loan, reinvestment_rate, any_extra_cost_on_add_on_work, gst_on_add_on_work, is_subsidy, subsidy_per_watt, solar_structure) 	VALUES ( %(quotation_number)s, %(timestamp)s, %(location)s, %(quotation_type)s, %(agent_code)s, %(agent_name)s, %(consumer_name)s, %(consumer_address)s, %(consumer_mobile_number)s, %(consumer_email)s, %(solar_module_name)s, %(solar_panel_type)s, %(number_of_panels)s, %(solar_module_wattage)s, %(total_kilowatts)s, %(solar_inverter_make)s, %(number_of_inverters)s, %(grid_tie_inverter_make)s, %(number_of_grid_tie_inverters)s, %(solar_cable)s, %(switch_and_gear_protection_make)s, %(sprinkler_installation)s, %(rate_per_watt)s, %(gst_per_watt)s, %(electricity_unit_rate)s, %(inflation_in_unit_rate)s, %(is_loan)s, %(loan_amount_on_project)s, %(loan_term)s, %(interest_rate_on_loan)s, %(reinvestment_rate)s, %(any_extra_cost_on_add_on_work)s, %(gst_on_add_on_work)s, %(is_subsidy)s, %(subsidy_per_watt)s, %(solar_structure)s );''',
-    
-#     "get_last_industrial_commercial_quotation_number": '''select quotation_number from public."Industrial_commercial_quotations" where quotation_number like %(location)s order by timestamp desc limit 1''',
-    
-#     "get_average_daily_irradiation_by_month_for_city": '''select latitude, longitude, january, february, march, april, may, june, july, august, september, october, november, december from public."Average_daily_irradiation_by_city" where city=%(city)s''',
-    
-#     "get_locations": '''SELECT city FROM public."Average_daily_irradiation_by_city";''',
-    
-#     "get_pr_and_efficiency":'''SELECT pr_ratio, efficiency, area	FROM public."Panel_details" where solar_panel_type like %(solar_panel_type)s;'''
-# }
-
+@blueprint.route('/searchQuotations', methods=['GET'])
+def searchQuotations():
+    return [i[0] for i in make_db_call(queries["search_quotations"], "select", parameters={"partial_quotation_number":request.args.get('partial_quotation_number')+"%"})]
 
 @blueprint.route('/calculate', methods=['POST'])
 def calculate():
@@ -161,7 +129,7 @@ def getAgents():
     """
     # Query the database to get agent details
     agent_details_list = make_db_call(query=queries['get_agents'], type_="select")
-
+    print(agent_details_list)
     # Create a response list by iterating over each agent details
     response = [
         {
@@ -294,6 +262,7 @@ def submitIndustrialCommercialQuotation():
     # Add the current timestamp to the request
     request.json["timestamp"] = datetime.datetime.now()
 
+    request.json["project_cost"] = ((request.json["rate_per_watt"] + request.json["gst_per_watt"] - request.json["subsidy_per_watt"]) * 1000 * formData["total_kilowatts"]) + (request.json["any_extra_cost_on_add_on_work"] + request.json["gst_on_add_on_work"]) 
     # Insert the quotation into the database
     response["completed"] = make_db_call(
         query=queries['insert_industrial_commercial_quotation'],
@@ -480,7 +449,6 @@ def submitIndustrialCommercialQuotation():
 
     return response
 
-
 @blueprint.route('/getAllQuotations', methods=['GET'])
 def getAllQuotations():
     """
@@ -583,4 +551,19 @@ def getAllQuotations():
         "totalPages": total_pages
     }
     # Return the response
+    return response
+
+@blueprint.route('/searchSpecificQuotation', methods=['GET'])
+def searchSpecificQuotation():
+    return_ = make_db_call(queries["search_specific_residential_quotation"], "select", parameters={"quotation_number":request.args.get('quotation_number')}) \
+        if request.args.get('quotation_number')[4] == 'R' \
+        else make_db_call(queries["search_specific_industrial_quotation"], "select", parameters={"quotation_number":request.args.get('quotation_number')})
+    
+    response = {
+        "project_type": return_[0][0],
+        "total_kilowatts": return_[0][1],
+        "solar_panel_type": return_[0][2],
+        "project_cost": return_[0][3],
+    }
+
     return response
