@@ -564,6 +564,8 @@ def searchSpecificQuotation():
         "total_kilowatts": return_[0][1],
         "solar_panel_type": return_[0][2],
         "project_cost": return_[0][3],
+        "location": return_[0][4],
+        "solar_inverter_make": return_[0][5]
     }
 
     return response

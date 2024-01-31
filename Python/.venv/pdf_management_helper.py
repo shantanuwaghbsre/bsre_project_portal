@@ -191,11 +191,13 @@ def create_pdf_from_doc(doc_file_name, context):
             whole_para_text = p.text
             p.clear()
             for i in range(placeholder_count):
+                # print("index", i, "whole", whole_para_text)
                 split_para = whole_para_text.split("{{ ", 1)
                 if len(split_para[0]):
                     before_para = p.add_run(split_para[0])
                     before_para.bold = False
-                print(len(context[split_para[1].split(" }}", 1)[0]]))
+                # print(split_para)
+                # print(len(context[split_para[1].split(" }}", 1)[0]]))
                 styled_run = p.add_run(context[split_para[1].split(" }}", 1)[0]])
                 styled_run.bold = True
                 styled_run.underline = True
@@ -259,5 +261,5 @@ def create_pdf_from_doc(doc_file_name, context):
     # Quit Word application
     word_app.Quit()
     pythoncom.CoUninitialize()
-
+    print(os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf')
     return os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf'

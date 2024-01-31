@@ -14,6 +14,6 @@
     "get_locations": "SELECT city FROM public.\"Average_daily_irradiation_by_city\";",
     "get_pr_and_efficiency": "SELECT pr_ratio, efficiency, area\tFROM public.\"Panel_details\" where solar_panel_type like %(solar_panel_type)s;",
     "search_quotations": "select quotation_number from (select quotation_number, timestamp from public.\"Residential_quotations\" where quotation_number like %(partial_quotation_number)s union select quotation_number, timestamp from public.\"Industrial_commercial_quotations\" where quotation_number like %(partial_quotation_number)s) order by timestamp desc",
-    "search_specific_residential_quotation": "select quotation_type, total_kilowatts, solar_panel_type, project_cost from public.\"Residential_quotations\" where quotation_number=%(quotation_number)s",
-    "search_specific_industrial_quotation": "select quotation_type, total_kilowatts, solar_panel_type, project_cost from public.\"Industrial_commercial_quotations\" where quotation_number=%(quotation_number)s"
+    "search_specific_residential_quotation": "select quotation_type, total_kilowatts, solar_panel_type, project_cost, location, solar_inverter_make  from public.\"Residential_quotations\" where quotation_number=%(quotation_number)s",
+    "search_specific_industrial_quotation": "select quotation_type, total_kilowatts, solar_panel_type, project_cost, location, solar_inverter_make from public.\"Industrial_commercial_quotations\" where quotation_number=%(quotation_number)s"
 }

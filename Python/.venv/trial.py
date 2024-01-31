@@ -1,39 +1,80 @@
-class Car():
-    def __init__(self, name=None):
-        self.name = name
-    
-    def get_top_speed(self):
-        obj = requests.get("enter some url here")
-        top_speed = obj.calculate_top_speed()
-        engine_details = requests.get("enter some url here")
-        list_of_features = []
-        for feature in engine_details.get_features():
-            list_of_features += feature.name.title 
-        if len(engine_details.get_features()) == 6:
-
-            if engine_details.name == "solenoid":
-                top_speed /= 2
-                return set_safety_rating(self, top_speed, engine_details, list_of_features)
-            else:
-                safety_rating = set_safety_rating(self, top_speed, engine_details, list_of_features)
-                top_speed = float(top_speed)*safety_rating
-                return safety_rating
-        else:
-            return set_safety_rating(self, top_speed, engine_details, list_of_features[0:1])
-    
-    def set_safety_rating(self, top_speed, engine_details, list_of_features):
-        # do some stuff with inputs and return safety rating
-        pass
+print(len([
+"total_kilowatts",
+"location",
+"consumer_name",
+"consumer_address",
+"consumer_number",
+"geda_registration_number",
+"solar_inverter_make",
+"solar_inverter_capacity",
+"solar_inverter_quantity",
+"solar_inverter_total_capacity",
+"solar_inverter_voltage",
+"solar_inverter_serial_number",
+"solar_module_make",
+"solar_module_capacity",
+"solar_module_quantity",
+"solar_module_total_capacity",
+"solar_module_voltage",
+"solar_module_serial_number",
+"date",
+]))
 
 
-class MockFeature:
-    def __init__(self, name):
-        self.name = name
-        self.title = "Some Title"
-    
-a = MockFeature("abcd")
-
-print(a.name.title)
 
 
-        
+print('##'.join([
+"discom",
+"date",
+"guvnl_registration_number",
+"customer_name",
+"consumer_number",
+"circle",
+"division",
+"sub_division",
+"address",
+"current_sanctioned_load",
+"current_phase",
+"solar_module_make",
+"solar_module_model_number",
+"solar_module_type",
+"solar_panel_wattage",
+"number_of_panels",
+"total_kilowatts",
+"panel_indian",
+"installation_phase",
+"solar_inverter_make",
+"solar_inverter_model_number",
+"solar_inverter_output",
+"solar_inverter_serial_number",
+"rms_das",
+"pole",
+"1.1",
+"1.2",
+"1.3",
+"1.4",
+"1.5",
+"1.6",
+"1.7",
+"2.1",
+"2.2",
+"2.3",
+"3.1",
+"3.2",
+"3.3",
+"4.1",
+"4.2",
+"4.3",
+"4.4",
+"4.5",
+"4.6",
+"4.7",
+"4.8",
+"4.9",
+"4.10",
+"4.11",
+"4.12",
+"4.13",
+"4.14",
+"4.15",
+]))

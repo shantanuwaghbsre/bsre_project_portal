@@ -51,4 +51,4 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
         conn.commit()
         raise e or ValueError("Could not perform query")
 
-# print(make_db_call('select column_name from information_schema.columns where table_name = %(table_name)s', 'select', parameters={"table_name": 'Project_phase_2'}))
+# print(make_db_call('select column_name from information_schema.columns where table_name = %(table_name)s', 'select', parameters={'table_name': 'Project_phase_2'}))

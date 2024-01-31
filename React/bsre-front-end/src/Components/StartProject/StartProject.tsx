@@ -30,6 +30,7 @@ const StartProject = () => {
         project_email: "",
         project_in_phase: 1,
         for_consumer_id: "",
+        solar_inverter_make: "",
     })
     const [files, setFiles] = useState({
         property_tax: new Blob(),
@@ -46,18 +47,16 @@ const StartProject = () => {
         "searchSpecificQuotationURL": "http://localhost:5000/searchSpecificQuotation"
     }
     
-    let location = useLocation();
+    let _location = useLocation();
+
     useEffect(() => {
         try {
-          if (location.state) {
-            setProject({...project, ["for_consumer_id"]: location.state.consumer_id});
+          if (_location.state) {
+            setProject({...project, ["for_consumer_id"]: _location.state.consumer_id});
           }
         }
         catch (error) {}
-        }, [location.state])
-    useEffect(() => {
-        
-    }, [project.from_quotation])
+        }, [_location.state])
 
     useEffect(() => {
         if (project.from_quotation.length === 17 && quotationSearchResults.includes(project.from_quotation)) {
@@ -65,6 +64,7 @@ const StartProject = () => {
                 quotation_number: project.from_quotation.toUpperCase()
             }})
           .then(response => {
+            console.log(response);
             setProject((project) => ({
                 ...project,
                 ...response.data

@@ -13,8 +13,8 @@ import re
 import base64
 
 # Create a Blueprint object
-blueprint = Blueprint('customer_routes', __name__)
-file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_customers.json'
+blueprint = Blueprint('consumer_routes', __name__)
+file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_consumers.json'
 
 try:
     if os.path.exists(file_path):
@@ -79,27 +79,19 @@ def getAllConsumers():
     
     # Process the consumers query results and create a list of consumers
     consumers = []
+
     for row in consumers_list:
         # Create a dictionary for each consumer with the specified fields
-        consumer = {
-            "consumer_name": row[0],
-            "consumer_address": row[1],
-            "consumer_mobile_number": row[2],
-            "consumer_id": row[3],
-            "alternate_phone_number": row[4],
-            "consumer_email": row[5],
-            "aadhar_card_number": row[6],
-            "pan_card_number": row[7],
-            "aadhar_card": base64.b64encode(bytes(row[8])).decode('utf-8'),
-            "pan_card": base64.b64encode(bytes(row[9])).decode('utf-8'),
-            "passport_photo": base64.b64encode(bytes(row[10])).decode('utf-8'),
-            "other_document": base64.b64encode(bytes(row[11])).decode('utf-8'),
-            "onboarded_by_agent_code": row[12],
+        consumer = {}
+        for i in range(len(row)):
+            if type(row[i]) == memoryview:
+                consumer[queries['get_all_consumers_column_names'][i]] = base64.b64encode(row[i]).decode('utf-8')
+                continue
+            consumer[queries['get_all_consumers_column_names'][i]] = row[i] if row[i] else None
 
-        }
         # Add the consumer to the list
         consumers.append(consumer)
-    
+
     # Create the response dictionary with the consumers and total pages
     response = {
         "consumers": consumers,
