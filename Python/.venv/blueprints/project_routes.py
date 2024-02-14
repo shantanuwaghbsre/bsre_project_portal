@@ -37,12 +37,16 @@ except Exception as e:
 
 @blueprint.route('/createProject', methods=['POST'])
 def createProject():
+
+    print("files", request.files, "form", request.form)
+
     make_db_call(queries["insert_project"], type_="insert", 
     parameters={
         "property_tax": request.files["property_tax"].read(),
         "electricity_bill": request.files["electricity_bill"].read(),
         "cancelled_cheque": request.files["cancelled_cheque"].read(),
-        "other_document": request.files["other_document"].read(),
+        "other_documents":[file.read() for file in request.files.values() if file.name not in ["property_tax", "electricity_bill", "cancelled_cheque"]],
+        "other_documents_names":[file.filename for file in request.files.values() if file.name not in ["property_tax", "electricity_bill", "cancelled_cheque"]],
         "meter_number": request.form["meter_number"],
         "current_sanctioned_load": request.form["current_sanctioned_load"],
         "average_consumption_of_unit": request.form["average_consumption_of_unit"],
@@ -68,6 +72,8 @@ def createProject():
         "for_consumer_id": request.form["for_consumer_id"],
         "current_phase": request.form["current_phase"],
         "installation_phase": request.form["installation_phase"],
+        "solar_panel_wattage": request.form["solar_panel_wattage"],
+        "number_of_panels": request.form["number_of_panels"],
     })
     
     return {"success": True}
@@ -78,10 +84,10 @@ def getAllProjects():
     limit = int(request.args.get('limit'))
     
     # Calculate the total number of pages based on the limit
-    total_pages_query = make_db_call(query=queries['countPages'], type_='select')
+    total_pages_query = make_db_call(query=queries['countPages'], type_='returns')
     total_pages = int(total_pages_query[0][0]) // limit + 1
     
-    projects_query = make_db_call(query=queries['get_all_projects'], type_="select", parameters={"lower": (limit*(page-1)), "limit": limit})
+    projects_query = make_db_call(query=queries['get_all_projects'], type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
 
     if projects_query == [[None]]:
         # Return an empty list of projects and total pages as 0
@@ -108,24 +114,31 @@ def getAllProjects():
 
 @blueprint.route('/getProject', methods=['GET'])
 def getProject():
-    project = {}
-    data = make_db_call(queries["phase_details"].replace("column_names", ", ".join([column for column in queries["phase_details_column_names"]["1"]])).replace("table_name", "Projects"), "select", parameters={"consumer_number": request.args.get('consumer_number')})
+    project = {"phase_1":{}}
+    data = make_db_call(queries["phase_details"].replace("column_names", ", ".join([column for column in queries["phase_details_column_names"]["1"]])).replace("table_name", "Projects"), "returns", parameters={"consumer_number": request.args.get('consumer_number')})
     print(data[0])
-    project["phase_1"] = {
-        column: data[0][i] for i, column in enumerate(queries["phase_details_column_names"]["1"])
-    }
+    for j, column in enumerate(queries[f"phase_details_column_names"]["1"] ):
+        if column == 'other_documents':
+            project[f"phase_1"][column] = [base64.b64encode(file).decode('utf-8') for file in data[0][j]] if data[0][j] is not None else []
+            print("##############################################", project[f"phase_1"][column])
+        elif column == 'other_documents_names':
+            project[f"phase_1"][column] = [str(i) for i in data[0][j]] if data[0][j] is not None else []
+            print("##############################################", project[f"phase_1"][column])
+        else:
+            project[f"phase_1"][column] = data[0][j]
+    # project["phase_1"] = {
+    #     column: data[0][i] for i, column in enumerate(queries["phase_details_column_names"]["1"])
+    # }
     for i in range(2, int(project["phase_1"]["project_in_phase"])+1):
         project_columns = queries[f"phase_details_column_names"][str(i)]
-        data = make_db_call(queries[f"phase_details"].replace("column_names", ", ".join([column for column in project_columns])).replace("table_name", f"Project_phase_{i}"), "select", parameters={"consumer_number": request.args.get('consumer_number')})
+        data = make_db_call(queries[f"phase_details"].replace("column_names", ", ".join([column for column in project_columns])).replace("table_name", f"Project_phase_{i}"), "returns", parameters={"consumer_number": request.args.get('consumer_number')})
         if len(data[0]):
             project[f"phase_{i}"] = {}
             for j, column in enumerate(project_columns):
-                if type(data[0][j]) == memoryview:
-                    project[f"phase_{i}"][column] = base64.b64encode(bytes(data[0][j])).decode('utf-8')
-                elif column == 'notes':
-                    print(i)
-                    print(type(data[0][j]))
+                if column == 'notes':
                     project[f"phase_{i}"][column] = '\n\n'.join(data[0][j]) if len(data[0][j]) else ''
+                elif type(data[0][j]) == memoryview:
+                    project[f"phase_{i}"][column] = base64.b64encode(bytes(data[0][j])).decode('utf-8')
                 else:
                     project[f"phase_{i}"][column] = data[0][j]
     return project
@@ -173,7 +186,7 @@ def downloadFile():
             queries["download_file"]
             .replace("table_name", lookup_dictionary[request.args.get('document_required')])
             .replace("document_required", request.args.get('document_required')), 
-            "select", 
+            "returns", 
             parameters={"consumer_number": request.args.get('consumer_number')}
             )
         bytestring = bytes(data[0][0])
@@ -206,11 +219,14 @@ def downloadFile():
             "4": {},
         }
     elif request.args.get('document_required') == "dcr":
+        print(request.args)
         lookup_dictionary = {
             "": "DCR",
         }
 
-        additional_fields = {}
+        additional_fields = {
+            
+        }
 
     
 
@@ -226,11 +242,11 @@ def downloadFile():
 def upload():
     print(request.files)
     make_db_call(queries["upload"], "update", parameters={"file": request.files["file"].read(), "consumer_number":"12345"})
-    number_of_files = make_db_call(queries["number_of_files"], "select", parameters={"consumer_number": "12345"})
+    number_of_files = make_db_call(queries["number_of_files"], "returns", parameters={"consumer_number": "12345"})
     return {"success": True}
 
 @blueprint.route("/getPanelDetails", methods=["GET"])
 def getPanelDetails():
-    panel_data = make_db_call(queries["get_panel_details"], "select", parameters={"solar_panel_type": request.args.get("solar_panel_type")})
+    panel_data = make_db_call(queries["get_panel_details"], "returns", parameters={"solar_panel_type": request.args.get("solar_panel_type")})
     print("panel_data - ", panel_data)
     return {column[0]: panel_data[0][j] for j, column in enumerate(queries["get_panel_details_column_names"])}

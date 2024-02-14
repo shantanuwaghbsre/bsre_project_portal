@@ -1,80 +1,15 @@
-print(len([
-"total_kilowatts",
-"location",
-"consumer_name",
-"consumer_address",
-"consumer_number",
-"geda_registration_number",
-"solar_inverter_make",
-"solar_inverter_capacity",
-"solar_inverter_quantity",
-"solar_inverter_total_capacity",
-"solar_inverter_voltage",
-"solar_inverter_serial_number",
-"solar_module_make",
-"solar_module_capacity",
-"solar_module_quantity",
-"solar_module_total_capacity",
-"solar_module_voltage",
-"solar_module_serial_number",
-"date",
-]))
+monthly_deposit = [3000]*36
+number_of_terms = 12
+fragments_per_term = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
+yearly_interest = 0.0725
 
 
+for term in range(number_of_terms):
+    interest_accrued = 0
+    for fragment in range(fragments_per_term[term]-3, fragments_per_term[term]):
+        interest_accrued += monthly_deposit[fragment]*(yearly_interest/12)*(fragments_per_term[term]-fragment)
+    print("interest for quarter", term+1, "is", interest_accrued)
+    if term < number_of_terms-1:
+        monthly_deposit[fragments_per_term[term]] += interest_accrued
 
-
-print('##'.join([
-"discom",
-"date",
-"guvnl_registration_number",
-"customer_name",
-"consumer_number",
-"circle",
-"division",
-"sub_division",
-"address",
-"current_sanctioned_load",
-"current_phase",
-"solar_module_make",
-"solar_module_model_number",
-"solar_module_type",
-"solar_panel_wattage",
-"number_of_panels",
-"total_kilowatts",
-"panel_indian",
-"installation_phase",
-"solar_inverter_make",
-"solar_inverter_model_number",
-"solar_inverter_output",
-"solar_inverter_serial_number",
-"rms_das",
-"pole",
-"1.1",
-"1.2",
-"1.3",
-"1.4",
-"1.5",
-"1.6",
-"1.7",
-"2.1",
-"2.2",
-"2.3",
-"3.1",
-"3.2",
-"3.3",
-"4.1",
-"4.2",
-"4.3",
-"4.4",
-"4.5",
-"4.6",
-"4.7",
-"4.8",
-"4.9",
-"4.10",
-"4.11",
-"4.12",
-"4.13",
-"4.14",
-"4.15",
-]))
+print("total payout", sum(monthly_deposit)+interest_accrued)

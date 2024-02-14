@@ -47,14 +47,6 @@ const CommercialOrIndustrialQuotation = () => {
     {value: "BSIT Inverter", text: 'BSIT Inverter'},
       ]
 
-  const gridTieInverterOptions = [
-    {value: "Aarusha", text: 'Aarusha'},
-    {value: "K SOLAR", text: 'K SOLAR'},
-    {value: "Power One", text: 'Power One'},
-    {value : "Sun Grow", text: 'Sun Grow'},
-    {value : "Grow watt", text: 'Grow watt'},
-  ]
-
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const date = new Date();
   let currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
@@ -67,6 +59,7 @@ const CommercialOrIndustrialQuotation = () => {
    totalKiloWatts: 0,
    numberOfPanels: 0,
    solarInverter: "",
+   inverterCapacity: 0,
    location: "",
    agentID: "",
    agentName: "",
@@ -75,9 +68,6 @@ const CommercialOrIndustrialQuotation = () => {
    customerAddress: "",
    customerEmail: "",
    quotationType: "",
-   numberOfInverters: 0,
-   numberOfGridTieInverters: 0,
-   gridTieInverter: "",
    solarCableSelect: "Yes",
    switchGearAndProtection: "",
    sprinklerInstallation: "Yes",
@@ -140,6 +130,7 @@ const CommercialOrIndustrialQuotation = () => {
       totalKiloWatts: 0,
       numberOfPanels: 0,
       solarInverter: "",
+      inverterCapacity: 0,
       location: "",
       agentID: "",
       agentName: "",
@@ -148,9 +139,6 @@ const CommercialOrIndustrialQuotation = () => {
       customerAddress: "",
       customerEmail: "",
       quotationType: "",
-      numberOfInverters: 0,
-      numberOfGridTieInverters: 0,
-      gridTieInverter: "",
       solarCableSelect: "Yes",
       switchGearAndProtection: "",
       sprinklerInstallation: "Yes",
@@ -199,8 +187,8 @@ const CommercialOrIndustrialQuotation = () => {
     else if (!formData["solarInverter"]) {
       setErrorMessage("Please select a solar inverter.");
     }
-    else if (!formData["gridTieInverter"]) {
-      setErrorMessage("Please select a grid tie inverter.");
+    else if (!formData["inverterCapacity"]) {
+       setErrorMessage("Inverter capacity cannot be empty.");
     }
     else if (!formData["solarStructure"]) {
       setErrorMessage("Please select a solar structure.");
@@ -208,11 +196,6 @@ const CommercialOrIndustrialQuotation = () => {
     else if (!formData["switchGearAndProtection"]) {
       setErrorMessage("Please select a Switch Gear And Protection.");
     }
-    else if (isNaN(formData["numberOfInverters"])) {
-      setErrorMessage("Number Of Inverters must be a number.");
-   }else if (isNaN(formData["numberOfGridTieInverters"])) {
-      setErrorMessage("Number Of Grid Tie Inverters must be a number.");
-   }
     else if (isNaN(calculationData["ratePerWatt"])) {
       setErrorMessage("Rate Per Watt must be a number.");
    }
@@ -256,9 +239,9 @@ const CommercialOrIndustrialQuotation = () => {
   }
   
   const handleClose = () => {
-    setErrorMessage("")
-    setSuccessMessage("")
-    setIsFormValid(false)
+    setErrorMessage("");
+    setSuccessMessage("");
+    setIsFormValid(false);
   }
 
   useEffect(() => {
@@ -284,12 +267,19 @@ const CommercialOrIndustrialQuotation = () => {
   }, [formData, calculationData])
 
 
-  const urls = {
-    "calculateURL": "http://localhost:5000/calculate",
-    "submitURL": "http://localhost:5000/submitIndustrialCommercialQuotation",
-    "getAgentsURL": "http://localhost:5000/getAgents",
-    "getLocationsURL": "http://localhost:5000/getLocations"
-  }
+//   const urls = {
+//     "calculateURL": "http://localhost:5000/calculate",
+//     "submitURL": "http://localhost:5000/submitIndustrialCommercialQuotation",
+//     "getAgentsURL": "http://localhost:5000/getAgents",
+//     "getLocationsURL": "http://localhost:5000/getLocations"
+//   }
+
+const urls = {
+   "calculateURL": "http://192.168.29.62:5000/calculate",
+   "submitURL": "http://192.168.29.62:5000/submitIndustrialCommercialQuotation",
+   "getAgentsURL": "http://192.168.29.62:5000/getAgents",
+   "getLocationsURL": "http://192.168.29.62:5000/getLocations"
+ }
 
   const handleSubmit = () => {
 
@@ -309,9 +299,7 @@ const CommercialOrIndustrialQuotation = () => {
       "solar_structure": formData.solarStructure,
       "total_kilowatts" : formData.totalKiloWatts,
       "solar_inverter_make" : formData.solarInverter,
-      "number_of_inverters" : formData.numberOfInverters,
-      "grid_tie_inverter_make" : formData.gridTieInverter,
-      "number_of_grid_tie_inverters" : formData.numberOfGridTieInverters,
+      "inverter_capacity": formData.inverterCapacity,
       "solar_cable" : formData.solarCableSelect,
       "switch_and_gear_protection_make" : formData.switchGearAndProtection,
       "sprinkler_installation" : formData.sprinklerInstallation,
@@ -556,31 +544,11 @@ const CommercialOrIndustrialQuotation = () => {
                    </FormControl>
                 </TableCell>
                 <TableCell>
-                   <TextField  label="Number of Inverters" value={formData["numberOfInverters"]} type="number" name="numberOfInverters" placeholder="Enter number of Inverters" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
-                </TableCell>
-             </TableRow>
-             <TableRow>
-                <TableCell>3</TableCell>
-                <TableCell>Grid Tie Inverter</TableCell>
-                <TableCell>
-                   <FormControl sx={{ m: 1, minWidth: 220 }}>
-                   <InputLabel>Grid Tie Inverter</InputLabel>
-                   <Select label="Grid Tie Inverter" value={formData["gridTieInverter"]} onChange={(e) =>
-                      handleFormChange("gridTieInverter", e.target.value)}>
-                      {gridTieInverterOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                         {option.text}
-                      </MenuItem>
-                      ))}
-                   </Select>
-                   </FormControl>
-                </TableCell>
-                <TableCell>
-                   <TextField label="Number of Grid Tie Inverters" value={formData["numberOfGridTieInverters"]} type="number" name="numberOfGridTieInverters" placeholder="Number of grid tie inverter" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("numberOfGridTieInverters", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
+                   <TextField  label="Inverter Capacity" value={formData["inverterCapacity"]} type="number" name="inverterCapacity" placeholder="Enter capacity of Inverter" onChange={(e:React.BaseSyntheticEvent) => {e.target.value = isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber; handleFormChange("inverterCapacity", isNaN(e.target.valueAsNumber)?0:e.target.valueAsNumber)}} />
                 </TableCell>
              </TableRow>
                <TableRow>
-                  <TableCell>4</TableCell>
+                  <TableCell>3</TableCell>
                   <TableCell>Solar Structure</TableCell>
                   <TableCell colSpan={2}><FormControl sx={{ m: 1, minWidth: 250 }}>
                    <InputLabel>Solar Structure</InputLabel>
@@ -596,7 +564,7 @@ const CommercialOrIndustrialQuotation = () => {
                    </TableCell>
                </TableRow>
                <TableRow>
-                <TableCell>5</TableCell>
+                <TableCell>4</TableCell>
                 <TableCell>Solar Cable</TableCell>
                 <TableCell>KEI</TableCell>
                 <TableCell>
@@ -618,7 +586,7 @@ const CommercialOrIndustrialQuotation = () => {
                 </TableCell>
              </TableRow>
              <TableRow>
-                <TableCell>6</TableCell>
+                <TableCell>5</TableCell>
                 <TableCell>Switch Gear and Protection</TableCell>
                 <TableCell colSpan={2}>
                    <FormControl sx={{ m: 1, minWidth: 220 }}>
@@ -635,7 +603,7 @@ const CommercialOrIndustrialQuotation = () => {
                 </TableCell>
              </TableRow>
              <TableRow>
-                <TableCell>7</TableCell>
+                <TableCell>6</TableCell>
                 <TableCell>Sprinkler Installation</TableCell>
                 <TableCell></TableCell>
                 <TableCell>
@@ -721,7 +689,7 @@ const CommercialOrIndustrialQuotation = () => {
                 </TableCell>
              </TableRow>
              <TableRow>
-              <TableCell>Loan (Yes/No)</TableCell>
+              <TableCell>Loan</TableCell>
               <TableCell colSpan={3}>
               <RadioGroup
                       row

@@ -36,11 +36,10 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
         print(query, parameters)
         cur.execute(query, parameters)
 
-        if type_ == "select":
+        if type_ == "returns":
             data = cur.fetchall()
             if not data:
                 data = [[None]]
-            
             return data
         else:
             conn.commit()

@@ -29,7 +29,7 @@ except Exception as e:
 
 @blueprint.route('/searchQuotations', methods=['GET'])
 def searchQuotations():
-    return [i[0] for i in make_db_call(queries["search_quotations"], "select", parameters={"partial_quotation_number":request.args.get('partial_quotation_number')+"%"})]
+    return [i[0] for i in make_db_call(queries["search_quotations"], "returns", parameters={"partial_quotation_number":request.args.get('partial_quotation_number')+"%"})]
 
 @blueprint.route('/calculate', methods=['POST'])
 def calculate():
@@ -55,7 +55,6 @@ def calculate():
     # Initialize the response dictionary
     response = {
         "subsidy": 0,
-        "discom_or_torrent_charges": 0,
         "guvnl_amount": 0
     }
 
@@ -70,25 +69,12 @@ def calculate():
     # Round the subsidy amount to the nearest integer
     response["subsidy"] = round(response["subsidy"])
 
-    # Calculate the discom or torrent charges based on the input values
-    if discom_or_torrent == "discom" and phase == "three":
-        response["discom_or_torrent_charges"] = 4910
-    elif discom_or_torrent == "discom":
-        response["discom_or_torrent_charges"] = make_db_call(query=queries['get_discom_charges'],
-                                                            parameters={"totalKiloWatts": total_kilowatts},
-                                                            type_="select")[0][0]
-    elif discom_or_torrent == "torrent":
-        response["discom_or_torrent_charges"] = make_db_call(query=queries['get_torrent_charges'],
-                                                            parameters={"totalKiloWatts": total_kilowatts,
-                                                                        "phase": phase},
-                                                            type_="select")[0][0]
-
     # Calculate the guvnl amount based on the input values
     response['guvnl_amount'] = make_db_call(query=queries['get_guvnl_charges'],
                                             parameters={"numberOfPanels": number_of_panels,
                                                         "structure": structure,
                                                         "totalKiloWatts": total_kilowatts},
-                                            type_="select")[0][0]
+                                            type_="returns")[0][0]
 
     # Return the response dictionary
     return response
@@ -105,7 +91,7 @@ def getLocations():
     list: A list of dictionaries containing the city information for each location.
     """
     # Retrieve location details from the database using a custom query
-    locations = make_db_call(query=queries['get_locations'], type_="select")
+    locations = make_db_call(query=queries['get_locations'], type_="returns")
     
     # Extract the city information from the location details and create a response list
     response = [{"city": location[0]} for location in locations]
@@ -128,7 +114,7 @@ def getAgents():
 
     """
     # Query the database to get agent details
-    agent_details_list = make_db_call(query=queries['get_agents'], type_="select")
+    agent_details_list = make_db_call(query=queries['get_agents'], type_="returns")
     print(agent_details_list)
     # Create a response list by iterating over each agent details
     response = [
@@ -165,7 +151,7 @@ def submitResidentialQuotation():
     last_quotation = make_db_call(
         query=queries['get_last_quotation_number'],
         parameters={"location": request.json["agent_code"][:3] + "%"},
-        type_="select"
+        type_="returns"
     )[0][0]
 
     # Construct the quotation number based on agent code, quotation type, and current date
@@ -217,7 +203,7 @@ def submitResidentialQuotation():
     message, filename = mail_to_consumer(request.json)
 
     # Remove the temporary PDF file
-    os.remove(os.environ.get['TEMPORARY_FILES_FOLDER'] + filename)
+    os.remove(os.environ.get('TEMPORARY_FILES_FOLDER') + filename)
 
     # Return the response
     return response
@@ -231,7 +217,7 @@ def submitIndustrialCommercialQuotation():
     last_quotation = make_db_call(
         query=queries['get_last_industrial_commercial_quotation_number'],
         parameters={"location": request.json["agent_code"][:3] + "%"},
-        type_="select"
+        type_="returns"
     )[0][0]
 
     # Generate the quotation number based on agent code, quotation type, and current date
@@ -256,19 +242,19 @@ def submitIndustrialCommercialQuotation():
     pr_ratio, efficiency, area = make_db_call(
         query=queries['get_pr_and_efficiency'],
         parameters={"solar_panel_type": request.json["solar_panel_type"]},
-        type_="select"
+        type_="returns"
     )[0]
 
     # Add the current timestamp to the request
     request.json["timestamp"] = datetime.datetime.now()
 
-    request.json["project_cost"] = ((request.json["rate_per_watt"] + request.json["gst_per_watt"] - request.json["subsidy_per_watt"]) * 1000 * formData["total_kilowatts"]) + (request.json["any_extra_cost_on_add_on_work"] + request.json["gst_on_add_on_work"]) 
+    request.json["project_cost"] = ((request.json["rate_per_watt"] + request.json["gst_per_watt"] - request.json["subsidy_per_watt"]) * 1000 * request.json["total_kilowatts"]) + (request.json["any_extra_cost_on_add_on_work"] + request.json["gst_on_add_on_work"]) 
     # Insert the quotation into the database
     response["completed"] = make_db_call(
         query=queries['insert_industrial_commercial_quotation'],
         parameters=request.json,
         type_="insert"
-    )
+    ) 
 
     # If the quotation was successfully inserted, add the quotation number to the response
     if response["completed"]:
@@ -294,7 +280,7 @@ def submitIndustrialCommercialQuotation():
     irradiation_data = make_db_call(
         queries["get_average_daily_irradiation_by_month_for_city"],
         parameters={"city": request.json['location']},
-        type_="select"
+        type_="returns"
     )[0]
 
     # Add latitude, longitude, and irradiation data to the request
@@ -469,7 +455,6 @@ def getAllQuotations():
                 - 'Subsidy' (str): The subsidy.
                 - 'GUVNL amount' (str): The GUVNL amount.
                 - 'Net GUVNL system price' (str): The net GUVNL system price.
-                - 'DISCOM/Torrent charges' (str): The DISCOM/Torrent charges.
                 - 'DISCOM/Torrent' (str): The DISCOM/Torrent.
                 - 'Phase' (str): The phase.
                 - 'Installation AC MCB switch charges' (str): The installation AC MCB switch charges.
@@ -496,11 +481,11 @@ def getAllQuotations():
     limit = int(request.args.get('limit'))
     
     # Calculate the total number of pages based on the limit
-    total_pages_query = make_db_call(query=queries['countPages'], type_='select')
+    total_pages_query = make_db_call(query=queries['countPages'], type_='returns')
     total_pages = int(total_pages_query[0][0]) // limit + 1
     
     # Get the quotations for the current page
-    quotations_query = make_db_call(query=queries['getAllQuotations'], type_="select", parameters={"lower": (limit*(page-1)), "limit": limit})
+    quotations_query = make_db_call(query=queries['getAllQuotations'], type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
     
     # Check if there are no quotations for the current page
     if quotations_query == [[None]]:
@@ -521,26 +506,25 @@ def getAllQuotations():
             "Subsidy": row[6],
             "GUVNL amount": row[7],
             "Net GUVNL system price": row[8],
-            "DISCOM/Torrent charges": row[9],
-            "DISCOM/Torrent": row[10],
-            "Phase": row[11],
-            "Installation AC MCB switch charges": row[12],
-            "GEB agreement fees": row[13],
-            "Project cost": row[14],
-            "Quotation type": row[15],
-            "Agent name": row[16],
-            "Location": row[17],
-            "Structure": row[18],
-            "Mounting quantity": row[19],
-            "Mounting description": row[20],
-            "Mounting structure make": row[21],
-            "Solar inverter make": row[22],
-            "Solar panel type": row[23],
-            "Solar module name": row[24],
-            "Consumer name": row[25],
-            "Timestamp": gmt.localize(row[26]).astimezone(ist),
-            "Agent code": row[27],
-            "Consumer email": row[28]
+            "DISCOM/Torrent": row[9],
+            "Phase": row[10],
+            "Installation AC MCB switch charges": row[11],
+            "GEB agreement fees": row[12],
+            "Project cost": row[13],
+            "Quotation type": row[14],
+            "Agent name": row[15],
+            "Location": row[16],
+            "Structure": row[17],
+            "Mounting quantity": row[18],
+            "Mounting description": row[19],
+            "Mounting structure make": row[20],
+            "Solar inverter make": row[21],
+            "Solar panel type": row[22],
+            "Solar module name": row[23],
+            "Consumer name": row[24],
+            "Timestamp": gmt.localize(row[25]).astimezone(ist),
+            "Agent code": row[26],
+            "Consumer email": row[27],
         }
         # Add the quotation to the list
         quotations.append(quotation)
@@ -555,9 +539,9 @@ def getAllQuotations():
 
 @blueprint.route('/searchSpecificQuotation', methods=['GET'])
 def searchSpecificQuotation():
-    return_ = make_db_call(queries["search_specific_residential_quotation"], "select", parameters={"quotation_number":request.args.get('quotation_number')}) \
+    return_ = make_db_call(queries["search_specific_residential_quotation"], "returns", parameters={"quotation_number":request.args.get('quotation_number')}) \
         if request.args.get('quotation_number')[4] == 'R' \
-        else make_db_call(queries["search_specific_industrial_quotation"], "select", parameters={"quotation_number":request.args.get('quotation_number')})
+        else make_db_call(queries["search_specific_industrial_quotation"], "returns", parameters={"quotation_number":request.args.get('quotation_number')})
     
     response = {
         "project_type": return_[0][0],
@@ -565,7 +549,9 @@ def searchSpecificQuotation():
         "solar_panel_type": return_[0][2],
         "project_cost": return_[0][3],
         "location": return_[0][4],
-        "solar_inverter_make": return_[0][5]
+        "solar_inverter_make": return_[0][5],
+        "solar_panel_wattage": return_[0][6],
+        "number_of_panels": return_[0][7],
     }
 
     return response

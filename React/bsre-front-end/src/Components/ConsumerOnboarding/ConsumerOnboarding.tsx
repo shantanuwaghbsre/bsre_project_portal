@@ -1,13 +1,23 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useLocation } from 'react-router';
-import { TextField, InputLabel, Table, TableBody, TableCell, TableRow, Button, Grid, FormControl, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { TextField, InputLabel, Table, TableBody, TableCell, TableRow, Button, Grid, FormControl, Select, MenuItem, SelectChangeEvent, List, ListItem, ListItemText } from '@mui/material';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import ViewAllConsumers from '../ViewAllConsumers/ViewAllConsumers';
+
+// const urls = {
+//   "calculateURL": "http://localhost:5000/calculate",
+//   "onboardConsumer": "http://localhost:5000/onboardConsumer",
+//   "getAgentsURL": "http://localhost:5000/getAgents",
+//   "getLocationsURL": "http://localhost:5000/getLocations"
+// }
 
 const urls = {
-  "calculateURL": "http://localhost:5000/calculate",
-  "onboardConsumer": "http://localhost:5000/onboardConsumer",
-  "getAgentsURL": "http://localhost:5000/getAgents",
-  "getLocationsURL": "http://localhost:5000/getLocations"
+  "calculateURL": "http://192.168.29.62:5000/calculate",
+  "onboardConsumer": "http://192.168.29.62:5000/onboardConsumer",
+  "getAgentsURL": "http://192.168.29.62:5000/getAgents",
+  "getLocationsURL": "http://192.168.29.62:5000/getLocations",
+  "getConsumerURL": "http://192.168.29.62:5000/getConsumer"
 }
 
 const ConsumerOnboarding = () => {
@@ -21,12 +31,16 @@ const ConsumerOnboarding = () => {
     panCardNumber: '',
     onboardedByAgentCode: '',
     agentOrDistributorName: '',
+    otherDocumentsNames: [],
     }
   
   const [agentOptions, setAgentOptions] = useState([])
   const [formData, setFormData] = useState(blankFormData);
   const [currentPage, setCurrentPage] = useState(1);
   let location = useLocation();
+  let navigate = useNavigate();
+
+  const goToConsumer = (consumer) => navigate('/ViewConsumer', { state: { "consumer": consumer}});
 
   useEffect(() => {
     axios.get(urls["getAgentsURL"])
@@ -61,7 +75,7 @@ const ConsumerOnboarding = () => {
     aadharCard: new Blob(),
     panCard: new Blob(),
     passportPhoto: new Blob(),
-    otherDocument: new Blob()
+    otherDocuments: []
   })
 
   const handleChange = (e:any) => {
@@ -75,9 +89,16 @@ const ConsumerOnboarding = () => {
         }
       }
     }
-    else if (name == "aadharCard" || name == "panCard" || name == "passportPhoto" || name == "otherDocument") {
+    else if (name == "aadharCard" || name == "panCard" || name == "passportPhoto") {
       console.log(typeof(e.target.files[0]))
       setFiles({...files, [e.target.name]: e.target.files[0]})
+    }
+    else if (name == "otherDocuments"){
+      setFiles((files) => ({
+        ...files,
+        [name]: [...(files[name] || []), e.target.files[0]]
+      }));
+      setFormData({ ...formData, ["otherDocumentsNames"]: [...(formData["otherDocumentsNames"] || []), e.target.files[0].name] });
     }
     else {
       setFormData({ ...formData, [name]: value });
@@ -90,7 +111,14 @@ const ConsumerOnboarding = () => {
     const postObject = new FormData();
 
     for (const [filename, file] of Object.entries(files)) {
-      postObject.append(filename, file);
+      if (filename == "otherDocuments") {
+        for (let i=0; i<file.length; i++) {
+          postObject.append(i.toString(), file[i], formData.otherDocumentsNames[i]);
+        }
+      }
+      else {
+        postObject.append(filename, file);
+      }
     }
 
     for (const [key, value] of Object.entries(formData)) {
@@ -100,10 +128,21 @@ const ConsumerOnboarding = () => {
     axios.post(urls['onboardConsumer'], postObject)
       .then(response => {
         console.log(response.data);
+        if (response.data["success"] == true) {
+          axios.get(urls['getConsumerURL'], {params: {consumer_id: response.data["consumer_id"]}})
+          .then(response_ => {
+            console.log(response_.data)
+            goToConsumer(response_.data);
+          }
+      )}
+        else {
+          alert("Consumer onboarding failed!");
+        }
       })
       .catch(error => {
         console.error(error);
       });
+    
   };
 
   const handleNextPage = () => {
@@ -113,6 +152,14 @@ const ConsumerOnboarding = () => {
   const handlePreviousPage = () => {
     setCurrentPage(currentPage - 1);
   };
+
+  const handleRemoveDocument = (index:string) => {
+    setFormData({ ...formData, ["otherDocumentsNames"]: formData["otherDocumentsNames"].filter((item, i) => i !== parseInt(index)) });
+    setFiles((files) => ({
+      ...files,
+      ["otherDocuments"]: files["otherDocuments"].filter((item, i) => i !== parseInt(index))
+    }));
+  }
 
 
   return (
@@ -336,9 +383,30 @@ const ConsumerOnboarding = () => {
   component="label"
 >
   Upload other documents
-  <input type="file" name="otherDocument" onChange={handleChange} hidden/>
+  <input type="file" name="otherDocuments" onChange={handleChange} hidden/>
 </Button>
   </TableCell>
+</TableRow>
+<TableRow>
+<TableCell>
+  <InputLabel>Uploaded Documents</InputLabel>
+</TableCell>
+<TableCell>
+<List>
+      {formData.otherDocumentsNames.map((documentName, index) => (
+        <ListItem key={index}>
+          <ListItemText primary={documentName} />
+          <Button
+            variant="contained"
+            component="label"
+            onClick={() => handleRemoveDocument(index)}
+          >
+            Remove
+          </Button>
+        </ListItem>
+      ))}
+    </List>
+</TableCell>
 </TableRow>
         <TableRow>
           <TableCell align='left'>

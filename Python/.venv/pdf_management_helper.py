@@ -141,7 +141,7 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     writer.append_pages_from_reader(reader)
 
     # Encrypt the PDF file using the last 4 digits of the quotation number and the consumer mobile number
-    # writer.encrypt(context['quotation_number'][-4:]+'/'+str(context['consumer_mobile_number']))
+    writer.encrypt(context['quotation_number'][-4:]+'/'+str(context['consumer_mobile_number']))
 
     # Set the output PDF file path
     output_pdf_path = html_file_path.rstrip('.html') + '.pdf'
@@ -188,6 +188,7 @@ def create_pdf_from_doc(doc_file_name, context):
     for p in d.paragraphs:
         placeholder_count = p.text.count("{{")
         if placeholder_count:
+            print("placeholder_count", placeholder_count, "in ", p.text)
             whole_para_text = p.text
             p.clear()
             for i in range(placeholder_count):
@@ -196,8 +197,8 @@ def create_pdf_from_doc(doc_file_name, context):
                 if len(split_para[0]):
                     before_para = p.add_run(split_para[0])
                     before_para.bold = False
-                # print(split_para)
-                # print(len(context[split_para[1].split(" }}", 1)[0]]))
+                print(split_para[1].split(" }}", 1)[0])
+                print(len(split_para[1].split(" }}", 1)[0]))
                 styled_run = p.add_run(context[split_para[1].split(" }}", 1)[0]])
                 styled_run.bold = True
                 styled_run.underline = True

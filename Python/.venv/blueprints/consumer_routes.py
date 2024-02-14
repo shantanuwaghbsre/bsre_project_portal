@@ -28,11 +28,13 @@ except Exception as e:
 
 @blueprint.route('/onboardConsumer', methods=['POST'])
 def onboardConsumer():
-    # print(type(request.files["passportPhoto"].read()))
-    # print(["files - " + i for i in request.files])
-    # print("form - ", request.form)
 
-    make_db_call(queries["insert_consumer"], type_="insert", 
+    print({
+            "other_document":[file.name for file in request.files.values() if file.name not in ["aadharCard", "passportPhoto", "panCard"]],
+    "other_document_names":[file.filename for file in request.files.values() if file.name not in ["aadharCard", "passportPhoto", "panCard"]]
+    })
+
+    consumer_id = make_db_call(queries["insert_consumer"], type_="insert", 
     parameters={
     "consumer_name":request.form["consumerName"],
     "consumer_address":request.form["consumerAddress"],
@@ -45,20 +47,24 @@ def onboardConsumer():
     "aadhar_card":request.files["aadharCard"].read(),
     "passport_photo":request.files["passportPhoto"].read(),
     "pan_card":request.files["panCard"].read(),
-    "other_document":request.files["otherDocument"].read(),
+    "other_documents":[file.read() for file in request.files.values() if file.name not in ["aadharCard", "passportPhoto", "panCard"]],
+    "other_documents_names":[file.filename for file in request.files.values() if file.name not in ["aadharCard", "passportPhoto", "panCard"]]
     })
-    return {"success": True}
+
+    print(consumer_id)
+
+    return {"success": True, "consumer_id": consumer_id[0][0]}
 
 @blueprint.route('/getConsumerDocuments', methods=['GET'])
 def getConsumerDocuments():
     if not re.match(r'^[a-z_]+$', request.args["document_required"]):
         raise ValueError("Document name should only contain alphabets and underscores.")
-    data = make_db_call(queries["get_document"].replace("$document_name", request.args["document_required"]), 'select', parameters={"document_required": request.args["document_required"], "consumer_id": request.args["id"]})
+    data = make_db_call(queries["get_document"].replace("$document_name", request.args["document_required"]), 'returns', parameters={"document_required": request.args["document_required"], "consumer_id": request.args["id"]})
     return {"document": base64.b64encode(bytes(data[0][0])).decode('utf-8')}
 
 @blueprint.route('/getConsumerDetails', methods=['GET'])
 def getConsumerDetails():
-    return make_db_call(queries["get_consumer_details"], 'select', parameters={"consumer_id": request.args["consumer_id"]})[0][0]
+    return make_db_call(queries["get_consumer_details"], 'returns', parameters={"consumer_id": request.args["consumer_id"]})[0][0]
 
 @blueprint.route('/getAllConsumers', methods=['GET'])
 def getAllConsumers():
@@ -67,10 +73,10 @@ def getAllConsumers():
     limit = int(request.args.get('limit'))
     
     # Calculate the total number of pages based on the limit
-    total_pages = int(make_db_call(query=queries['countPages'], type_='select')[0][0])// limit + 1
+    total_pages = int(make_db_call(query=queries['countPages'], type_='returns')[0][0])// limit + 1
     
     # Get the consumers for the current page
-    consumers_list = make_db_call(queries["get_all_consumers_list"], 'select', parameters={"lower": (limit*(page-1)), "limit": limit})
+    consumers_list = make_db_call(queries["get_all_consumers_list"], 'returns', parameters={"lower": (limit*(page-1)), "limit": limit})
     
     # Check if there are no consumers for the current page
     if consumers_list == [[None]]:
@@ -87,6 +93,12 @@ def getAllConsumers():
             if type(row[i]) == memoryview:
                 consumer[queries['get_all_consumers_column_names'][i]] = base64.b64encode(row[i]).decode('utf-8')
                 continue
+            elif queries['get_all_consumers_column_names'][i] == 'other_documents':
+                if row[i] is not None:
+                    consumer[queries['get_all_consumers_column_names'][i]] = [base64.b64encode(file).decode('utf-8') for file in row[i]]
+                else:
+                    consumer[queries['get_all_consumers_column_names'][i]] = []
+                continue
             consumer[queries['get_all_consumers_column_names'][i]] = row[i] if row[i] else None
 
         # Add the consumer to the list
@@ -99,4 +111,23 @@ def getAllConsumers():
     }
     # Return the response
     return response
-    
+
+@blueprint.route('/getConsumer', methods=['GET'])
+def getConsumer():
+    row = make_db_call(queries["get_consumer"], 'returns', parameters={"consumer_id": request.args["consumer_id"]})[0]
+    print(row)
+    consumer = {}
+    for i in range(len(row)):
+        if type(row[i]) == memoryview:
+            consumer[queries['get_all_consumers_column_names'][i]] = base64.b64encode(row[i]).decode('utf-8')
+            continue
+        elif queries['get_all_consumers_column_names'][i] == 'other_documents':
+            if row[i] is not None and len(row[i]) > 0:
+                print(file for file in row[i])
+                consumer[queries['get_all_consumers_column_names'][i]] = [base64.b64encode(file).decode('utf-8') for file in row[i]]
+            else:
+                consumer[queries['get_all_consumers_column_names'][i]] = []
+            continue
+        consumer[queries['get_all_consumers_column_names'][i]] = row[i] if row[i] else None
+
+    return consumer

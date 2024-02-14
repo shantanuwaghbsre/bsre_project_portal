@@ -7,7 +7,12 @@ import CheckBox from '@mui/material/Checkbox';
 const ViewProject = () => {
     const urls = {
 
-    }   
+    }
+    const options = [
+      { "label": "Property Tax", "value": 'property_tax' },
+      { "label": "Electricity Bill", "value": 'electricity_bill' },
+      { "label": "Cancelled Cheque", "value": 'cancelled_cheque' },  
+    ]
     const phase_2_discom_options = [
       {"key_":"DGVCL", "label":"Dakshin Gujarat Vij Company Limited"},
       {"key_":"MGVCL", "label":"Madhya Gujarat Vij Company Limited"},
@@ -22,16 +27,19 @@ const ViewProject = () => {
       {"key_":"certificate_4", "label":"Four Page Self Certificate"},
     ]
     let location = useLocation();
+    const [documentRequired, setDocumentRequired] = useState<string>('');
     const [project, setProject] = useState<{ [key: string]: { [key: string]: any } }>({
       phase_1: {
         property_tax: '',
         electricity_bill: '',
+        cancelled_cheque: '',
+        other_documents: '',
+        other_documents_names: [],
         meter_number: '',
         current_sanctioned_load: '',
         average_consumption_of_unit: '',
         consumer_number: '',
         consumer_name: '',
-        cancelled_cheque: '',
         other_document: '',
         project_type: '',
         project_address: '',
@@ -51,6 +59,8 @@ const ViewProject = () => {
         installation_phase: '',
         location: '',
         solar_inverter_make: '',
+        solar_module_wattage: '',
+        number_of_panels: '',
       },
       phase_2: {
         consumer_number: '',
@@ -106,8 +116,7 @@ const ViewProject = () => {
     const [onePageCertificateValues, setOnePageCertificateValues] = useState<{ [key: string]: any }>({});
     const [fourPageCertificateValues, setFourPageCertificateValues] = useState<{ [key: string]: any }>({});
     const [dcrValues, setDcrValues] = useState<{ [key: string]: any }>({});
-    const [newDcr, setNewDcr] = useState(false);
-
+    let newOptions = []
     const inputOptions = {
         agreement: ["letter_date","voltage"],
         onePageCertificate: [],
@@ -122,13 +131,18 @@ const ViewProject = () => {
             console.log("location.state - ", location.state)
             setCurrentPage(location.state.project_in_phase);
             try {
-              axios.get(`http://localhost:5000/getProject?consumer_number=${location.state.consumer_number}`).then(
+                            // axios.get(`http://localhost:5000/getProject?consumer_number=${location.state.consumer_number}`).then(
+              axios.get(`http://192.168.29.62:5000/getProject?consumer_number=${location.state.consumer_number}`).then(
                 (response) => {
                   // console.log(response.data);
                   setProject(response.data);
                   console.log(response.data);
                   setIsLoading(false);
                   setCurrentPage(Number(response.data.phase_1.project_in_phase));
+                  for (let i=0; i<response.data.phase_1["other_documents_names"].length; i++) {
+                    console.log(newOptions);
+                    newOptions.push({ label: response.data.phase_1["other_documents_names"][i], value: response.data.phase_1["other_documents_names"][i]});
+                  }
                 }
               );
               }
@@ -141,6 +155,7 @@ const ViewProject = () => {
         }}, []);
         
       useEffect(() => {
+        if (project.phase_1.project_type != "Residential") {
         setAgreementValues(
           {...agreementValues, 
             "discom": project.phase_2.discom,
@@ -156,11 +171,15 @@ const ViewProject = () => {
             "total_kilowatts": project.phase_1.total_kilowatts,
             "registration_number": project.phase_1.national_portal_registration_number,
             "discom": project.phase_2.discom,
+            "solar_panel_wattage": project.phase_1.solar_panel_wattage,
+            "number_of_panels": project.phase_1.number_of_panels,
           });
-      }, [project.phase_1])
+        }
+      }, [project.phase_1, project.phase_2])
 
       useEffect(() => {
-        axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+                // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+        axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         (response_consumer_details) => {
           console.log("consumer details", response_consumer_details.data);
           setProject((prevProject) => {
@@ -180,7 +199,8 @@ const ViewProject = () => {
           });            
       }, [location.state.for_consumer_id])
       // if(!project.phase_1.consumer_name.length) {
-        //   axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+                // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(  
+      //   axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         //   (response_consumer_details) => {
         //     console.log("consumer details", response_consumer_details.data);
         //     setProject((prevProject) => {
@@ -224,13 +244,15 @@ const ViewProject = () => {
   }
 
   const promoteToNextPhase = () => {
-    axios.post('http://localhost:5000/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
+        // axios.post('http://localhost:5000/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
+    axios.post('http://192.168.29.62:5000/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
       (response) => {
         console.log(response.data);
         if (response.data.success) {
           setCurrentPage((prevPage) => Number(prevPage) + 1);
           setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
-          axios.get(`http://localhost:5000/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
+                    // axios.get(`http://localhost:5000/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
+          axios.get(`http://192.168.29.62:5000/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
             (response_project) => {
               console.log(response_project);
               setProject(response_project.data);
@@ -279,7 +301,8 @@ const ViewProject = () => {
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", project.phase_1.project_in_phase);
 
-      axios.post('http://localhost:5000/updatePhaseData', postObject).then(
+            // axios.post('http://localhost:5000/updatePhaseData', postObject).then(
+      axios.post('http://192.168.29.62:5000/updatePhaseData', postObject).then(
       response => {
         console.log(response);
       }
@@ -295,7 +318,8 @@ const ViewProject = () => {
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", currentPage);
 
-      axios.post('http://localhost:5000/updatePhaseData', postObject).then(
+            // axios.post('http://localhost:5000/updatePhaseData', postObject).then(
+      axios.post('http://192.168.29.62:5000/updatePhaseData', postObject).then(
       response => {
         console.log(response);
       }
@@ -305,27 +329,18 @@ const ViewProject = () => {
     setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
   }
 
-
-  // function handleGenerate(documentRequired: string, documentType: string): void {
-  //   setProject((prevProject) => ({
-  //     ...prevProject,
-  //     ["phase_" + currentPage]: {
-  //        ...prevProject["phase_" + currentPage],
-  //        [documentRequired]: ''
-  //       }
-  //   }));
-  //   handleDownload(documentRequired, documentType);
-  // }
-
-  function handleDownload(documentRequired: string, documentType: string): void {
+  
+  function handleDownload(documentRequired_: string, documentType: string): void {
+    console.log("documentRequired ", documentRequired_)
     let blob = new Blob([])
-    console.log(project["phase_"+currentPage], documentRequired);
-    let url = `http://localhost:5000/downloadFile?document_required=${documentRequired}&document_type=${documentType}`
-    if (documentRequired === "electrical_diagram" || documentRequired === 'meter_report' || documentRequired === 'joint_inspection' || documentRequired === 'dcr') {
+    console.log(project["phase_"+currentPage], documentRequired_);
+        // let url = `http://localhost:5000/downloadFile?document_required=${documentRequired}&document_type=${documentType}`
+    let url = `http://192.168.29.62:5000/downloadFile?document_required=${documentRequired_}&document_type=${documentType}`
+    if (documentRequired_ === "electrical_diagram" || documentRequired_ === 'meter_report' || documentRequired_ === 'joint_inspection') {
       console.log("in if 1")
-      if ((project["phase_"+currentPage][documentRequired] != false && typeof(project["phase_"+currentPage][documentRequired]) == 'string') || (project["phase_"+currentPage][documentRequired] != null && typeof(project["phase_"+currentPage][documentRequired]) == 'object')) {
-      console.log("in if 2 because", project["phase_"+currentPage][documentRequired] != false, project["phase_"+currentPage][documentRequired] != null)
-      const base64String = project["phase_"+currentPage][documentRequired];
+      if ((project["phase_"+currentPage][documentRequired_] != false && typeof(project["phase_"+currentPage][documentRequired_]) == 'string') || (project["phase_"+currentPage][documentRequired_] != null && typeof(project["phase_"+currentPage][documentRequired_]) == 'object')) {
+      console.log("in if 2 because", project["phase_"+currentPage][documentRequired_] != false, project["phase_"+currentPage][documentRequired_] != null)
+      const base64String = project["phase_"+currentPage][documentRequired_];
       try {
         // Decode the Base64 string to binary data
         const binaryString = atob(base64String);
@@ -346,12 +361,12 @@ const ViewProject = () => {
     else {
       url += `&consumer_number=${project.phase_1.consumer_number}`
     }}
-    else if (documentRequired === 'agreement') {
+    else if (documentRequired_ === 'agreement') {
           for (let i in agreementValues) {
             url += `&${i}=${agreementValues[i]}`
           }
       }
-      else if (documentRequired === 'certificate') {
+      else if (documentRequired_ === 'certificate') {
         if (documentType === '1') {
           for (let i in onePageCertificateValues) {
             url += `&${i}=${onePageCertificateValues[i]}`
@@ -363,10 +378,11 @@ const ViewProject = () => {
           }
         }
     }
-    else if (documentRequired === 'dcr') {
-      for (let i in dcrValues) {
-        url += `&${i}=${dcrValues[i]}`
-      }
+    else if (documentRequired_ === 'dcr') {
+        for (let i in dcrValues) {
+          url += `&${i}=${dcrValues[i]}`
+        }
+        console.log(dcrValues)
   }
     // else if () {
     //   if (project.phase_7[documentRequired].length) {
@@ -407,7 +423,7 @@ const ViewProject = () => {
               blob = new Blob([uint8Array]);
               const link = document.createElement('a');
               link.href = window.URL.createObjectURL(blob);
-              link.setAttribute('download', `${documentRequired}.pdf`);
+              link.setAttribute('download', `${documentRequired_}.pdf`);
               link.target = '_blank';
           
               // Append the link to the document and trigger the click event
@@ -421,7 +437,7 @@ const ViewProject = () => {
                 ...prevProject,
                 [`phase_${currentPage}`]: {
                   ...prevProject[`phase_${currentPage}`],
-                  [documentRequired]: response_project.data
+                  [documentRequired_]: response_project.data
                 }
               }))
             }
@@ -441,6 +457,22 @@ const ViewProject = () => {
 
     return (
       <div style={{ paddingTop: 64 }}>
+        <Table>
+        <TableBody>
+        <TableRow>
+        {Array.from({ length: 10 }, (_, index) => (
+          <TableCell key={index}>
+            <Button
+              variant={index > project.phase_1.project_in_phase -1 ? 'disabled' : currentPage - 1 === index ? 'contained' : 'outlined'}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </Button>
+          </TableCell>
+        ))}
+      </TableRow>
+      </TableBody>
+        </Table>
         <h2>Phase {currentPage}</h2>
         {currentPage!=8 && (!editable[currentPage - 1]?<Button onClick={()=>handleEditable(currentPage)}>Edit</Button>:<Button onClick={()=>handleSave(currentPage)}>Save</Button>)}
       {currentPage == 1 && !isLoading &&
@@ -858,7 +890,24 @@ const ViewProject = () => {
               )}
             </TableCell>
           </TableRow>
-
+          <TableRow>
+            <TableCell>
+            <Select label="Document Required" 
+            value={documentRequired}
+            onChange={(e) => {
+              setDocumentRequired(e.target.value);
+            }}>
+              {(options.concat(newOptions)).map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+            </TableCell>
+            <TableCell>
+          <Button onClick={handleDownload}>Download</Button>
+            </TableCell>
+          </TableRow>
           <TableRow>
             <TableCell colSpan={2} align='right'>
             </TableCell>
@@ -907,7 +956,7 @@ const ViewProject = () => {
               </TableCell>
               <TableCell>
                 <Select label="Discom Name" 
-                  value={project.phase_2.discom}
+                  value={project.phase_2.discom || ''}
                   onChange={(e) => {
                     handleInputChange('discom', e.target.value);
               }
@@ -1430,31 +1479,6 @@ const ViewProject = () => {
                 <Button onClick={() => handleDownload("dcr", "")}>Download</Button>
               </TableCell>
             </TableRow>
-            {
-              newDcr && 
-              <TableRow>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Field</TableCell>
-                        <TableCell>Value</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {Object.entries(inputOptions.dcr).map((field) => (
-                        <TableRow key={field[0]}>
-                          <TableCell>{field[1].replace(/_/g, ' ')}</TableCell>
-                          <TableCell>
-                            <TextField onChange={(e) => setDcrValues({...dcrValues, [field[1]]: e.target.value})}></TextField>
-                            </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </TableRow>
-            }
               <TableRow>
               <TableCell align='left'>
                 <button type="button" onClick={handlePreviousPage}>

@@ -54,10 +54,10 @@ const ResidentialQuotation = () => {
     totalKiloWatts: 0,
     numberOfPanels: 0,
     solarInverter: "",
-    moduleMountingStructureMake: "Apollo 2.0 MM structure (Hot Deep GI 80 Micron)",
+    moduleMountingStructureMake: "Hot Deep GI 80 Micron",
     moduleMountingStructureDescription: "As Per Site Condition",
     moduleMountingStructureQuantity: "As Per Site",
-    stateOrTerritory: "Gujarat",
+    location: "Gujarat",
     agentID: "",
     agentName: "",
     customerName: "",
@@ -68,7 +68,6 @@ const ResidentialQuotation = () => {
     calculatedGUVNLAmount: 0,
     discomOrTorrent: "DISCOM",
     phase: "Single",
-    calculatedDISCOMCharges: 0,
     installmentAcMcbSwitchCharge: 500,
     gebAgreementFees: 300,
     projectCost: 0,
@@ -101,7 +100,7 @@ const ResidentialQuotation = () => {
       moduleMountingStructureMake: "Apollo 2.0 MM structure (Hot Deep GI 80 Micron)",
       moduleMountingStructureDescription: "As Per Site Condition",
       moduleMountingStructureQuantity: "As Per Site",
-      stateOrTerritory: "Gujarat",
+      location: "Gujarat",
       agentID: "",
       agentName: "",
       customerName: "",
@@ -112,7 +111,6 @@ const ResidentialQuotation = () => {
       calculatedGUVNLAmount: 0,
       discomOrTorrent: "DISCOM",
       phase: "Single",
-      calculatedDISCOMCharges: 0,
       installmentAcMcbSwitchCharge: 500,
       gebAgreementFees: 300,
       projectCost: 0,
@@ -123,7 +121,6 @@ const ResidentialQuotation = () => {
   };
   
   const validateAndCalculate = () => {
-    let isFormValid_ = false
     if (!formData["agentID"]) {
       setErrorMessage("Agent ID number required")
     }
@@ -167,9 +164,31 @@ const ResidentialQuotation = () => {
       setErrorMessage("Please select phase.");
     }
     else {
-      isFormValid_ = true;
+      setIsFormValid(true);
+      const postObject = {
+        totalKiloWatts: formData["totalKiloWatts"],
+        numberOfPanels: formData["numberOfPanels"],
+        location: formData["location"],
+        structure: formData["structure"],
+        discomOrTorrent: formData["discomOrTorrent"],
+        phase: formData["phase"],
+      }
+
+      axios.post(urls["calculateURL"], postObject)
+      .then(function (response) {
+        console.log(postObject, response.data)
+        setFormData((prevData) => ({
+          ...prevData,
+          ["calculatedGUVNLAmount"] : response.data["guvnl_amount"],
+          ["calculatedSubsidy"] : response.data["subsidy"],
+          ["projectCost"] : response.data["guvnl_amount"] - response.data["subsidy"] + formData["gebAgreementFees"] + formData["installmentAcMcbSwitchCharge"],
+        }))})
+      .catch(function (error) {
+        console.log(error);
+      });
+      console.log("form is valid")
     }  
-    setIsFormValid(isFormValid_);
+    
   }
   
   const handleClose = () => {
@@ -178,32 +197,6 @@ const ResidentialQuotation = () => {
     setIsFormValid(false)
   }
 
-  useEffect(() => {
-    if (isFormValid) {
-      const postObject = {
-        totalKiloWatts: formData["totalKiloWatts"],
-        numberOfPanels: formData["numberOfPanels"],
-        stateOrTerritory: formData["stateOrTerritory"],
-        structure: formData["structure"],
-        discomOrTorrent: formData["discomOrTorrent"],
-        phase: formData["phase"],
-      }
-
-      axios.post(urls["calculateURL"], postObject)
-      .then(function (response) {
-
-        setFormData((prevData) => ({
-          ...prevData,
-          ["calculatedDISCOMCharges"] : response.data["discom_or_torrent_charges"],
-          ["calculatedGUVNLAmount"] : response.data["guvnl_amount"],
-          ["calculatedSubsidy"] : response.data["subsidy"],
-          ["projectCost"] : response.data["guvnl_amount"] - response.data["subsidy"] + response.data["discom_or_torrent_charges"] + formData["gebAgreementFees"] + formData["installmentAcMcbSwitchCharge"],
-        }))})
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-  }, [formData["solarModule"], formData["solarModuleType"], formData["solarModuleWattage"], formData["totalKiloWatts"], formData["numberOfPanels"], formData["solarInverter"], formData["moduleMountingStructureMake"], formData["moduleMountingStructureDescription"], formData["moduleMountingStructureQuantity"], formData["stateOrTerritory"], formData["agentID"], formData["agentName"], formData["customerName"], formData["customerPhoneNumber"], formData["customerAddress"], formData["structure"], formData["discomOrTorrent"], formData["phase"], formData["installmentAcMcbSwitchCharge"], formData["gebAgreementFees"], formData["projectCost"], formData["customerEmail"]])
 
   useEffect(() => {
     handleFormChange("totalKiloWatts", formData["numberOfPanels"]*formData["solarModuleWattage"]/1000);
@@ -221,9 +214,7 @@ const ResidentialQuotation = () => {
 
   useEffect(() => {
     setIsFormValid(false);
-  }, [
-    formData
-  ])
+  }, [formData["solarModule"], formData["solarModuleType"], formData["solarModuleWattage"], formData["totalKiloWatts"], formData["numberOfPanels"], formData["solarInverter"], formData["moduleMountingStructureMake"], formData["moduleMountingStructureDescription"], formData["moduleMountingStructureQuantity"], formData["location"], formData["agentID"], formData["agentName"], formData["customerName"], formData["customerPhoneNumber"], formData["customerAddress"], formData["structure"], formData["discomOrTorrent"], formData["phase"], formData["installmentAcMcbSwitchCharge"], formData["gebAgreementFees"], formData["customerEmail"]])
 
   useEffect(() => {
     if (formData["solarModuleType"] === "Poly") {
@@ -234,11 +225,17 @@ const ResidentialQuotation = () => {
     }
   }, [formData["solarModuleType"]]);  
 
+  
+  // const urls = {
+  //   "calculateURL": "http://localhost:5000/calculate",
+  //   "submitURL": "http://localhost:5000/submitResidentialQuotation",
+  //   "getAgentsURL": "http://localhost:5000/getAgents",
+  // }
 
   const urls = {
-    "calculateURL": "http://localhost:5000/calculate",
-    "submitURL": "http://localhost:5000/submitResidentialQuotation",
-    "getAgentsURL": "http://localhost:5000/getAgents",
+    "calculateURL": "http://192.168.29.62:5000/calculate",
+    "submitURL": "http://192.168.29.62:5000/submitResidentialQuotation",
+    "getAgentsURL": "http://192.168.29.62:5000/getAgents",
   }
 
   const handleSubmit = () => {
@@ -251,7 +248,6 @@ const ResidentialQuotation = () => {
       "subsidy" : formData["calculatedSubsidy"],
       "guvnl_amount" : formData["calculatedGUVNLAmount"],
       "net_guvnl_system_price" : formData["calculatedGUVNLAmount"]-formData["calculatedSubsidy"],
-      "discom_or_torrent_charges" : formData["calculatedDISCOMCharges"], // rename this
       "discom_or_torrent" : formData["discomOrTorrent"], //add this
       "phase" : formData["phase"], // add this
       "installation_ac_mcb_switch_charges" : formData["installmentAcMcbSwitchCharge"],
@@ -260,7 +256,7 @@ const ResidentialQuotation = () => {
       "quotation_type" : "Residential",
       "agent_code" : formData["agentID"], // try\
       "agent_name" : formData["agentName"],
-      "state_or_territory" : formData["stateOrTerritory"], //change this
+      "location" : formData["location"], //change this
       "structure" : formData["structure"],
       "mounting_quantity" : formData["moduleMountingStructureQuantity"],
       "mounting_description" : formData["moduleMountingStructureDescription"],
@@ -318,7 +314,7 @@ const ResidentialQuotation = () => {
           <TableRow>
               <TableCell>State:</TableCell>
               <TableCell>
-                  <TextField type="text" name="state" value={formData["stateOrTerritory"]} onChange={(e) => handleFormChange("stateOrTerritory", e.target.value)} />
+                  <TextField type="text" name="state" value={formData["location"]} onChange={(e) => handleFormChange("location", e.target.value)} />
               </TableCell>
           </TableRow>
           <TableRow>
@@ -550,8 +546,8 @@ const ResidentialQuotation = () => {
             <TableCell colSpan={3}>INCLUDING</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2}>DISCOM Charges (IF SINGLE PHASE) Connection RGPR (IT MAY BE CHANGED AS PER DISCOM ESTIMATES)</TableCell>
-            <TableCell colSpan={2}>
+            <TableCell colSpan={2}>DISCOM and Phase</TableCell>
+            <TableCell colSpan={3}>
             <FormLabel id="demo-row-radio-buttons-group-label">Type of Quotation</FormLabel>
               <RadioGroup
                 row
@@ -574,7 +570,6 @@ const ResidentialQuotation = () => {
                 <FormControlLabel value="Three" control={<Radio />} label="Three" />
               </RadioGroup></>
             </TableCell>
-            <TableCell colSpan={3}>{formData["calculatedDISCOMCharges"].toLocaleString('en-IN')}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Installation AC MCB Switch charges</TableCell>

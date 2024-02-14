@@ -1,14 +1,18 @@
-import { FormControl, InputLabel, Select, Input, MenuItem, TextField, Menu, ListSubheader, InputAdornment, Autocomplete, Table, TableBody, TableCell, TableRow, Button } from '@mui/material'
+import { FormControl, InputLabel, Select, Input, MenuItem, TextField, Menu, ListSubheader, InputAdornment, Autocomplete, Table, TableBody, TableCell, TableRow, Button, List, ListItem, ListItemText } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import SearchIcon from "@mui/icons-material/Search";
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
 
 const StartProject = () => {
+    let navigate = useNavigate();
+    const goToProject = (project) => navigate('/ViewProject', { state: { "consumer_number": project.consumer_number, "project_in_phase": project.project_in_phase, "for_consumer_id": project.for_consumer_id } });
     const [currentPage, setCurrentPage] = useState(1);
     const [project, setProject] = useState({
         meter_number: "",
+        current_phase: "",
+        installation_phase: "",
         current_sanctioned_load: "",
         average_consumption_of_unit: "",
         consumer_number: "",
@@ -31,28 +35,38 @@ const StartProject = () => {
         project_in_phase: 1,
         for_consumer_id: "",
         solar_inverter_make: "",
+        solar_panel_wattage: "",
+        number_of_panels: "",
+        other_documents_names: [],
     })
     const [files, setFiles] = useState({
         property_tax: new Blob(),
         electricity_bill: new Blob(),
         cancelled_cheque: new Blob(),
-        other_document: new Blob()
+        other_documents: []
       })
 
     const [quotationSearchResults, setQuotationSearchResults] = useState<string[]>([]);
+    
+    // const urls = {
+    //     "searchQuotationURL": "http://localhost:5000/searchQuotations",
+    //     "createProjectURL": "http://localhost:5000/createProject",
+    //     "searchSpecificQuotationURL": "http://localhost:5000/searchSpecificQuotation"
+    // }
 
     const urls = {
-        "searchQuotationURL": "http://localhost:5000/searchQuotations",
-        "createProjectURL": "http://localhost:5000/createProject",
-        "searchSpecificQuotationURL": "http://localhost:5000/searchSpecificQuotation"
+        "searchQuotationURL": "http://192.168.29.62:5000/searchQuotations",
+        "createProjectURL": "http://192.168.29.62:5000/createProject",
+        "searchSpecificQuotationURL": "http://192.168.29.62:5000/searchSpecificQuotation"
     }
     
     let _location = useLocation();
 
     useEffect(() => {
         try {
+            console.log(_location.state.consumer.consumer_id)
           if (_location.state) {
-            setProject({...project, ["for_consumer_id"]: _location.state.consumer_id});
+            setProject({...project, ["for_consumer_id"]: _location.state.consumer.consumer_id});
           }
         }
         catch (error) {}
@@ -94,6 +108,14 @@ const StartProject = () => {
       }, [project.from_quotation]);
     
 
+    const handleRemoveDocument = (index:string) => {
+        setProject({ ...project, ["other_documents_names"]: project["other_documents_names"].filter((item, i) => i !== parseInt(index)) });
+        setFiles((files) => ({
+          ...files,
+          ["other_documents"]: files["other_documents"].filter((item, i) => i !== parseInt(index))
+        }));
+      }
+
     const handleInputChange = (name: string, value: string) => {
         setProject((project) => ({
             ...project,
@@ -104,12 +126,21 @@ const StartProject = () => {
 
       const handleSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault(); 
-        
+
         const postObject = new FormData();
-    
+        console.log(files);
         for (const [filename, file] of Object.entries(files)) {
-          postObject.append(filename, file);
-        }
+            console.log(filename)
+            if (filename == "other_documents") {
+              for (let i=0; i<file.length; i++) {
+                postObject.append(i.toString(), file[i], project.other_documents_names[i]);
+              }
+            }
+            else {
+              postObject.append(filename, file);
+            }
+          }
+        
     
         for (const [key, value] of Object.entries(project)) {
           postObject.append(key, value);
@@ -117,8 +148,14 @@ const StartProject = () => {
         
         axios.post(urls['createProjectURL'], postObject)
           .then(response => {
-            console.log(response.data);
-          })
+            if (response.data["success"] == true) {
+              goToProject(project);
+            }
+            else {
+              console.log(response.data);
+            }    
+        }
+              )
           .catch(error => {
             console.error(error);
           });
@@ -133,10 +170,24 @@ const StartProject = () => {
       };
 
       const handleFileChange = (event:any) => {
-        setFiles((files) => ({
-          ...files,
-          [event.target.name]: event.target.files[0],
-        }));
+        // setFiles((files) => ({
+        //   ...files,
+        //   [event.target.name]: event.target.files[0],
+        // }));
+        console.log(event.target.name, event.target.files)
+
+
+        if (event.target.name == "property_tax" || event.target.name == "electricity_bill" || event.target.name == "cancelled_cheque") {
+            setFiles({...files, [event.target.name]: event.target.files[0]});
+          }
+          else if (event.target.name == "other_documents"){
+            setFiles((files) => ({
+              ...files,
+              [event.target.name]: [...(files[event.target.name] || []), event.target.files[0]]
+            }));
+            setProject({ ...project, ["other_documents_names"]: [...(project["other_documents_names"] || []), event.target.files[0].name] });
+          }
+        
       }
 
     return (
@@ -218,6 +269,20 @@ const StartProject = () => {
                     </TableRow>
                     <TableRow>
                         <TableCell>
+                            <InputLabel>Current Phase</InputLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TextField
+                                label="Current Phase"
+                                type="text"
+                                name="current_phase"
+                                value={project.current_phase}
+                                onChange={(e)=>handleInputChange(e.target.name, e.target.value)}
+                            />
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell>
                             <InputLabel>Current Sanctioned Load</InputLabel>
                         </TableCell>
                         <TableCell>
@@ -258,7 +323,6 @@ const StartProject = () => {
                             />
                         </TableCell>
                     </TableRow>
-                    
                     <TableRow>
                         <TableCell>
                             <InputLabel>Cancelled Cheque</InputLabel>
@@ -276,17 +340,37 @@ const StartProject = () => {
                     </TableRow>
                     <TableRow>
                         <TableCell>
-                            <InputLabel>Other Document</InputLabel>
+                            <InputLabel>Other documents</InputLabel>
                         </TableCell>
                         <TableCell>
-                            <Button
-                            variant="contained"
-                            component="label"
-                            >
-                            Upload Other Document
-                            <input type="file" name="other_document" onChange={handleFileChange} hidden/> 
-                            </Button>
-                        
+                        <Button
+                        variant="contained"
+                        component="label"
+                        >
+                        Upload other documents
+                        <input type="file" name="other_documents" onChange={handleFileChange} hidden/>
+                        </Button>
+                        </TableCell>
+                        </TableRow>
+                        <TableRow>
+                        <TableCell>
+                        <InputLabel>Uploaded Documents</InputLabel>
+                        </TableCell>
+                        <TableCell>
+                        <List>
+                            {project["other_documents_names"].map((documentName, index) => (
+                                <ListItem key={index}>
+                                <ListItemText primary={documentName} />
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    onClick={() => handleRemoveDocument(index)}
+                                >
+                                    Remove
+                                </Button>
+                                </ListItem>
+                            ))}
+                            </List>
                         </TableCell>
                     </TableRow>
                     <TableRow>

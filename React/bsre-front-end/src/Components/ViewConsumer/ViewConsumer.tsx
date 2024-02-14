@@ -8,22 +8,69 @@ import { Link } from 'react-router-dom';
 const ViewConsumer = () => {
     let location = useLocation();
     const [consumer, setConsumer] = useState({});
+    const [options, setOptions]= useState([
+      { label: 'Aadhar card', value: 'aadhar_card' },
+      { label: 'Pan card', value: 'pan_card' },
+      { label: 'Passport photo', value: 'passport_photo' },     
+    ]);
+    let newOptions = [];
     useEffect(() => {
         try {
+          console.log("location", location);
           if (location.state) {
             setConsumer(location.state.consumer);
+            if (location.state.consumer["other_documents_names"].length) {
+              console.log("reached here might be an issue")
+            newOptions = [];
+            for (let i=0; i<location.state.consumer["other_documents_names"].length; i++) {
+              console.log(newOptions);
+              newOptions.push({ label: location.state.consumer["other_documents_names"][i], value: location.state.consumer["other_documents_names"][i]});
+            }
+          }}
           }
-        }
         catch (error) {}
-        }, [location.state])
+        }, [location])
     
+    useEffect(() => {
+      if (options.length == 3)
+      {
+        setOptions(options.concat(newOptions));
+      } 
+    }, [newOptions]);
+
     const [documentRequired, setDocumentRequired] = useState('');
 
+
+     
+
   function handleDownload(): void {
-      let blob = new Blob([])
-      if ((typeof(consumer[documentRequired])) == 'string') {
-        const base64String = consumer[documentRequired];
-      
+      let blob = new Blob([]);
+      let base64String = '';
+      let mode = '';
+      if (documentRequired === "aadhar_card" || documentRequired === 'pan_card' || documentRequired === 'passport_photo') {
+        if ((typeof(consumer[documentRequired])) == 'string')
+        {
+          base64String = consumer[documentRequired];
+          mode = 'base64';
+        }
+        else {
+          blob = new Blob([consumer[documentRequired]]);
+          mode = 'blob';
+        }
+      }
+      else {
+        if ((typeof(consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)])) == 'string')
+        {
+          base64String = consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)];
+          mode = 'base64';
+        }
+        else {
+          blob = new Blob([consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)]]);
+          mode = 'blob';
+        }
+      }
+      console.log(documentRequired, mode, base64String, blob, typeof(consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)]))
+      if (mode === 'base64') {
         try {
           // Decode the Base64 string to binary data
           const binaryString = atob(base64String);
@@ -39,10 +86,10 @@ const ViewConsumer = () => {
         }
         catch (error) {
           console.error('Error decoding base64 string:', error);
-        }}
-        else {
-          blob = new Blob([project.phase_5[documentRequired]]);
         }
+      }
+
+
         // Create a download link
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
@@ -56,12 +103,6 @@ const ViewConsumer = () => {
         // Remove the link from the document
         document.body.removeChild(link);
       }
-  const options=[
-            { label: 'Aadhar card', value: 'aadhar_card' },
-            { label: 'Pan card', value: 'pan_card' },
-            { label: 'Passport photo', value: 'passport_photo' },
-            { label: 'Other document', value: 'other_document' },
-  ]
 
     return (
     <div>
@@ -116,7 +157,7 @@ const ViewConsumer = () => {
           onChange={(e) => {
             setDocumentRequired(e.target.value);
           }}>
-            {options.map((option) => (
+            {(options.concat(newOptions)).map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>

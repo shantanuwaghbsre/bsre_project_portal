@@ -14,6 +14,7 @@ const FileDownloader = (props: { consumer_id: any; }) => {
     axios({
       method: 'get',
       url: 'http://localhost:5000/getConsumerDocuments',
+      url: 'http://192.168.29.62:5000/getConsumerDocuments',
       responseType: 'blob',
       params: {
         document_required: selectedOption,

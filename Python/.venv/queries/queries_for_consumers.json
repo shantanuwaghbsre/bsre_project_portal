@@ -1,11 +1,12 @@
 {
-    "insert_consumer": "INSERT INTO public.\"Customers\"( consumer_name, consumer_address, consumer_mobile_number, alternate_phone_number, consumer_email, aadhar_card_number, pan_card_number, aadhar_card, pan_card, passport_photo, other_document, onboarded_by_agent_code) VALUES (%(consumer_name)s, %(consumer_address)s, %(consumer_mobile_number)s, %(alternate_phone_number)s, %(consumer_email)s, %(aadhar_card_number)s, %(pan_card_number)s, %(aadhar_card)s, %(pan_card)s, %(passport_photo)s, %(other_document)s, %(onboarded_by_agent_code)s);",
+    "insert_consumer": "INSERT INTO public.\"Customers\"( consumer_name, consumer_address, consumer_mobile_number, alternate_phone_number, consumer_email, aadhar_card_number, pan_card_number, aadhar_card, pan_card, passport_photo, other_documents, other_documents_names, onboarded_by_agent_code) VALUES (%(consumer_name)s, %(consumer_address)s, %(consumer_mobile_number)s, %(alternate_phone_number)s, %(consumer_email)s, %(aadhar_card_number)s, %(pan_card_number)s, %(aadhar_card)s, %(pan_card)s, %(passport_photo)s, %(other_documents)s, %(other_documents_names)s, %(onboarded_by_agent_code)s) RETURNING consumer_id;",
     "get_document": "SELECT $document_name FROM public.\"Customers\" where consumer_id=%(consumer_id)s;",
-    "get_all_consumers_list": "select consumer_name, consumer_address, consumer_mobile_number, consumer_id, alternate_phone_number, consumer_email, aadhar_card_number, pan_card_number, aadhar_card, pan_card, passport_photo, other_document, onboarded_by_agent_code FROM public.\"Customers\" limit %(limit)s offset %(lower)s",
-    "get_all_consumers_column_names": ["consumer_name", "consumer_address", "consumer_mobile_number", "consumer_id", "alternate_phone_number", "consumer_email", "aadhar_card_number", "pan_card_number", "aadhar_card", "pan_card", "passport_photo", "other_document", "onboarded_by_agent_code"],
+    "get_all_consumers_list": "select consumer_name, consumer_address, consumer_mobile_number, consumer_id, alternate_phone_number, consumer_email, aadhar_card_number, pan_card_number, aadhar_card, pan_card, passport_photo, other_documents, other_documents_names, onboarded_by_agent_code FROM public.\"Customers\" limit %(limit)s offset %(lower)s",
+    "get_all_consumers_column_names": ["consumer_name", "consumer_address", "consumer_mobile_number", "consumer_id", "alternate_phone_number", "consumer_email", "aadhar_card_number", "pan_card_number", "aadhar_card", "pan_card", "passport_photo", "other_documents", "other_documents_names", "onboarded_by_agent_code"],
     "countPages": "select count(*) from public.\"Customers\"",
     "getConsumerProjects": "select * from public.\"Projects\" where consumer_id=%(consumer_id)s",
-    "get_consumer_details": "select consumer_name from public.\"Customers\" where consumer_id=%(consumer_id)s"
+    "get_consumer_details": "select consumer_name from public.\"Customers\" where consumer_id=%(consumer_id)s",
+    "get_consumer": "select consumer_name, consumer_address, consumer_mobile_number, consumer_id, alternate_phone_number, consumer_email, aadhar_card_number, pan_card_number, aadhar_card, pan_card, passport_photo, other_documents, other_documents_names, onboarded_by_agent_code from public.\"Customers\" where consumer_id=%(consumer_id)s"
 }
 
 
