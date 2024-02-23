@@ -197,8 +197,8 @@ def create_pdf_from_doc(doc_file_name, context):
                 if len(split_para[0]):
                     before_para = p.add_run(split_para[0])
                     before_para.bold = False
-                print(split_para[1].split(" }}", 1)[0])
-                print(len(split_para[1].split(" }}", 1)[0]))
+                # print(split_para[1].split(" }}", 1)[0])
+                # print(len(split_para[1].split(" }}", 1)[0]))
                 styled_run = p.add_run(context[split_para[1].split(" }}", 1)[0]])
                 styled_run.bold = True
                 styled_run.underline = True

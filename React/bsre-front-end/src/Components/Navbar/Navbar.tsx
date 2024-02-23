@@ -1,17 +1,22 @@
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, MenuItem, Menu, Box } from '@mui/material';
 
-const Navbar = () => {
+const Navbar = (props: any) => {
     const [anchorElQuotations, setAnchorElQuotations] = React.useState<null | HTMLElement>(null);
     const [anchorElConsumers, setAnchorElConsumers] = React.useState<null | HTMLElement>(null);
 
     const handleClose = () => {
+
         setAnchorElQuotations(null);
         setAnchorElConsumers(null);
     };
 
-    const navigate = useNavigate()
+    const handleLogout =() => {
+        props.logout()
+        localStorage.removeItem('token')
+        window.location.replace('http://localhost:8080')
+    }
 
     return (
         <AppBar position="fixed">
@@ -42,7 +47,7 @@ const Navbar = () => {
                         </MenuItem>
                         <MenuItem component={Link} to="/ViewQuotations" onClick={handleClose}>View All Quotations</MenuItem>
                         <MenuItem component={Link} to="/CommercialOrIndustrialQuotation" onClick={handleClose}>Commercial/Industrial Quotation</MenuItem>
-                        {/* <MenuItem onClick={handleClose}> Option 3</MenuItem> */}
+                        
                     </Menu>
                     <Button
                         color="inherit"
@@ -63,11 +68,13 @@ const Navbar = () => {
                             Onboard a Consumer
                         </MenuItem>
                         <MenuItem component={Link} to="/ViewAllConsumers" onClick={handleClose}>View All Consumers</MenuItem>
-                        <MenuItem component={Link} to="/" onClick={handleClose}>xyz</MenuItem>
-                        {/* <MenuItem onClick={handleClose}> Option 3</MenuItem> */}
                     </Menu>
-                    {/* <Button component={Link} to={{ pathname: '/CustomerOnboarding',  }} state={{"quotation":null}} color='inherit'>Customer Onboarding</Button>   */}
-                    <Button component={Link} to="/contact" color="inherit">Contact</Button>
+                    <Button
+                        color="inherit"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </Button>
                 </Box>
             </Toolbar>
         </AppBar>

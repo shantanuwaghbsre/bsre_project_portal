@@ -35,14 +35,17 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
     try:
         print(query, parameters)
         cur.execute(query, parameters)
+        conn.commit()
 
         if type_ == "returns":
-            data = cur.fetchall()
+            try:
+                data = cur.fetchall()
+            except psycopg2.ProgrammingError as e:
+                data = [[None]]
             if not data:
                 data = [[None]]
             return data
         else:
-            conn.commit()
             return True
 
     except Exception as e:

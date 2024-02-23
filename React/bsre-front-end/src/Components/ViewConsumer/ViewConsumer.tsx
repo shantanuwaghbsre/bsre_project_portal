@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router';
-import FileDownloader from '../FileDownloader/FileDownloader';
 import { Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 
 const ViewConsumer = () => {
-    let location = useLocation();
+    const location = useLocation();
     const [consumer, setConsumer] = useState({});
     const [options, setOptions]= useState([
       { label: 'Aadhar card', value: 'aadhar_card' },
@@ -26,17 +25,21 @@ const ViewConsumer = () => {
               console.log(newOptions);
               newOptions.push({ label: location.state.consumer["other_documents_names"][i], value: location.state.consumer["other_documents_names"][i]});
             }
+            if (options.length == 3)
+              {
+                setOptions(options.concat(newOptions));
+              }
           }}
           }
         catch (error) {}
         }, [location])
     
-    useEffect(() => {
-      if (options.length == 3)
-      {
-        setOptions(options.concat(newOptions));
-      } 
-    }, [newOptions]);
+    // useEffect(() => {
+    //   if (options.length == 3)
+    //   {
+    //     setOptions(options.concat(newOptions));
+    //   } 
+    // }, [newOptions]);
 
     const [documentRequired, setDocumentRequired] = useState('');
 
@@ -69,7 +72,7 @@ const ViewConsumer = () => {
           mode = 'blob';
         }
       }
-      console.log(documentRequired, mode, base64String, blob, typeof(consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)]))
+      // console.log(documentRequired, mode, base64String, blob, typeof(consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)]))
       if (mode === 'base64') {
         try {
           // Decode the Base64 string to binary data

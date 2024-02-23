@@ -8,32 +8,35 @@ const ViewProject = () => {
     const urls = {
 
     }
-    const options = [
+    const [options, setOptions] = useState([
       { "label": "Property Tax", "value": 'property_tax' },
       { "label": "Electricity Bill", "value": 'electricity_bill' },
       { "label": "Cancelled Cheque", "value": 'cancelled_cheque' },  
-    ]
+    ])
     const phase_2_discom_options = [
       {"key_":"DGVCL", "label":"Dakshin Gujarat Vij Company Limited"},
       {"key_":"MGVCL", "label":"Madhya Gujarat Vij Company Limited"},
       {"key_":"PGVCL", "label":"Paschim Gujarat Vij Company Limited"},
       {"key_":"UGVCL", "label":"Uttar Gujarat Vij Company Limited"},
-      {"key_":"Torrent", "label":"Torrent Power Limited"},
+      {"key_":"Torrent_(Surat)", "label":"Torrent Power Limited (Surat)"},
+      {"key_":"Torrent_(Ahmedabad)", "label":"Torrent Power Limited (Ahmedabad)"},
     ]
-    const phase_8_document_options = [
+    const [phase_8_document_options, setPhase_8_document_options] = useState([
       {"key_":"agreement_residential", "label":"Residential Agreement"},
       {"key_":"agreement_industrial", "label":"Industrial Agreement"},
+      {"key_":"vendoragreement_residential", "label":"Vendor Agreement"},
       {"key_":"certificate_1", "label":"One Page Self Certificate"},
       {"key_":"certificate_4", "label":"Four Page Self Certificate"},
-    ]
+    ])
+
     let location = useLocation();
     const [documentRequired, setDocumentRequired] = useState<string>('');
     const [project, setProject] = useState<{ [key: string]: { [key: string]: any } }>({
       phase_1: {
-        property_tax: '',
-        electricity_bill: '',
-        cancelled_cheque: '',
-        other_documents: '',
+        property_tax: new Blob(),
+        electricity_bill: new Blob(),
+        cancelled_cheque: new Blob(),
+        other_documents: [],
         other_documents_names: [],
         meter_number: '',
         current_sanctioned_load: '',
@@ -113,12 +116,14 @@ const ViewProject = () => {
     const [newNote, setNewNote] = useState('');
     const [fileChoice, setFileChoice] = useState(['', '']);
     const [agreementValues, setAgreementValues] = useState<{  [key: string]: any } >({});
+    const [vendorAgreementValues, setVendorAgreementValues] = useState<{  [key: string]: any } >({});
     const [onePageCertificateValues, setOnePageCertificateValues] = useState<{ [key: string]: any }>({});
     const [fourPageCertificateValues, setFourPageCertificateValues] = useState<{ [key: string]: any }>({});
     const [dcrValues, setDcrValues] = useState<{ [key: string]: any }>({});
-    let newOptions = []
+    let newOptions = [];
     const inputOptions = {
         agreement: ["letter_date","voltage"],
+        vendorAgreement: [],
         onePageCertificate: [],
         fourPageCertificate: [],
         dcr: ["", ""],
@@ -136,6 +141,16 @@ const ViewProject = () => {
                 (response) => {
                   // console.log(response.data);
                   setProject(response.data);
+                  if (response.data.phase_1.project_type == "Residential") {
+                    setPhase_8_document_options([
+                      ...phase_8_document_options.filter((option) => option.key_ != "agreement_industrial"),
+                    ])
+                  }
+                  else {
+                    setPhase_8_document_options([
+                      ...phase_8_document_options.filter((option) => option.key_ != "agreement_residential" && option.key_ != "vendor_agreement"),
+                    ])
+                  }
                   console.log(response.data);
                   setIsLoading(false);
                   setCurrentPage(Number(response.data.phase_1.project_in_phase));
@@ -143,7 +158,13 @@ const ViewProject = () => {
                     console.log(newOptions);
                     newOptions.push({ label: response.data.phase_1["other_documents_names"][i], value: response.data.phase_1["other_documents_names"][i]});
                   }
+                  console.log(newOptions);
+                  if (options.length == 3)
+                    {
+                      setOptions(options.concat(newOptions));
+                    }
                 }
+                
               );
               }
               catch (error) {
@@ -155,10 +176,21 @@ const ViewProject = () => {
         }}, []);
         
       useEffect(() => {
-        if (project.phase_1.project_type != "Residential") {
+        if (project.phase_2) {
+        setVendorAgreementValues(
+          {...vendorAgreementValues,
+            "discom": project.phase_2.discom || '',
+            "consumer_name": project.phase_1.consumer_name,
+            "consumer_number": project.phase_1.consumer_number,
+            "project_address": project.phase_1.project_address,
+            "total_kilowatts": project.phase_1.total_kilowatts,
+            "solar_module_wattage": project.phase_1.solar_module_wattage,
+            "solar_module_wattage_in_kw": project.phase_1.solar_module_wattage/1000,
+            "total_cost": project.phase_1.project_cost,
+          });
         setAgreementValues(
           {...agreementValues, 
-            "discom": project.phase_2.discom,
+            "discom": project.phase_2.discom || '',
             "consumer_name": project.phase_1.consumer_name,
             "consumer_number": project.phase_1.consumer_number,
             "project_address": project.phase_1.project_address,
@@ -178,10 +210,11 @@ const ViewProject = () => {
       }, [project.phase_1, project.phase_2])
 
       useEffect(() => {
-                // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+        if (!project.phase_1.consumer_name) {
+        // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         (response_consumer_details) => {
-          console.log("consumer details", response_consumer_details.data);
+          console.log("consumer details", response_consumer_details);
           setProject((prevProject) => {
             // Retrieve the dictionary you want to modify
             const dictToUpdate = prevProject.phase_1 || {};
@@ -196,8 +229,9 @@ const ViewProject = () => {
               return { ...prevProject, phase_1: updatedDict };
             });
             console.log(project.phase_1)
-          });            
-      }, [location.state.for_consumer_id])
+          }); 
+        }           
+      }, [location.state.for_consumer_id, project.phase_1.consumer_name])
       // if(!project.phase_1.consumer_name.length) {
                 // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(  
       //   axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
@@ -316,7 +350,7 @@ const ViewProject = () => {
         postObject.append(key, value);
       }
       postObject.append("consumer_number", project.phase_1.consumer_number);
-      postObject.append("project_in_phase", currentPage);
+      postObject.append("project_in_phase", currentPage.toString());
 
             // axios.post('http://localhost:5000/updatePhaseData', postObject).then(
       axios.post('http://192.168.29.62:5000/updatePhaseData', postObject).then(
@@ -333,14 +367,19 @@ const ViewProject = () => {
   function handleDownload(documentRequired_: string, documentType: string): void {
     console.log("documentRequired ", documentRequired_)
     let blob = new Blob([])
+    let base64String = '';
     console.log(project["phase_"+currentPage], documentRequired_);
         // let url = `http://localhost:5000/downloadFile?document_required=${documentRequired}&document_type=${documentType}`
-    let url = `http://192.168.29.62:5000/downloadFile?document_required=${documentRequired_}&document_type=${documentType}`
-    if (documentRequired_ === "electrical_diagram" || documentRequired_ === 'meter_report' || documentRequired_ === 'joint_inspection') {
+    let url = `http://192.168.29.62:5000/`
+    if (documentRequired_ === "electrical_diagram" || documentRequired_ === 'meter_report' || documentRequired_ === 'joint_inspection' || documentRequired_ === 'property_tax' || documentRequired_ === 'electricity_bill' || documentRequired_ === 'cancelled_cheque') {
       console.log("in if 1")
       if ((project["phase_"+currentPage][documentRequired_] != false && typeof(project["phase_"+currentPage][documentRequired_]) == 'string') || (project["phase_"+currentPage][documentRequired_] != null && typeof(project["phase_"+currentPage][documentRequired_]) == 'object')) {
       console.log("in if 2 because", project["phase_"+currentPage][documentRequired_] != false, project["phase_"+currentPage][documentRequired_] != null)
-      const base64String = project["phase_"+currentPage][documentRequired_];
+      base64String = project["phase_"+currentPage][documentRequired_];
+      }
+      else if (project.phase_1.other_documents_names.includes(documentRequired_)) {
+        base64String = project.phase_1.other_documents[project.phase_1.other_documents_names.indexOf(documentRequired_)];
+      }
       try {
         // Decode the Base64 string to binary data
         const binaryString = atob(base64String);
@@ -353,15 +392,15 @@ const ViewProject = () => {
 
         // Create a Blob from the Uint8Array
         blob = new Blob([uint8Array]);
+        console.log("blob was made in the right place")
       }
       catch (error) {
         console.error('Error decoding base64 string:', error);
       }
-    }
+  }
     else {
-      url += `&consumer_number=${project.phase_1.consumer_number}`
-    }}
-    else if (documentRequired_ === 'agreement') {
+      url += `downloadFile?document_required=${documentRequired_}&document_type=${documentType}`
+    if (documentRequired_ === 'agreement') {
           for (let i in agreementValues) {
             url += `&${i}=${agreementValues[i]}`
           }
@@ -382,37 +421,29 @@ const ViewProject = () => {
         for (let i in dcrValues) {
           url += `&${i}=${dcrValues[i]}`
         }
-        console.log(dcrValues)
-  }
-    // else if () {
-    //   if (project.phase_7[documentRequired].length) {
-    //     const base64String = project.phase_7[documentRequired];
-    //     try {
-    //       // Decode the Base64 string to binary data
-    //       const binaryString = atob(base64String);
-      
-    //       // Convert the binary string to a Uint8Array
-    //       const uint8Array = new Uint8Array(binaryString.length);
-    //       for (let i = 0; i < binaryString.length; i++) {
-    //         uint8Array[i] = binaryString.charCodeAt(i);
-    //       }
-  
-    //       // Create a Blob from the Uint8Array
-    //       blob = new Blob([uint8Array]);
-    //     }
-    //     catch (error) {
-    //       console.error('Error decoding base64 string:', error);
-    //     }
-    //   }
-    // }
-
-      if (url.match(/\&/g).length > 1){
+    }
+    else if (documentRequired_ === 'vendoragreement') {
+        for (let i in vendorAgreementValues) {
+          url += `&${i}=${vendorAgreementValues[i]}`
+        }
+    }    
+}
+console.log(url);
+      if (url.match(/\&/g) != null){
         axios.get(url).then(
           (response_project) => {
             try {
               // Decode the Base64 string to binary data
               const binaryString = atob(response_project.data);
-          
+              
+              setProject((prevProject) => ({
+                ...prevProject,
+                [`phase_${currentPage}`]: {
+                  ...prevProject[`phase_${currentPage}`],
+                  [documentRequired_]: response_project.data
+                }
+              }))
+              
               // Convert the binary string to a Uint8Array
               const uint8Array = new Uint8Array(binaryString.length);
               for (let i = 0; i < binaryString.length; i++) {
@@ -421,6 +452,7 @@ const ViewProject = () => {
 
               // Create a Blob from the Uint8Array
               blob = new Blob([uint8Array]);
+
               const link = document.createElement('a');
               link.href = window.URL.createObjectURL(blob);
               link.setAttribute('download', `${documentRequired_}.pdf`);
@@ -432,14 +464,6 @@ const ViewProject = () => {
           
               // Remove the link from the document
               document.body.removeChild(link);
-
-              setProject((prevProject) => ({
-                ...prevProject,
-                [`phase_${currentPage}`]: {
-                  ...prevProject[`phase_${currentPage}`],
-                  [documentRequired_]: response_project.data
-                }
-              }))
             }
             catch (error) {
               console.error('Error decoding base64 string:', error);
@@ -452,18 +476,32 @@ const ViewProject = () => {
           }
         )
       }
-      
+      else {
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute('download', `${documentRequired_}.pdf`);
+        link.target = '_blank';
+    
+        // Append the link to the document and trigger the click event
+        document.body.appendChild(link);
+        link.click();
+    
+        // Remove the link from the document
+        document.body.removeChild(link);
+      }
     }    
 
     return (
       <div style={{ paddingTop: 64 }}>
+        <h1>{project.phase_1.consumer_name}</h1>
         <Table>
         <TableBody>
         <TableRow>
         {Array.from({ length: 10 }, (_, index) => (
           <TableCell key={index}>
             <Button
-              variant={index > project.phase_1.project_in_phase -1 ? 'disabled' : currentPage - 1 === index ? 'contained' : 'outlined'}
+              variant={currentPage - 1 === index ? 'contained' : 'outlined'}
+              disabled={index > project.phase_1.project_in_phase -1 ? true:false}
               onClick={() => setCurrentPage(index + 1)}
             >
               {index + 1}
@@ -825,7 +863,7 @@ const ViewProject = () => {
 
           <TableRow>
             <TableCell>
-              <InputLabel>National Portal Registration Number</InputLabel>
+              <InputLabel>Registration Number</InputLabel>
             </TableCell>
             <TableCell>
               {editable[currentPage - 1] ? (
@@ -905,17 +943,11 @@ const ViewProject = () => {
             </Select>
             </TableCell>
             <TableCell>
-          <Button onClick={handleDownload}>Download</Button>
+          <Button onClick={() => handleDownload(documentRequired, '')}>Download</Button>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell colSpan={2} align='right'>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-          
-          <TableCell align='right'>
+            <TableCell align='right'>
           {currentPage < project.phase_1.project_in_phase?
             <button type="button" onClick={handleNextPage}>
               Next
@@ -1235,7 +1267,7 @@ const ViewProject = () => {
       </form>
       }
       {
-      project.phase_7 && currentPage === 7 && !isLoading &&
+      project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type != "Residential" &&
       <form>
         <Table>
           <TableBody>
@@ -1305,6 +1337,32 @@ const ViewProject = () => {
             </TableBody>
           </Table>
       </form>
+      }
+      {
+      project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type == "Residential" && 
+      <>
+      <h2>Phase 7 not applicable for Residential Projects. Move to phase 8.</h2>
+            <Table>
+            <TableBody>
+            <TableRow>
+              <TableCell align='left'>
+                <button type="button" onClick={handlePreviousPage}>
+                  Previous
+                </button>
+              </TableCell>
+              <TableCell align='right'>
+              {currentPage < project.phase_1.project_in_phase?
+                <button type="button" onClick={handleNextPage}>
+                  Next
+                </button>:
+                <button type="button" onClick={promoteToNextPhase}>
+                Promote
+              </button>}
+              </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+      </>
       }
       {
       project.phase_8 && currentPage === 8 && !isLoading &&
@@ -1378,7 +1436,7 @@ const ViewProject = () => {
       </form>
       }
       {
-        project.phase_9 && currentPage === 9 && !isLoading &&
+        project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type == "Residential" &&
         <form>
           <Table>
             <TableBody>
@@ -1441,6 +1499,33 @@ const ViewProject = () => {
             </TableBody>
           </Table>
         </form>
+      }
+      {
+      project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type != "Residential" && 
+      <>
+      <h2>Phase 9 not applicable for Residential Projects. Move to phase 10.</h2>
+            <Table>
+            <TableBody>
+            <TableRow>
+              <TableCell align='left'>
+                <button type="button" onClick={handlePreviousPage}>
+                  Previous
+                </button>
+              </TableCell>
+              <TableCell align='right'>
+              {currentPage < project.phase_1.project_in_phase?
+                <button type="button" onClick={handleNextPage}>
+                  Next
+                </button>:
+                <button type="button" onClick={promoteToNextPhase}>
+                Promote
+              </button>}
+              </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+      </>
+      
       }
       {
         project.phase_10 && currentPage === 10 && !isLoading &&

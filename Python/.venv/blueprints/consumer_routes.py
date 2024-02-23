@@ -34,7 +34,7 @@ def onboardConsumer():
     "other_document_names":[file.filename for file in request.files.values() if file.name not in ["aadharCard", "passportPhoto", "panCard"]]
     })
 
-    consumer_id = make_db_call(queries["insert_consumer"], type_="insert", 
+    consumer_id = make_db_call(queries["insert_consumer"], type_="returns", 
     parameters={
     "consumer_name":request.form["consumerName"],
     "consumer_address":request.form["consumerAddress"],

@@ -118,12 +118,13 @@ def getProject():
     data = make_db_call(queries["phase_details"].replace("column_names", ", ".join([column for column in queries["phase_details_column_names"]["1"]])).replace("table_name", "Projects"), "returns", parameters={"consumer_number": request.args.get('consumer_number')})
     print(data[0])
     for j, column in enumerate(queries[f"phase_details_column_names"]["1"] ):
+        print(j, column)
         if column == 'other_documents':
             project[f"phase_1"][column] = [base64.b64encode(file).decode('utf-8') for file in data[0][j]] if data[0][j] is not None else []
-            print("##############################################", project[f"phase_1"][column])
         elif column == 'other_documents_names':
             project[f"phase_1"][column] = [str(i) for i in data[0][j]] if data[0][j] is not None else []
-            print("##############################################", project[f"phase_1"][column])
+        elif type(data[0][j]) == memoryview:
+                project[f"phase_1"][column] = base64.b64encode(bytes(data[0][j])).decode('utf-8')
         else:
             project[f"phase_1"][column] = data[0][j]
     # project["phase_1"] = {
@@ -134,6 +135,7 @@ def getProject():
         data = make_db_call(queries[f"phase_details"].replace("column_names", ", ".join([column for column in project_columns])).replace("table_name", f"Project_phase_{i}"), "returns", parameters={"consumer_number": request.args.get('consumer_number')})
         if len(data[0]):
             project[f"phase_{i}"] = {}
+            
             for j, column in enumerate(project_columns):
                 if column == 'notes':
                     project[f"phase_{i}"][column] = '\n\n'.join(data[0][j]) if len(data[0][j]) else ''
@@ -176,7 +178,8 @@ def downloadFile():
       "MGVCL": "Madhya Gujarat Vij Company Limited, a Company registered under the Companies Act 1956/2013 and functioning as the ”Distribution Company” or “DISCOM” under the Electricity Act 2003 having its Head Office at, Vadodara (hereinafter referred to as “MGVCL” or “Distribution Licensee” or “DISCOM” which expression shall include its permitted assigns and successors) a Party of the Second Part.",
       "PGVCL": "Paschim Gujarat Vij Company Limited, a Company registered under the Companies Act 1956/2013 and functioning as the ”Distribution Company” or “DISCOM” under the Electricity Act 2003 having its Head Office at, Rajkot (hereinafter referred to as “PGVCL” or “Distribution Licensee” or “DISCOM” which expression shall include its permitted assigns and successors) a Party of the Second Part.",
       "UGVCL": "Uttar Gujarat Vij Company Limited, a Company registered under the Companies Act 1956/2013 and functioning as the ”Distribution Company” or “DISCOM” under the Electricity Act 2003 having its Head Office at, Mehsana (hereinafter referred to as “UGVCL” or “Distribution Licensee” or “DISCOM” which expression shall include its permitted assigns and successors) a Party of the Second Part.",
-      "Torrent": "Torrent Power Limited, "
+      "Torrent_(Surat)": "Torrent Power Limited (Surat), ",
+      "Torrent_(Ahmedabad)": "Torrent Power Limited (Ahmedabad), ",
     }
     if request.args.get('document_required') == "electrical_diagram":
         lookup_dictionary = {
@@ -194,10 +197,19 @@ def downloadFile():
         bytes_io.seek(0)
         return send_file(bytes_io, mimetype="application/pdf", download_name=request.args["document_required"], as_attachment=True)
 
+    elif request.args.get('document_required') == "vendoragreement":
+        lookup_dictionary = {
+            "residential": "Vendor Agreement",
+        }
+
+        additional_fields = {
+            "date": datetime.datetime.now().strftime("%d-%m-%Y"),
+        }
+
     elif request.args.get('document_required') == "agreement":
         lookup_dictionary = {
             "industrial": "Commercial Agreement",
-            "residential": "DGVCL Provisional_Agreement_for_Residential_Project_Registered_under_new_policy",
+            "residential": "Residential Agreement",
         }
 
         additional_fields = {
@@ -211,7 +223,7 @@ def downloadFile():
     elif request.args.get('document_required') == "certificate":
         lookup_dictionary = {
             "1": "self certificate 1 page",
-            "4": "Self Declaration-Certificate1- ugvcl",
+            "4": "self certificate 4 page",
         }
 
         additional_fields = {
@@ -227,8 +239,6 @@ def downloadFile():
         additional_fields = {
             
         }
-
-    
 
     with open(create_pdf_from_doc(lookup_dictionary[request.args.get("document_type")], request.args|additional_fields), 'rb') as f:
         b64encoded = base64.b64encode(f.read())

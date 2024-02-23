@@ -636,11 +636,11 @@ const StartProject = () => {
                 <TableBody>
                     `<TableRow>
                         <TableCell>
-                            <InputLabel>National Portal Registration Number</InputLabel>
+                            <InputLabel>Registration Number</InputLabel>
                         </TableCell>
                         <TableCell>
                             <TextField
-                                label="National Portal Registration Number"
+                                label="Registration Number"
                                 type="text"
                                 name="national_portal_registration_number"
                                 value={project.national_portal_registration_number}
