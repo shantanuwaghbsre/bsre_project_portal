@@ -20,7 +20,8 @@ const urls = {
   "getConsumerURL": "http://192.168.29.62:5000/getConsumer"
 }
 
-const ConsumerOnboarding = () => {
+const ConsumerOnboarding = (props:any) => {
+  axios.defaults.headers.common['token'] = props.token
   const blankFormData = {
     consumerName: '',
     consumerAddress: '',

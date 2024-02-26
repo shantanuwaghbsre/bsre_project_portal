@@ -4,7 +4,8 @@ import { useLocation } from 'react-router';
 import { Table, TableBody, TableRow, TableCell, InputLabel, FormControl, Button, TextField, Paper, MenuItem, Select, TableContainer, TableHead } from '@mui/material';
 import CheckBox from '@mui/material/Checkbox';
 
-const ViewProject = () => {
+const ViewProject = (props:any) => {
+    axios.defaults.headers.common['token'] = props.token
     const urls = {
 
     }

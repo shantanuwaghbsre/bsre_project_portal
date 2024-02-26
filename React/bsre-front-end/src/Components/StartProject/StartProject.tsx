@@ -5,7 +5,8 @@ import { useLocation, useNavigate } from 'react-router'
 import SearchIcon from "@mui/icons-material/Search";
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
 
-const StartProject = () => {
+const StartProject = (props:any) => {
+    axios.defaults.headers.common['token'] = props.token
     let navigate = useNavigate();
     const goToProject = (project) => navigate('/ViewProject', { state: { "consumer_number": project.consumer_number, "project_in_phase": project.project_in_phase, "for_consumer_id": project.for_consumer_id } });
     const [currentPage, setCurrentPage] = useState(1);

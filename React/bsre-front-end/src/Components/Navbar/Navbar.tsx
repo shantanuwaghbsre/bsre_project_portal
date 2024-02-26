@@ -15,7 +15,7 @@ const Navbar = (props: any) => {
     const handleLogout =() => {
         props.logout()
         localStorage.removeItem('token')
-        window.location.replace('http://localhost:8080')
+        window.location.replace('http://192.168.29.62:8080')
     }
 
     return (

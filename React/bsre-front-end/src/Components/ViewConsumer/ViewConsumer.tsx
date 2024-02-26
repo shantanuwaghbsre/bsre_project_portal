@@ -4,7 +4,8 @@ import { Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuI
 import { Link } from 'react-router-dom';
 
 
-const ViewConsumer = () => {
+const ViewConsumer = (props:any) => {
+    axios.defaults.headers.common['token'] = props.token
     const location = useLocation();
     const [consumer, setConsumer] = useState({});
     const [options, setOptions]= useState([

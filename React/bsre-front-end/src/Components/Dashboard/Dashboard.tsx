@@ -3,7 +3,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
-const Dashboard = () => {
+const Dashboard = (props:any) => {
+  axios.defaults.headers.common['token'] = props.token
     const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);

@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 
-const ViewAllConsumers = () => {
+const ViewAllConsumers = (props:any) => {
+    axios.defaults.headers.common['token'] = props.token
     const [consumers, setConsumers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);

@@ -3,7 +3,8 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import axios from 'axios'
 import './styles.css'
 
-const ResidentialQuotation = () => {
+const ResidentialQuotation = (props:any) => {
+  axios.defaults.headers.common['token'] = props.token
 
 
 

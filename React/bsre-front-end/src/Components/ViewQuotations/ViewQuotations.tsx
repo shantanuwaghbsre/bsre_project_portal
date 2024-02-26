@@ -3,7 +3,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const ViewQuotations = () => {
+const ViewQuotations = (props:any) => {
+  axios.defaults.headers.common['token'] = props.token
   const [quotations, setQuotations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);

@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import Keycloak from 'keycloak-js';
 
 let initOptions = {
-  url: 'http://localhost:8080/',
+  url: 'http://192.168.29.62:8080/',
   realm: 'myrealm',
   clientId: 'a_client',
 }
@@ -31,7 +31,7 @@ const CustomHistoryWrapper = () => {
     useEffect(() => {
       // Modify the location object here
       console.log(location.pathname);
-      console.log(isAuthenticated)
+      console.log(isAuthenticated);
     }, [location]);
   
     return null;
@@ -44,10 +44,10 @@ const CustomHistoryWrapper = () => {
         realm: initOptions.realm,
         url: initOptions.url,
       });
-      await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'http://localhost:5173/Dashboard', responseMode: 'query', }).then(
+      await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'http://192.168.29.62:5173/', responseMode: 'query', }).then(
         () => {
-          console.log("keycloak")
-          console.log(keycloak)
+          console.log("keycloak");
+          console.log(keycloak);
           setKc(keycloak);
           
           const isAuthenticated = keycloak.authenticated;
@@ -70,30 +70,29 @@ const CustomHistoryWrapper = () => {
 
   return (
     <>
+    {isAuthenticated && kc.token.length > 0 && ( 
+
       <BrowserRouter>
       <CustomHistoryWrapper/>
-        {isAuthenticated && (
           <Navbar kc={kc} logout={handleLogout} />
-        )}
         <Routes>
-          {isAuthenticated && (
             <>
-            <Route path="/ResidentialQuotation" element={<ResidentialQuotation/>} />
-            <Route path="/ViewQuotations" element={<ViewQuotations/>} />
-            <Route path="/ConsumerOnboarding" element={<ConsumerOnboarding/>} />
-            <Route path='/CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation/>} />
-            <Route path='/ViewAllConsumers' element={<ViewAllConsumers/>} />
-            <Route path='/ViewConsumer' element={<ViewConsumer/>} />
-            <Route path='/StartProject' element={<StartProject/>} />
-            <Route path="/contact" element={<FileDownloader/>} />
-            <Route path="/" element={<Dashboard/>} />
-            <Route path="/Dashboard" element={<Dashboard/>} />
-            <Route path="/ViewProject" element={<ViewProject/>} />
-
+            <Route path="/ResidentialQuotation" element={<ResidentialQuotation token={kc.token}/>} />
+            <Route path="/ViewQuotations" element={<ViewQuotations token={kc.token}/>} />
+            <Route path="/ConsumerOnboarding" element={<ConsumerOnboarding token={kc.token}/>} />
+            <Route path='/CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation token={kc.token}/>} />
+            <Route path='/ViewAllConsumers' element={<ViewAllConsumers token={kc.token}/>} />
+            <Route path='/ViewConsumer' element={<ViewConsumer token={kc.token}/>} />
+            <Route path='/StartProject' element={<StartProject token={kc.token}/>} />
+            <Route path="/" element={<Dashboard token={kc.token}/>} />
+            <Route path="/Dashboard" element={<Dashboard token={kc.token}/>} />
+            <Route path="/ViewProject" element={<ViewProject token={kc.token}/>} />
             </>
-          )}
+
         </Routes>
       </BrowserRouter>
+    
+    )};
     </>
   );
 };
