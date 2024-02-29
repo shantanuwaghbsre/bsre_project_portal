@@ -31,7 +31,7 @@ def mail_to_consumer(inputs):
 
     # Add PDF attachment
     filepath = os.environ.get("TEMPORARY_FILES_FOLDER")
-    filename = f"Quotation number {inputs['quotation_number']} for {inputs['consumer_name']}.pdf"
+    filename = f"Quotation number {inputs['quotation_number']} for {inputs['consumer_name'].replace(' ', '_')}.pdf"
     with open(filepath + filename, "rb") as attachment:
         part = MIMEBase('application', 'octet-stream')
         part.set_payload(attachment.read())

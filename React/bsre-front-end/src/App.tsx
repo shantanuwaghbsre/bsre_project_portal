@@ -21,51 +21,53 @@ let initOptions = {
 }
 
 const App = () => {
-  const [kc, setKc] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [kc, setKc] = useState({token:"1234"});
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
 const CustomHistoryWrapper = () => {
 
     const location = useLocation();
   
-    useEffect(() => {
-      // Modify the location object here
-      console.log(location.pathname);
-      console.log(isAuthenticated);
-    }, [location]);
+  //   useEffect(() => {
+  //     // Modify the location object here
+  //     console.log(location.pathname);
+  //     console.log(isAuthenticated);
+  //   }, [location]);
   
-    return null;
+  //   return null;
   };
 
-  useEffect(() => {
-    const initializeKeycloak = async () => {
-      const keycloak = new Keycloak({
-        clientId: initOptions.clientId,
-        realm: initOptions.realm,
-        url: initOptions.url,
-      });
-      await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'http://192.168.29.62:5173/', responseMode: 'query', }).then(
-        () => {
-          console.log("keycloak");
-          console.log(keycloak);
-          setKc(keycloak);
+  // useEffect(() => {
+  //   const initializeKeycloak = async () => {
+  //     const keycloak = new Keycloak({
+  //       clientId: initOptions.clientId,
+  //       realm: initOptions.realm,
+  //       url: initOptions.url,
+  //     });
+  //     await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'http://192.168.29.62:5173/', responseMode: 'query', }).then(
+  //       () => {
+  //         console.log("keycloak");
+  //         console.log(keycloak);
+  //         setKc(keycloak);
           
-          const isAuthenticated = keycloak.authenticated;
-          setIsAuthenticated(isAuthenticated);
-        },
-        (error) => {
-          console.error('Failed to initialize Keycloak:', error);
-        }
-      )
-    };
+  //         const isAuthenticated = keycloak.authenticated;
+  //         setIsAuthenticated(isAuthenticated);
+  //       },
+  //       (error) => {
+  //         console.error('Failed to initialize Keycloak:', error);
+  //       }
+  //     )
+  //   };
   
-    initializeKeycloak();
-  }, []);
+  //   initializeKeycloak();
+  // }, []);
 
   const handleLogout = () => {
-    if (kc) {
-      kc.logout();
-    }
+    // if (kc) {
+    //   kc.logout();
+    // }
+    console.log("logout");
   };
 
   return (
@@ -73,8 +75,9 @@ const CustomHistoryWrapper = () => {
     {isAuthenticated && kc.token.length > 0 && ( 
 
       <BrowserRouter>
-      <CustomHistoryWrapper/>
-          <Navbar kc={kc} logout={handleLogout} />
+      {/* <CustomHistoryWrapper/> */}
+          <Navbar kc={kc}  /> 
+          {/* logout={handleLogout} */}
         <Routes>
             <>
             <Route path="/ResidentialQuotation" element={<ResidentialQuotation token={kc.token}/>} />
@@ -92,7 +95,7 @@ const CustomHistoryWrapper = () => {
         </Routes>
       </BrowserRouter>
     
-    )};
+    )}
     </>
   );
 };

@@ -97,7 +97,7 @@ def create_html_from_template(context):
     template_name = "residentialQuotation.html" if quotation_type == "Residential" else "industrialQuotation.html"
     
     # Generate a unique file path for the HTML file
-    html_file_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), f"Quotation number {quotation_number} for {consumer_name}.html")
+    html_file_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), f"Quotation number {quotation_number} for {consumer_name.replace(' ', '_')}.html")
     
     # Create an environment for loading templates from the templates folder
     environment = Environment(loader=FileSystemLoader(templates_folder))
@@ -144,7 +144,10 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     writer.encrypt(context['quotation_number'][-4:]+'/'+str(context['consumer_mobile_number']))
 
     # Set the output PDF file path
-    output_pdf_path = html_file_path.rstrip('.html') + '.pdf'
+    if html_file_path.endswith('.html'):
+        output_pdf_path = html_file_path.rstrip('.html') + '.pdf'
+    else:
+        output_pdf_path = html_file_path + '.pdf'
 
     # Write the output PDF file
     with open(output_pdf_path, "wb") as out_file:
