@@ -47,7 +47,34 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       { value: "K SOLAR", text: 'K SOLAR' },
       { value: "BSIT Inverter", text: 'BSIT Inverter' },
    ]
-
+   const LocationOfState = [
+      {
+        "Id": 1,
+        "state": "Gujarat",
+      },
+      {
+        "Id": 2,
+        "state": "Maharashtra",
+      },
+      {
+        "Id": 3,
+        "state": "Goa",
+      },
+    ]
+    const CityOfState = [
+      {
+        "Id": 1,
+        "state": "Baroda",
+      },
+      {
+        "Id": 2,
+        "state": "Ahemdabad",
+      },
+      {
+        "Id": 3,
+        "state": "Surat",
+      },
+    ]
    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const date = new Date();
    let currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -62,6 +89,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       solarInverter: "",
       inverterCapacity: 0,
       location: "",
+      city:"",
       agentID: "",
       agentName: "",
       customerName: "",
@@ -91,6 +119,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    });
 
    const handleFormChange = (field: any, value: any) => {
+      console.log(field, value);
+      
       setFormData((prevData) => ({
          ...prevData,
          [field]: value
@@ -98,9 +128,9 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    };
 
    const handleCalculationDataChange = (e: React.BaseSyntheticEvent) => {
-      $('#input').on("wheel", function (e) {
-         $(this).blur();
-     });
+   //    $('#input').on("wheel", function (e) {
+   //       $(this).blur();
+   //   });
       if (e.target.name != 'isLoan' && e.target.name != 'isSubsidy') {
          e.target.value = e.target.valueAsNumber
          setCalculationData((prevData) => ({
@@ -116,9 +146,10 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          }));
       }
    }
-
-   const [agentOptions, setAgentOptions] = useState([])
+   
    const [locationOptions, setLocationOptions] = useState([])
+   const [cityOptions, setCityOptions] = useState([])
+   const [agentOptions, setAgentOptions] = useState([])
    const [errorMessage, setErrorMessage] = useState("")
    const [successMessage, setSuccessMessage] = useState("")
    const [isFormValid, setIsFormValid] = useState<Boolean>(false)
@@ -137,6 +168,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          solarInverter: "",
          inverterCapacity: 0,
          location: "",
+         city: "",
          agentID: "",
          agentName: "",
          customerName: "",
@@ -254,18 +286,24 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    }, [formData["numberOfPanels"], formData["solarModuleWattage"]]);
 
    useEffect(() => {
-      axios.get(urls["getAgentsURL"])
-         .then(function (response) {
-            setAgentOptions(response.data);
-         })
-         .catch(function (error) {
-            console.log(error);
-         });
-      axios.get(urls["getLocationsURL"])
-         .then(function (response) {
-            setLocationOptions(response.data);
-         })
-   }, [])
+      setLocationOptions(LocationOfState);
+    }, [])
+    useEffect(() => {
+      setCityOptions(CityOfState);
+    }, [])
+   // useEffect(() => {
+   //    axios.get(urls["getAgentsURL"])
+   //       .then(function (response) {
+   //          setAgentOptions(response.data);
+   //       })
+   //       .catch(function (error) {
+   //          console.log(error);
+   //       });
+   //    axios.get(urls["getLocationsURL"])
+   //       .then(function (response) {
+   //          setLocationOptions(response.data);
+   //       })
+   // }, [])
 
    useEffect(() => {
       setIsFormValid(false);
@@ -290,6 +328,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
 
       const postObject = {
          "location": formData.location,
+         "city":formData.city,
          "quotation_type": formData.quotationType,
          "agent_code": formData.agentID,
          "agent_name": formData.agentName,
@@ -349,14 +388,14 @@ const CommercialOrIndustrialQuotation = (props: any) => {
 
 
 
-   const handleLocationSelect = (e: SelectChangeEvent<string>): void => {
-      handleFormChange("location", e.target.value);
-      for (let i = 0; i < locationOptions.length; i++) {
-         if (locationOptions[i]["city"] === e.target.value) {
-            handleFormChange("location", locationOptions[i]["city"]);
-         }
-      }
-   }
+   // const handleLocationSelect = (e: SelectChangeEvent<string>): void => {
+   //    handleFormChange("location", e.target.value);
+   //    for (let i = 0; i < locationOptions.length; i++) {
+   //       if (locationOptions[i]["city"] === e.target.value) {
+   //          handleFormChange("location", locationOptions[i]["city"]);
+   //       }
+   //    }
+   // }
 
    const handleQuotationTypeSelect = (e: SelectChangeEvent<string>): void => {
       handleFormChange("quotationType", e.target.value);
@@ -393,13 +432,38 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                   <TableRow>
                      <TableCell>Location</TableCell>
                      <TableCell>
-                        <FormControl sx={{ m: 1, minWidth: 220 }}>
+                        {/* <FormControl sx={{ m: 1, minWidth: 220 }}>
                            <InputLabel>Location</InputLabel>
                            <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) =>
                               handleLocationSelect(e)}>
                               {locationOptions.map((option) => (
                                  <MenuItem key={option["city"]} value={option["city"]}>
                                     {option["city"]}
+                                 </MenuItem>
+                              ))}
+                           </Select>
+                        </FormControl> */}
+                        <FormControl sx={{ m: 1, minWidth: 220 }}>
+                           <InputLabel>Location</InputLabel>
+                           <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
+                              {locationOptions.map((option) => (
+                                 <MenuItem key={option["Id"]} value={option["state"]}>
+                                    {option["state"]}
+                                 </MenuItem>
+                              ))}
+                           </Select>
+                        </FormControl>
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>City</TableCell>
+                     <TableCell>
+                        <FormControl sx={{ m: 1, minWidth: 220 }}>
+                           <InputLabel>City</InputLabel>
+                           <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)}>
+                              {cityOptions.map((option) => (
+                                 <MenuItem key={option["Id"]} value={option["state"]}>
+                                    {option["state"]}
                                  </MenuItem>
                               ))}
                            </Select>
