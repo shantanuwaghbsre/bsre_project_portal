@@ -42,7 +42,7 @@ const ViewAllConsumers = (props:any) => {
   
   
     return (
-       <div>
+       <div className='table-data'>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
             <TableHead>
