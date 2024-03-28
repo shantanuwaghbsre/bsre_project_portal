@@ -192,7 +192,7 @@ const StartProject = (props:any) => {
       }
 
     return (
-        <div style={{ paddingTop: 64 }}>
+        <div className='table-data' style={{ paddingTop: 64 }}>
         {currentPage === 1 &&
          <form onSubmit={handleSubmit}>
          <Table>

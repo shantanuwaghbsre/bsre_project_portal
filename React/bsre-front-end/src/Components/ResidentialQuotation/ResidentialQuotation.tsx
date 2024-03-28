@@ -3,7 +3,8 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import axios from 'axios'
 import './styles.css'
 import Loading from "../Loading/Loading";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common['token'] = props.token
@@ -99,7 +100,7 @@ const ResidentialQuotation = (props: any) => {
   };
   const [stateOptions, setStateOptions] = useState([])
   const [agentOptions, setAgentOptions] = useState([])
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState([])
   const [successMessage, setSuccessMessage] = useState("")
   const [isFormValid, setIsFormValid] = useState<Boolean>(false)
   const [loading, setLoading] = useState(false)
@@ -134,52 +135,54 @@ const ResidentialQuotation = (props: any) => {
       projectCost: 0,
       customerEmail: ""
     });
-    setErrorMessage("");
+    setErrorMessage([]);
     setIsFormValid(false);
   };
 
   const validateAndCalculate = () => {
     if (!formData["agentID"]) {
-      setErrorMessage("Agent ID number required")
+      // setErrorMessage("Agent ID number required")
+      setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Agent ID number required"]);
+
     }
-    else if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
-      setErrorMessage("Customer details required")
+    if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Customer details required"]);
     }
-    else if (formData["customerPhoneNumber"].length != 10) {
-      setErrorMessage("Phone number invalid")
+    if (formData["customerPhoneNumber"].length != 10) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Phone number invalid"]);
     }
-    else if (!emailRegex.test(formData["customerEmail"])) {
-      setErrorMessage("Please enter a valid email address")
+    if (!emailRegex.test(formData["customerEmail"])) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please enter a valid email address"]);
     }
-    else if (!formData["solarModule"]) {
-      setErrorMessage("Please select a solar module.");
+    if (!formData["solarModule"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar module."]);
     }
-    else if (!formData["solarModuleType"]) {
-      setErrorMessage("Please select a solar module type.");
+    if (!formData["solarModuleType"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar module type."]);
     }
-    else if (formData["numberOfPanels"] < 4 || formData["numberOfPanels"] == 7 || formData["numberOfPanels"] == 12 || formData["numberOfPanels"] == 14 || formData["numberOfPanels"] == 16 || formData["numberOfPanels"] == 17 || formData["numberOfPanels"] > 18) {
-      setErrorMessage("Please select correct number of panels.");
+    if (formData["numberOfPanels"] < 4 || formData["numberOfPanels"] == 7 || formData["numberOfPanels"] == 12 || formData["numberOfPanels"] == 14 || formData["numberOfPanels"] == 16 || formData["numberOfPanels"] == 17 || formData["numberOfPanels"] > 18) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select correct number of panels."]);
     }
-    else if (!formData["solarInverter"]) {
-      setErrorMessage("Please select a solar inverter.");
+    if (!formData["solarInverter"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar inverter."]);
     }
-    else if (!formData["moduleMountingStructureMake"]) {
-      setErrorMessage("Module mounting structure make cannot be empty.");
+    if (!formData["moduleMountingStructureMake"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure make cannot be empty."]);
     }
-    else if (!formData["moduleMountingStructureDescription"]) {
-      setErrorMessage("Module mounting structure description cannot be empty.");
+    if (!formData["moduleMountingStructureDescription"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure description cannot be empty."]);
     }
-    else if (!formData["moduleMountingStructureQuantity"]) {
-      setErrorMessage("Module mounting structure quantity cannot be empty.");
+    if (!formData["moduleMountingStructureQuantity"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure quantity cannot be empty."]);
     }
-    else if (!formData["structure"]) {
-      setErrorMessage("Please enter Structure value.");
+    if (!formData["structure"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please enter Structure value."]);
     }
-    else if (!formData["discomOrTorrent"]) {
-      setErrorMessage("Please select discom or torrent.");
+    if (!formData["discomOrTorrent"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select discom or torrent."]);
     }
-    else if (formData["discomOrTorrent"] === "Torrent" && !formData["phase"]) {
-      setErrorMessage("Please select phase.");
+    if (formData["discomOrTorrent"] === "Torrent" && !formData["phase"]) {
+      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select phase."]);
     }
     else {
       setIsFormValid(true);
@@ -211,7 +214,7 @@ const ResidentialQuotation = (props: any) => {
   }
 
   const handleClose = () => {
-    setErrorMessage("")
+    setErrorMessage([])
     setSuccessMessage("")
     setIsFormValid(false)
   }
@@ -297,7 +300,7 @@ const ResidentialQuotation = (props: any) => {
           setSuccessMessage("Successfully created Quotation number - " + response.data.quotation_number);
         }
         else {
-          setErrorMessage("Error while creating Quotation");
+          setErrorMessage(prevErrorMessage => [...prevErrorMessage,"Error while creating Quotation"]);
         };
       })
       .catch(function (error) {
@@ -322,8 +325,8 @@ const ResidentialQuotation = (props: any) => {
           <Loading />
         </div>
         :
-        <div style={{ paddingTop: 64 }}>
-          {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()}anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
+        <div className="table-data" style={{ padding: "20px" }}>
+          {/* {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()}anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%',marginTop:"15%" }}>
               {errorMessage}
             </Alert>
@@ -332,7 +335,9 @@ const ResidentialQuotation = (props: any) => {
             <Alert onClose={handleClose} severity="success" sx={{ width: '100%',marginTop:"15%" }}>
               {successMessage}
             </Alert>
-          </Snackbar>}
+          </Snackbar>} */}
+          <ToastContainer style={{ width: "400px" }} />
+
 
           <TableContainer component={Paper}>
             <Table aria-label="simple table">

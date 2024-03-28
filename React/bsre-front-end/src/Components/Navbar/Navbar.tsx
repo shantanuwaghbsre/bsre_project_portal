@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link, redirect, useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, MenuItem, Menu, Box } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import LogoutIcon from '@mui/icons-material/Logout';
 const Navbar = (props: any) => {
     const [anchorElQuotations, setAnchorElQuotations] = React.useState<null | HTMLElement>(null);
     const [anchorElConsumers, setAnchorElConsumers] = React.useState<null | HTMLElement>(null);
@@ -81,8 +82,10 @@ const Navbar = (props: any) => {
                         <Button
                             color="inherit"
                             onClick={handleLogout}
+                            title='Logout'
+                            className='logout-button'
                         >
-                            Logout
+                            <LogoutIcon/>
                         </Button>
                     </Box>
                 </Toolbar>

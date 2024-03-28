@@ -9,7 +9,7 @@ const Loading = () => {
       <div className='loader-absolute'>
         <img src="/Images/BS-LOGO.jpg" alt="loader"/>
       </div>
-      <p style={{position: 'absolute',color: '#000', fontSize: '20px', top: '50%', left: '50%', transform: 'translate(-50%, 100%)',}}>Please Wait a Moment ...</p>
+      <p style={{position: 'absolute',color: '#000', fontSize: '20px', top: '50%',marginTop: '50px', left: '50%', transform: 'translate(-50%, 100%)'}}>Please Wait a Moment ...</p>
       </div>
     </>
   )

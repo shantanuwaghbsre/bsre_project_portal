@@ -57,8 +57,9 @@ const Dashboard = (props: any) => {
               <TableHead>
                 <TableRow>
                   {projects.length ? Object.keys(projects[0]).map((key) => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <TableCell style={{ color: 'black', fontWeight: 'bold',fontSize: '17px' }} key={key}>{key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}</TableCell>
                   )) : null}
+                  <TableCell style={{ color: 'black', fontWeight: 'bold',fontSize: '17px' }}>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -68,7 +69,7 @@ const Dashboard = (props: any) => {
                       <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
                     ))}
                     <TableCell>
-                      <Button component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View this Project</Button>
+                      <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
                     </TableCell>
                   </TableRow>
 

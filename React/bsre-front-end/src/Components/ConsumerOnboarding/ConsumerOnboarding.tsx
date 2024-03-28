@@ -199,7 +199,7 @@ const ConsumerOnboarding = (props: any) => {
               </TableRow>
               <TableRow>
                 <TableCell colSpan={2} align='right'>
-                  <button type="button" onClick={handleNextPage}>
+                  <button className='btn-next' type="button" onClick={handleNextPage}>
                     Next
                   </button>
                 </TableCell>
@@ -287,12 +287,12 @@ const ConsumerOnboarding = (props: any) => {
 
               <TableRow>
                 <TableCell align='left'>
-                  <button type="button" onClick={handlePreviousPage}>
+                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
                 <TableCell align='right'>
-                  <button type="button" onClick={handleNextPage}>
+                  <button className='btn-next' type="button" onClick={handleNextPage}>
                     Next
                   </button>
                 </TableCell>
@@ -401,6 +401,7 @@ const ConsumerOnboarding = (props: any) => {
                       <ListItem key={index}>
                         <ListItemText primary={documentName} />
                         <Button
+                          style={{ backgroundColor: "red", color: "white" }}
                           variant="contained"
                           component="label"
                           onClick={() => handleRemoveDocument(index)}
@@ -414,12 +415,12 @@ const ConsumerOnboarding = (props: any) => {
               </TableRow>
               <TableRow>
                 <TableCell align='left'>
-                  <button type="button" onClick={handlePreviousPage}>
+                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
                 <TableCell align='right'>
-                  <button type="button" onClick={handleSubmit}>
+                  <button className='btn-next' type="button" onClick={handleSubmit}>
                     Submit
                   </button>
                 </TableCell>

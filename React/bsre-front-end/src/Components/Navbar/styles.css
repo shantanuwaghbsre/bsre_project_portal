@@ -62,3 +62,11 @@
 .button:hover {
     background-color: #45a049;
 }
+.logout-button[title]:hover::after {
+    content: attr(title);
+    font-size: 14px;
+    color: white;
+    background-color: blue;
+    padding: 5px;
+    border-radius: 5px;
+ }

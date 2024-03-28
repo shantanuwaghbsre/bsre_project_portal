@@ -3,6 +3,8 @@ import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRo
 import axios from 'axios'
 import './styles.css'
 import Loading from "../Loading/Loading";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AlignHorizontalCenter, VerticalAlignCenter, VerticalAlignTop } from "@mui/icons-material";
 
 const CommercialOrIndustrialQuotation = (props: any) => {
@@ -154,7 +156,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    const [locationOptions, setLocationOptions] = useState([])
    const [cityOptions, setCityOptions] = useState([])
    const [agentOptions, setAgentOptions] = useState([])
-   const [errorMessage, setErrorMessage] = useState("")
+   const [errorMessage, setErrorMessage] = useState([])
    const [successMessage, setSuccessMessage] = useState("")
    const [isFormValid, setIsFormValid] = useState<Boolean>(false)
    const [loading, setLoading] = useState(false)
@@ -210,87 +212,91 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          isLoan: false,
          isSubsidy: false
       })
-      setErrorMessage("");
+      setErrorMessage([]);
       setIsFormValid(false);
    };
 
    const validateAndCalculate = () => {
       let isFormValid_ = false
       isFormValid_ = true;
-      // if (!formData["agentID"]) {
-      //    setErrorMessage("Agent ID number required")
-      // }
-      // else if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
-      //    setErrorMessage("Customer details required")
-      // }
-      // else if (formData["customerPhoneNumber"].length != 10) {
-      //    setErrorMessage("Phone number invalid")
-      // }
-      // else if (!emailRegex.test(formData["customerEmail"])) {
-      //    setErrorMessage("Please enter a valid email address")
-      // }
-      // else if (!formData["solarModule"]) {
-      //    setErrorMessage("Please select a solar module.");
-      // }
-      // else if (!formData["solarModuleType"]) {
-      //    setErrorMessage("Please select a solar module type.");
-      // }
-      // else if (!formData["solarInverter"]) {
-      //    setErrorMessage("Please select a solar inverter.");
-      // }
-      // else if (!formData["inverterCapacity"]) {
-      //    setErrorMessage("Inverter capacity cannot be empty.");
-      // }
-      // else if (!formData["solarStructure"]) {
-      //    setErrorMessage("Please select a solar structure.");
-      // }
-      // else if (!formData["switchGearAndProtection"]) {
-      //    setErrorMessage("Please select a Switch Gear And Protection.");
-      // }
-      // else if (isNaN(calculationData["ratePerWatt"])) {
-      //    setErrorMessage("Rate Per Watt must be a number.");
-      // }
-      // else if (isNaN(calculationData["gstPerWatt"])) {
-      //    setErrorMessage("GST Per Watt must be a number.");
-      // }
-      // else if (isNaN(calculationData["electricityUnitRate"])) {
-      //    setErrorMessage("Electricity Unit Rate must be a number.");
-      // }
-      // else if (isNaN(calculationData["subsidyPerWatt"])) {
-      //    setErrorMessage("Subsidy Per Watt must be a number.");
-      // }
-      // else if (isNaN(calculationData["inflationInUnitRate"])) {
-      //    setErrorMessage("Inflation In Unit Rate must be a number.");
-      // }
-      // else if (isNaN(calculationData["reinvestmentRate"])) {
-      //    setErrorMessage("Reinvestment Rate must be a number.");
-      // }
-      // else if (isNaN(calculationData["loanAmountOnProject"])) {
-      //    setErrorMessage("Loan Amount On Project must be a number.");
-      // }
-      // else if (isNaN(calculationData["interestRateOnLoan"])) {
-      //    setErrorMessage("Interest Rate On Loan must be a number.");
-      // }
-      // else if (isNaN(calculationData["loanTerm"])) {
-      //    setErrorMessage("Loan Term must be a number.");
-      // }
-      // else if (isNaN(calculationData["installmentOfLoanPerMonth"])) {
-      //    setErrorMessage("Installment Of Loan Per Month must be a number.");
-      // }
-      // else if (isNaN(calculationData["anyExtraCostOnAddOnWork"])) {
-      //    setErrorMessage("Extra Cost On Add On Work must be a number.");
-      // }
-      // else if (isNaN(calculationData["gstOnAddOnWork"])) {
-      //    setErrorMessage("GST On Add On Work must be a number.");
-      // }
-      // else {
-      //    isFormValid_ = true;
-      // }
+      setErrorMessage([]);
+      if (!formData["agentID"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Agent ID number required"]);
+      }
+      if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Customer details required"]);
+      }
+      if (formData["customerPhoneNumber"].length != 10) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Phone number invalid"]);
+      }
+      if (!emailRegex.test(formData["customerEmail"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "email address"]);
+      }
+      if (!formData["solarModule"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "solar module."]);
+      }
+      if (!formData["solarModuleType"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "solar module type."]);
+      }
+      if (!formData["solarInverter"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "solar inverter."]);
+      }
+      if (!formData["inverterCapacity"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Inverter capacity cannot be empty."]);
+      }
+      if (!formData["solarStructure"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "solar structure."]);
+      }
+      if (!formData["switchGearAndProtection"]) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Switch Gear And Protection."]);
+      }
+      if (isNaN(calculationData["ratePerWatt"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Rate Per Watt must be a number."]);
+      }
+      if (isNaN(calculationData["gstPerWatt"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "GST Per Watt must be a number."]);
+      }
+      if (isNaN(calculationData["electricityUnitRate"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Electricity Unit Rate must be a number."]);
+      }
+      if (isNaN(calculationData["subsidyPerWatt"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Subsidy Per Watt must be a number."]);
+      }
+      if (isNaN(calculationData["inflationInUnitRate"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Inflation In Unit Rate must be a number."]);
+      }
+      if (isNaN(calculationData["reinvestmentRate"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Reinvestment Rate must be a number."]);
+      }
+      if (isNaN(calculationData["loanAmountOnProject"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Loan Amount On Project must be a number."]);
+      }
+      if (isNaN(calculationData["interestRateOnLoan"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Interest Rate On Loan must be a number."]);
+      }
+      if (isNaN(calculationData["loanTerm"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Loan Term must be a number."]);
+      }
+      if (isNaN(calculationData["installmentOfLoanPerMonth"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Installment Of Loan Per Month must be a number."]);
+      }
+      if (isNaN(calculationData["anyExtraCostOnAddOnWork"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Extra Cost On Add On Work must be a number."]);
+      }
+      if (isNaN(calculationData["gstOnAddOnWork"])) {
+         setErrorMessage(prevErrorMessage => [...prevErrorMessage, "GST On Add On Work must be a number."]);
+      }
+      if(!errorMessage.length) {
+         isFormValid_ = true;
+      }
+      else{
+         toast.error(<div>Please fill the required fields.<br/>{errorMessage.map((error) => <li style={{textAlign:"left"}}>{error}</li>)}<br/></div>,{position: "top-right",autoClose:false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,});
+      }
       setIsFormValid(isFormValid_);
    }
 
    const handleClose = () => {
-      setErrorMessage("");
+      setErrorMessage([]);
       setSuccessMessage("");
       setIsFormValid(false);
    }
@@ -414,16 +420,17 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          "subsidy_per_watt": 0
 
       }
-      axios.post(urls["dummyURL"], postObject)
+      axios.post(urls["submitURL"], postObject)//Should ['submitURL']
          .then(function (response) {
             setLoading(false);
             setOpacity_value(1);
             if (response.data.completed) {
                resetForm()
-               setSuccessMessage("Successfully created Quotation number - " + response.data.quotation_number);
+               // setSuccessMessage("Successfully created Quotation number - " + response.data.quotation_number);
+               toast.success("Successfully created Quotation number - " + response.data.quotation_number, { position: "top-center",theme: "colored", autoClose: 2000, hideProgressBar: true });
             }
             else {
-               setErrorMessage("Error while creating Quotation");
+               setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Error while creating Quotation"]);
             };
          })
          .catch(function (error) {
@@ -462,24 +469,27 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    return (
       <>
          {loading ?
-            <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh',}}>
+            <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
                <Loading />
             </div>
-            : 
+            :
             // <></>
-            <div style={{ marginTop: "5%", opacity: opacity_value }} id="quotation">
-               {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()} anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
+            <div className="table-data" style={{ marginTop: "5%", padding: "45px", opacity: opacity_value }} id="quotation">
+               {/* {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()} anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
                   <Alert onClose={handleClose} severity="error" sx={{ width: '100%',marginTop:"15%"}}>
                      {errorMessage}
                   </Alert>
-               </Snackbar>}
-               {
-                  <Snackbar open={successMessage.length > 0} autoHideDuration={50000} onClose={() => handleClose()} anchorOrigin={{vertical: 'top',horizontal: 'center',}}>
-                     <Alert onClose={handleClose} severity="success" sx={{ width: '100%',marginTop:"15%"}}>
+               </Snackbar>} */}
+
+               <ToastContainer  style={{width:"400px"}}/>
+                  
+               {/* {
+                  <Snackbar open={successMessage.length > 0} autoHideDuration={50000} onClose={() => handleClose()} anchorOrigin={{ vertical: 'top', horizontal: 'center', }}>
+                     <Alert onClose={handleClose} severity="success" sx={{ width: '100%', marginTop: "15%" }}>
                         {successMessage}
                      </Alert>
                   </Snackbar>
-               }
+               } */}
                <TableContainer component={Paper}>
                   <Table aria-label="simple table">
                      <TableBody>
@@ -936,7 +946,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
                {isFormValid && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
             </div>
-            }
+         }
       </>
    );
 };

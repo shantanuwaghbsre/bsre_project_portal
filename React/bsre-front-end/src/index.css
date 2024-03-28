@@ -19,15 +19,21 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
-.body-bgimage{
+
+.body-bgimage {
+  width: 100%;
+  height: auto;
   background: url("/Images/bg-2.jpg");
-  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  image-resolution: from-image;
+  background-size: cover;
+  position: relative;
 }
+
 body {
   margin: 0;
   display: flex;
@@ -46,6 +52,46 @@ h1 {
   line-height: 1.1;
 }
 
+/* //////////////////////////////Scroller of App////////////////////////////////////////////// */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 15px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ff7200;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background: #ff7200;
+}
+
+/* /////////////////////////////////////////////////////////////////////////////////////////// */
+.btn-info {
+  background-color: #0dcaf0 !important;
+  color: #000 !important;
+}
+
+.btn-prev {
+  background-color: #ccc;
+  color: #000;
+}
+
+.btn-next {
+  background-color: #008000;
+  color: #fff;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -57,9 +103,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -70,9 +118,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }

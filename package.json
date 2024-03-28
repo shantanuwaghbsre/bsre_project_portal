@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "httpclient": "^0.1.0",
-    "keycloak-js": "^23.0.6"
-  }
-}

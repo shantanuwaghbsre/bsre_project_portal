@@ -1,0 +1,80 @@
+:root {
+    --success-color: #42A71F;
+    --white-color: #fff;
+    --blank-line-color: rgb(190, 190, 190);
+}
+.indexedStep {
+    color: rgb(190, 190, 190);
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    background-color: var(--white-color);
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(206, 206, 206);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.indexedStep.accomplished {
+    background-color: var(--success-color);
+    color: var(--white-color);
+    border-style: none;
+}
+
+.RSPBprogressBar {
+    height: 2px;
+    /* width: 30%; */
+    width: 90%;
+    line-height: 1;
+    border-radius: 10px;
+    position: relative;
+    background-color:var(--blank-line-color) ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 0;
+    margin: 20px auto;
+}
+
+.RSPBprogressBar .RSPBstep {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    position: absolute;
+    transform: translateX(-50%);
+    transition-property: all;
+    transition-timing-function: ease;
+}
+
+.RSPBprogressBar .RSPBprogressBarText {
+    color: var(--white-color);
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.RSPBprogressBar .RSPBprogression {
+    position: absolute;
+    transition: width 0.3s ease;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 10px;
+    background: var(--success-color);
+    z-index: -1;
+}
+
+@media screen and (max-width: 480px) {
+    .indexedStep{
+        width: 15px;
+        height: 15px;
+        font-size: 6px;
+    }
+}

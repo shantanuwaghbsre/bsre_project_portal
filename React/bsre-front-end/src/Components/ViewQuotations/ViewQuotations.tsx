@@ -37,27 +37,33 @@ const ViewQuotations = (props:any) => {
     setPage(0);
     setLoading(true);
   };
-
-
   return (
-     <div>
+     <div className='table-data'>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               {quotations.length?Object.keys(quotations[0]).map((key) => (
-                <TableCell key={key}>{key}</TableCell>
+                ["Agent code","Agent name"].includes(key) ?
+                // ["Agent code","Agent name","Consumer address","Consumer email","Consumer mobile number","Consumer name","DISCOM/Torrent","GEB agreement fees","GUVNL amount","Installation AC MCB switch charges","Location","Net GUVNL system price","Number of panels"].includes(key) ?
+                <TableCell style={{ color: 'black', fontWeight: 'bold',fontSize: '17px' }} key={key}>{key}</TableCell>
+                :null
               )): <TableCell/>}
+              <TableCell style={{ color: 'black', fontWeight: 'bold',fontSize: '17px' }}>
+                Action
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {quotations.length?quotations.map((row, index) => (
               <TableRow key={index}>
-                {Object.values(row).map((value, index) => (
-                  <TableCell key={index}>{value?String(value):""}</TableCell>
+                {Object.keys(row).map((key) => (
+                ["Agent code","Agent name"].includes(key as string) ?
+                  <TableCell key={key}>{row[key]?String(row[key]):""}</TableCell>:
+                  null
                 ))}
                 <TableCell>
-                  <Button component={Link} to={{ pathname: '/ConsumerOnboarding',  }} state={{"quotation":quotations[index]}}>Onboard this Customer</Button>
+                  <Button className='btn btn-info' component={Link} to={{ pathname: '/ConsumerOnboarding',  }} state={{"quotation":quotations[index]}}>Onboard this Customer</Button>
                   </TableCell>
               </TableRow>
               
