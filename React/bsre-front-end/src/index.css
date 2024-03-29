@@ -40,11 +40,6 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  /* background: url("../public/Images/bg-2.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  image-resolution: from-image; */
-  /* opacity: 0.2; */
 }
 
 h1 {
