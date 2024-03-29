@@ -4,7 +4,10 @@ import os
 import psycopg2
 from typing import Optional, List, Any, Union, Tuple
 
+conn = None
+
 def set_cursor():
+    global conn
     # Establish a connection to the database
     conn = psycopg2.connect(
         database=os.environ.get("DATABASE"),
@@ -18,6 +21,7 @@ def set_cursor():
     return conn.cursor()
 
 cur = set_cursor()
+
 
 def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None) -> Union[List[Tuple[Any]], bool]:
     """
@@ -35,6 +39,7 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
     Raises:
         ValueError: If the query execution fails.
     """
+    global cur, conn
     if cur.closed:
         cur = set_cursor()
 

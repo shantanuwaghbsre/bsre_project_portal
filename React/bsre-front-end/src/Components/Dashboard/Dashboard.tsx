@@ -17,8 +17,7 @@ const Dashboard = (props: any) => {
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(`http://192.168.29.62:5000/getAllProjects?page=${page + 1}&limit=${limit}`);
-      // const response = await axios.get(`http://localhost:5000/getAllProjects?page=${page+1}&limit=${limit}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllProjects?page=${page + 1}&limit=${limit}`);
       setProjects(response.data['projects']);
       setTotalPages(response.data['totalPages']);
       setLoading(false);

@@ -138,8 +138,7 @@ const ViewProject = (props: any) => {
         console.log("location.state - ", location.state)
         setCurrentPage(location.state.project_in_phase);
         try {
-          // axios.get(`http://localhost:5000/getProject?consumer_number=${location.state.consumer_number}`).then(
-          axios.get(`http://192.168.29.62:5000/getProject?consumer_number=${location.state.consumer_number}`).then(
+          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?consumer_number=${location.state.consumer_number}`).then(
             (response) => {
               // console.log(response.data);
               setProject(response.data);
@@ -217,8 +216,7 @@ const ViewProject = (props: any) => {
 
   useEffect(() => {
     if (!project.phase_1.consumer_name) {
-      // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
-      axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+      axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         (response_consumer_details) => {
           console.log("consumer details", response_consumer_details);
           setProject((prevProject) => {
@@ -239,8 +237,7 @@ const ViewProject = (props: any) => {
     }
   }, [location.state.for_consumer_id, project.phase_1.consumer_name])
   // if(!project.phase_1.consumer_name.length) {
-  // axios.get(`http://localhost:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(  
-  //   axios.get(`http://192.168.29.62:5000/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
+  //   axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
   //   (response_consumer_details) => {
   //     console.log("consumer details", response_consumer_details.data);
   //     setProject((prevProject) => {
@@ -284,15 +281,13 @@ const ViewProject = (props: any) => {
   }
 
   const promoteToNextPhase = () => {
-    // axios.post('http://localhost:5000/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
-    axios.post('http://192.168.29.62:5000/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
+    axios.post(import.meta.env.VITE_BACKEND_URL + '/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
       (response) => {
         console.log(response.data);
         if (response.data.success) {
           setCurrentPage((prevPage) => Number(prevPage) + 1);
           setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
-          // axios.get(`http://localhost:5000/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
-          axios.get(`http://192.168.29.62:5000/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
+          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
             (response_project) => {
               console.log(response_project);
               setProject(response_project.data);
@@ -341,8 +336,7 @@ const ViewProject = (props: any) => {
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", project.phase_1.project_in_phase);
 
-      // axios.post('http://localhost:5000/updatePhaseData', postObject).then(
-      axios.post('http://192.168.29.62:5000/updatePhaseData', postObject).then(
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/updatePhaseData', postObject).then(
         response => {
           console.log(response);
         }
@@ -358,8 +352,7 @@ const ViewProject = (props: any) => {
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", currentPage.toString());
 
-      // axios.post('http://localhost:5000/updatePhaseData', postObject).then(
-      axios.post('http://192.168.29.62:5000/updatePhaseData', postObject).then(
+      axios.post(import.meta.env.VITE_BACKEND_URL + '/updatePhaseData', postObject).then(
         response => {
           console.log(response);
         }
@@ -375,8 +368,7 @@ const ViewProject = (props: any) => {
     let blob = new Blob([])
     let base64String = '';
     console.log(project["phase_" + currentPage], documentRequired_);
-    // let url = `http://localhost:5000/downloadFile?document_required=${documentRequired}&document_type=${documentType}`
-    let url = `http://192.168.29.62:5000/`
+    let url = import.meta.env.VITE_BACKEND_URL
     if (documentRequired_ === "electrical_diagram" || documentRequired_ === 'meter_report' || documentRequired_ === 'joint_inspection' || documentRequired_ === 'property_tax' || documentRequired_ === 'electricity_bill' || documentRequired_ === 'cancelled_cheque') {
       console.log("in if 1")
       if ((project["phase_" + currentPage][documentRequired_] != false && typeof (project["phase_" + currentPage][documentRequired_]) == 'string') || (project["phase_" + currentPage][documentRequired_] != null && typeof (project["phase_" + currentPage][documentRequired_]) == 'object')) {

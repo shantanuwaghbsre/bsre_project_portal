@@ -262,16 +262,10 @@ const ResidentialQuotation = (props: any) => {
   }, [formData["solarModuleType"]]);
 
 
-  // const urls = {
-  //   "calculateURL": "http://localhost:5000/calculate",
-  //   "submitURL": "http://localhost:5000/submitResidentialQuotation",
-  //   "getAgentsURL": "http://localhost:5000/getAgents",
-  // }
-
   const urls = {
-    "calculateURL": "http://192.168.29.62:5000/calculate",
-    "submitURL": "http://192.168.29.62:5000/submitResidentialQuotation",
-    "getAgentsURL": "http://192.168.29.62:5000/getAgents",
+    "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
+    "submitURL": import.meta.env.VITE_BACKEND_URL + "/submitResidentialQuotation",
+    "getAgentsURL": import.meta.env.VITE_BACKEND_URL + "/getAgents",
   }
 
   const handleSubmit = () => {

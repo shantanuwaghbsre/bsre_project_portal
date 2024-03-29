@@ -318,6 +318,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       setCityOptions(CityOfState);
    }, [])
    useEffect(() => {
+      console.log(urls);
+      
       axios.get(urls["getAgentsURL"])
          .then(function (response) {
             setAgentOptions(response.data);
@@ -335,20 +337,12 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       setIsFormValid(false);
    }, [formData, calculationData])
 
-
-   //   const urls = {
-   //     "calculateURL": "http://localhost:5000/calculate",
-   //     "submitURL": "http://localhost:5000/submitIndustrialCommercialQuotation",
-   //     "getAgentsURL": "http://localhost:5000/getAgents",
-   //     "getLocationsURL": "http://localhost:5000/getLocations"
-   //   }
-
    const urls = {
-      "calculateURL": "http://192.168.29.62:5000/calculate",
-      "dummyURL": "http://192.168.29.62:5000/dummyAPI",
-      "submitURL": "http://192.168.29.62:5000/submitIndustrialCommercialQuotation",
-      "getAgentsURL": "http://192.168.29.62:5000/getAgents",
-      "getLocationsURL": "http://192.168.29.62:5000/getLocations"
+      "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
+      "dummyURL": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
+      "submitURL": import.meta.env.VITE_BACKEND_URL + "/submitIndustrialCommercialQuotation",
+      "getAgentsURL": import.meta.env.VITE_BACKEND_URL + "/getAgents",
+      "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations"
    }
 
    const handleSubmit = () => {

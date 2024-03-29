@@ -13,8 +13,7 @@ const ViewQuotations = (props:any) => {
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      // const response = await axios.get(`http://localhost:5000/getAllQuotations?page=${page+1}&limit=${limit}`);
-      const response = await axios.get(`http://192.168.29.62:5000/getAllQuotations?page=${page+1}&limit=${limit}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?page=${page+1}&limit=${limit}`);
       setQuotations(response.data['quotations']);
       setTotalPages(response.data['totalPages']);
       setLoading(false);

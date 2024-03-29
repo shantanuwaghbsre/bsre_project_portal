@@ -16,7 +16,7 @@ const Navbar = (props: any) => {
     const handleLogout = () => {
         props.logout()
         localStorage.removeItem('token')
-        window.location.replace('http://192.168.29.62:8080')
+        window.location.replace(import.meta.env.VITE_KEYCLOAK_URL)
     }
     const myTheme = createTheme({
         palette: {

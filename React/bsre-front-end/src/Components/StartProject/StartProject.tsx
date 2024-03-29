@@ -48,17 +48,11 @@ const StartProject = (props:any) => {
       })
 
     const [quotationSearchResults, setQuotationSearchResults] = useState<string[]>([]);
-    
-    // const urls = {
-    //     "searchQuotationURL": "http://localhost:5000/searchQuotations",
-    //     "createProjectURL": "http://localhost:5000/createProject",
-    //     "searchSpecificQuotationURL": "http://localhost:5000/searchSpecificQuotation"
-    // }
 
     const urls = {
-        "searchQuotationURL": "http://192.168.29.62:5000/searchQuotations",
-        "createProjectURL": "http://192.168.29.62:5000/createProject",
-        "searchSpecificQuotationURL": "http://192.168.29.62:5000/searchSpecificQuotation"
+        "searchQuotationURL": import.meta.env.VITE_BACKEND_URL + "/searchQuotations",
+        "createProjectURL": import.meta.env.VITE_BACKEND_URL + "/createProject",
+        "searchSpecificQuotationURL": import.meta.env.VITE_BACKEND_URL + "/searchSpecificQuotation"
     }
     
     let _location = useLocation();

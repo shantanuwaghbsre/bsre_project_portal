@@ -16,7 +16,7 @@ import Keycloak from 'keycloak-js';
 import { ToastContainer } from 'react-toastify';
 
 let initOptions = {
-  url: 'http://192.168.29.62:8080/',
+  url: import.meta.env.VITE_KEYCLOAK_URL,
   realm: 'myrealm',
   clientId: 'a_client',
 }
@@ -46,7 +46,7 @@ const CustomHistoryWrapper = () => {
   //       realm: initOptions.realm,
   //       url: initOptions.url,
   //     });
-  //     await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'http://192.168.29.62:5173/', responseMode: 'query', }).then(
+  //     await keycloak.init({ onLoad: 'login-required', pkceMethod: "S256", redirectUri: 'import.meta.env.VITE_FRONTEND_URL', responseMode: 'query', }).then(
   //       () => {
   //         console.log("keycloak");
   //         console.log(keycloak);
@@ -73,7 +73,7 @@ const CustomHistoryWrapper = () => {
 
   return (
     <>
-    <ToastContainer  style={{width:"400px",padding:"0 !important", zIndex:"2"}}/>
+    <ToastContainer  style={{width:"400px",marginTop:"60px",padding:"0 !important", zIndex:"2"}}/>
     {isAuthenticated && kc.token.length > 0 && ( 
 
       <BrowserRouter>

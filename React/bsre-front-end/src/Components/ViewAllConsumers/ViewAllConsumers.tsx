@@ -14,8 +14,7 @@ const ViewAllConsumers = (props: any) => {
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      // const response = await axios.get(`http://localhost:5000/getAllConsumers?page=${page+1}&limit=${limit}`);
-      const response = await axios.get(`http://192.168.29.62:5000/getAllConsumers?page=${page + 1}&limit=${limit}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllConsumers?page=${page + 1}&limit=${limit}`);
       console.log(response.data);
       setConsumers(response.data['consumers']);
       setTotalPages(response.data['totalPages']);

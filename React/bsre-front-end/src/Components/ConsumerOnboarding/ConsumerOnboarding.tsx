@@ -5,19 +5,12 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import ViewAllConsumers from '../ViewAllConsumers/ViewAllConsumers';
 
-// const urls = {
-//   "calculateURL": "http://localhost:5000/calculate",
-//   "onboardConsumer": "http://localhost:5000/onboardConsumer",
-//   "getAgentsURL": "http://localhost:5000/getAgents",
-//   "getLocationsURL": "http://localhost:5000/getLocations"
-// }
-
 const urls = {
-  "calculateURL": "http://192.168.29.62:5000/calculate",
-  "onboardConsumer": "http://192.168.29.62:5000/onboardConsumer",
-  "getAgentsURL": "http://192.168.29.62:5000/getAgents",
-  "getLocationsURL": "http://192.168.29.62:5000/getLocations",
-  "getConsumerURL": "http://192.168.29.62:5000/getConsumer"
+  "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
+  "onboardConsumer": import.meta.env.VITE_BACKEND_URL + "/onboardConsumer",
+  "getAgentsURL": import.meta.env.VITE_BACKEND_URL + "/getAgents",
+  "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations",
+  "getConsumerURL": import.meta.env.VITE_BACKEND_URL + "/getConsumer"
 }
 
 const ConsumerOnboarding = (props: any) => {
