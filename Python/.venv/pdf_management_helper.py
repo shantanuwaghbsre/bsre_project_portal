@@ -145,7 +145,7 @@ def create_encrypted_pdf_from_html(html_file_path, context):
 
     # Set the output PDF file path
     if html_file_path.endswith('.html'):
-        output_pdf_path = html_file_path.rstrip('.html') + '.pdf'
+        output_pdf_path = html_file_path.replace('.html', '.pdf')
     else:
         output_pdf_path = html_file_path + '.pdf'
 

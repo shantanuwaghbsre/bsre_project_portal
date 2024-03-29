@@ -11,6 +11,7 @@ load_dotenv()
 import json
 import re
 import base64
+import time
 
 
 discom_paragraph = {
@@ -170,6 +171,13 @@ def update_phase_data():
             )
     return {"success": True}
 
+@blueprint.route("/dummyAPI", methods=["POST"])
+def dummyAPI():
+    time.sleep(5)
+    return {
+        "completed": True,
+        "quotation_number": "123/123/123/123"
+    }
 
 @blueprint.route('/downloadFile', methods=['GET'])
 def downloadFile():
