@@ -13,6 +13,7 @@ import Dashboard from './Components/Dashboard/Dashboard';
 import ViewProject from './Components/ViewProject/ViewProject';
 import { useEffect, useState } from 'react';
 import Keycloak from 'keycloak-js';
+import { ToastContainer } from 'react-toastify';
 
 let initOptions = {
   url: 'http://192.168.29.62:8080/',
@@ -72,6 +73,7 @@ const CustomHistoryWrapper = () => {
 
   return (
     <>
+    <ToastContainer  style={{width:"400px",padding:"0 !important", zIndex:"2"}}/>
     {isAuthenticated && kc.token.length > 0 && ( 
 
       <BrowserRouter>

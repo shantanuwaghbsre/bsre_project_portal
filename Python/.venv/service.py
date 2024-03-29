@@ -4,17 +4,20 @@ import os
 import psycopg2
 from typing import Optional, List, Any, Union, Tuple
 
-# Establish a connection to the database
-conn = psycopg2.connect(
-    database=os.environ.get("DATABASE"),
-    user=os.environ.get("USER"),
-    host=os.environ.get("HOST"),
-    password=os.environ.get("PASSWORD"),
-    port=os.environ.get("PORT")
-)
+def set_cursor():
+    # Establish a connection to the database
+    conn = psycopg2.connect(
+        database=os.environ.get("DATABASE"),
+        user=os.environ.get("USER"),
+        host=os.environ.get("HOST"),
+        password=os.environ.get("PASSWORD"),
+        port=os.environ.get("PORT")
+    )
 
-# Create a cursor object for executing SQL queries
-cur = conn.cursor()
+    # Create a cursor object for executing SQL queries
+    return conn.cursor()
+
+cur = set_cursor()
 
 def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None) -> Union[List[Tuple[Any]], bool]:
     """
@@ -32,6 +35,10 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
     Raises:
         ValueError: If the query execution fails.
     """
+    if cur.closed:
+        cur = set_cursor()
+
+    # Execute the query
     try:
         print(query, parameters)
         cur.execute(query, parameters)

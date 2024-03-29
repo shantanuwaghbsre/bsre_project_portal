@@ -139,50 +139,59 @@ const ResidentialQuotation = (props: any) => {
     setIsFormValid(false);
   };
 
-  const validateAndCalculate = () => {
-    if (!formData["agentID"]) {
-      // setErrorMessage("Agent ID number required")
-      setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Agent ID number required"]);
+  useEffect(() => {
+    if (errorMessage.length > 0) {
+       toast.error(<div>Please fill the required fields.<br/>{errorMessage.map((error) => <li style={{textAlign:"left"}}>{error}</li>)}<br/></div>,{position: "top-right",autoClose:false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,});  
+    }
+ }, [errorMessage]);
 
+  const validateAndCalculate = () => {
+    let errorMessage_ = []
+    if (!formData["agentID"]) {
+      errorMessage_.push( "Agent ID number required");
     }
     if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Customer details required"]);
+      errorMessage_.push("Customer details required");
     }
     if (formData["customerPhoneNumber"].length != 10) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Phone number invalid"]);
+      errorMessage_.push("Phone number invalid");
     }
     if (!emailRegex.test(formData["customerEmail"])) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please enter a valid email address"]);
+      errorMessage_.push("Please enter a valid email address");
     }
     if (!formData["solarModule"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar module."]);
+      errorMessage_.push("Please select a solar module.");
     }
     if (!formData["solarModuleType"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar module type."]);
+      errorMessage_.push("Please select a solar module type.");
     }
     if (formData["numberOfPanels"] < 4 || formData["numberOfPanels"] == 7 || formData["numberOfPanels"] == 12 || formData["numberOfPanels"] == 14 || formData["numberOfPanels"] == 16 || formData["numberOfPanels"] == 17 || formData["numberOfPanels"] > 18) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select correct number of panels."]);
+      errorMessage_.push("Please select correct number of panels.");
     }
     if (!formData["solarInverter"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select a solar inverter."]);
+      errorMessage_.push("Please select a solar inverter.");
     }
     if (!formData["moduleMountingStructureMake"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure make cannot be empty."]);
+      errorMessage_.push("Module mounting structure make cannot be empty.");
     }
     if (!formData["moduleMountingStructureDescription"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure description cannot be empty."]);
+      errorMessage_.push("Module mounting structure description cannot be empty.");
     }
     if (!formData["moduleMountingStructureQuantity"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Module mounting structure quantity cannot be empty."]);
+      errorMessage_.push("Module mounting structure quantity cannot be empty.");
     }
     if (!formData["structure"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please enter Structure value."]);
+      errorMessage_.push("Please enter Structure value.");
     }
     if (!formData["discomOrTorrent"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select discom or torrent."]);
+      errorMessage_.push("Please select discom or torrent.");
     }
     if (formData["discomOrTorrent"] === "Torrent" && !formData["phase"]) {
-      setErrorMessage(prevErrorMessage =>[...prevErrorMessage,"Please select phase."]);
+      errorMessage_.push("Please select phase.");
+    }
+    if (errorMessage_.length > 0) {
+      setErrorMessage(errorMessage_);
+      setIsFormValid(false);
     }
     else {
       setIsFormValid(true);
@@ -197,14 +206,17 @@ const ResidentialQuotation = (props: any) => {
 
       axios.post(urls["calculateURL"], postObject)
         .then(function (response) {
-          console.log(postObject, response.data)
+          if (response.data["guvnl_amount"] == null) {
+            setErrorMessage(["Error calculating GUVNL Amount. Please check your inputs."]);
+          }
+          else{
           setFormData((prevData) => ({
             ...prevData,
             ["calculatedGUVNLAmount"]: response.data["guvnl_amount"],
             ["calculatedSubsidy"]: response.data["subsidy"],
             ["projectCost"]: response.data["guvnl_amount"] - response.data["subsidy"] + formData["gebAgreementFees"] + formData["installmentAcMcbSwitchCharge"],
           }))
-        })
+        }})
         .catch(function (error) {
           console.log(error);
         });
@@ -336,7 +348,7 @@ const ResidentialQuotation = (props: any) => {
               {successMessage}
             </Alert>
           </Snackbar>} */}
-          <ToastContainer style={{ width: "400px" }} />
+          <ToastContainer style={{ width: "400px", marginTop : "60px"}} />
 
 
           <TableContainer component={Paper}>
