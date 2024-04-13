@@ -489,7 +489,7 @@ const ViewProject = (props: any) => {
     }
   }
   return (
-    <div className='table-data' style={{padding:"64px 60px",width:"100%"}}>
+    <div className='table-data' >
       {/* ProgressBar */}
       <MultiStepProgressBar page={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
       <h1>{project.phase_1.consumer_name}</h1>

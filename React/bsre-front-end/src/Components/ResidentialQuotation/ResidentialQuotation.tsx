@@ -331,7 +331,7 @@ const ResidentialQuotation = (props: any) => {
           <Loading />
         </div>
         :
-        <div className="table-data" style={{ padding: "20px" }}>
+        <div className="table-data">
           {/* {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()}anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
             <Alert onClose={handleClose} severity="error" sx={{ width: '100%',marginTop:"15%" }}>
               {errorMessage}
