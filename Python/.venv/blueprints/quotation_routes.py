@@ -1,4 +1,5 @@
 from flask import Blueprint, Flask, request, jsonify, send_file
+import requests
 from service import make_db_call
 import datetime
 from datetime import timezone
@@ -91,11 +92,15 @@ def getLocations():
     list: A list of dictionaries containing the city information for each location.
     """
     # Retrieve location details from the database using a custom query
+    response = {}
     locations = make_db_call(query=queries['get_locations'], type_="returns")
-    
-    # Extract the city information from the location details and create a response list
-    response = [{"city": location[0]} for location in locations]
-    
+    print(set(location[0] for location in locations))
+    for state in set([location[0] for location in locations]):
+        response[state] = {}
+        for location in locations:
+            if location[0] == state:
+                response[state][location[1]] = {"latitude":location[2], "longitude":location[3]}
+    print(response)
     # Return the response
     return response
 
@@ -115,7 +120,6 @@ def getAgents():
     """
     # Query the database to get agent details
     agent_details_list = make_db_call(query=queries['get_agents'], type_="returns")
-    print(agent_details_list)
     # Create a response list by iterating over each agent details
     response = [
         {
@@ -275,6 +279,8 @@ def submitIndustrialCommercialQuotation():
         "November": 30,
         "December": 31
     }
+    request.json["monthly_irradiation_data"] = requests.get(f"https://vedas.sac.gov.in/powerGisService/insol_temp_calc/{request.json['longitude']}/{request.json['latitude']}/kwh").json()["insol_avg"]
+    request.json["daily_irradiation_data"] =[round(i/list(request.json["months"].values())[idx], 2) for idx, i in enumerate(request.json["monthly_irradiation_data"])]
 
     # Get average daily irradiation data from the database for the specified city
     irradiation_data = make_db_call(
@@ -283,17 +289,13 @@ def submitIndustrialCommercialQuotation():
         type_="returns"
     )[0]
 
-    # Add latitude, longitude, and irradiation data to the request
-    request.json['latitude'], request.json['longitude'], request.json['irradiation_data'] = irradiation_data[0], irradiation_data[1], irradiation_data[2:]
-
     # Set the GRAPHS_FOLDER environment variable
     request.json["GRAPHS_FOLDER"] = os.environ.get("GRAPHS_FOLDER")
 
     # Calculate monthly production based on irradiation data, pr_ratio, efficiency, area, and number of panels
     request.json["monthly_production"] = [
-        round(i * pr_ratio * efficiency * area * request.json['number_of_panels'] *
-                               list(request.json["months"].values())[idx], 2)
-        for idx, i in enumerate(request.json["irradiation_data"])
+        round(i * pr_ratio * efficiency * area * request.json['number_of_panels'], 2)
+        for idx, i in enumerate(request.json["monthly_irradiation_data"])
     ]
 
     # Calculate monthly earnings based on monthly production and rate
@@ -303,7 +305,7 @@ def submitIndustrialCommercialQuotation():
     
 
     # Calculate the sum of the values in the "irradiation_data" list of the JSON request and multiply it by month days to find total monthly irradiation
-    request.json["yearly_irradiation"] = round(sum([request.json["irradiation_data"][i] * list(request.json["months"].values())[i] for i in range(len(request.json["irradiation_data"]))]), 2)
+    request.json["yearly_irradiation"] = round(sum(request.json["monthly_irradiation_data"]), 2)
                                           
     # Calculate the sum of the values in the "monthly_production" list of the JSON request
     request.json["annual_production"] = round(sum(request.json["monthly_production"]), 2)
@@ -330,7 +332,7 @@ def submitIndustrialCommercialQuotation():
     graphs = [
         {
             "X_data": request.json["months"].keys(),
-            "Y_data": request.json['irradiation_data'],
+            "Y_data": request.json['daily_irradiation_data'],
             "x_label": "Months",
             "y_label": "kWh/m2",
             "color": "maroon",

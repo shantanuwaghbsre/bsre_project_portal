@@ -117,7 +117,7 @@ def getAllProjects():
 def getProject():
     project = {"phase_1":{}}
     data = make_db_call(queries["phase_details"].replace("column_names", ", ".join([column for column in queries["phase_details_column_names"]["1"]])).replace("table_name", "Projects"), "returns", parameters={"consumer_number": request.args.get('consumer_number')})
-    print(data[0])
+    print(data)
     for j, column in enumerate(queries[f"phase_details_column_names"]["1"] ):
         print(j, column)
         if column == 'other_documents':

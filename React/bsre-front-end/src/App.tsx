@@ -80,7 +80,7 @@ const CustomHistoryWrapper = () => {
       {/* <CustomHistoryWrapper/> */}
           <Navbar kc={kc}  /> 
           {/* logout={handleLogout} */}
-        <div style={{marginTop:"50px",width:"100%",marginLeft:"-3%"}}>
+        <div style={{marginTop:"50px",width:"100%"}}>
         <Routes>
             <>
             <Route path="/ResidentialQuotation" element={<ResidentialQuotation token={kc.token}/>} />
