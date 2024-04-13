@@ -20,7 +20,7 @@ def set_cursor():
     # Create a cursor object for executing SQL queries
     return conn.cursor()
 
-cur = set_cursor()
+
 
 
 def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None) -> Union[List[Tuple[Any]], bool]:
@@ -39,9 +39,7 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
     Raises:
         ValueError: If the query execution fails.
     """
-    global cur, conn
-    if cur.closed:
-        cur = set_cursor()
+    cur = set_cursor()
 
     # Execute the query
     try:
@@ -56,13 +54,16 @@ def make_db_call(query: str, type_: str, parameters: Optional[List[Any]] = None)
                 data = [[None]]
             if not data:
                 data = [[None]]
+            cur.close()
             return data
         else:
+            cur.close()
             return True
 
     except Exception as e:
         cur.execute("ROLLBACK")
         conn.commit()
+        cur.close()
         raise e or ValueError("Could not perform query")
 
 # print(make_db_call('select column_name from information_schema.columns where table_name = %(table_name)s', 'select', parameters={'table_name': 'Project_phase_2'}))

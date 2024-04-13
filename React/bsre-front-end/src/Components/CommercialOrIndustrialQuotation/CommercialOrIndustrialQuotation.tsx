@@ -94,6 +94,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       inverterCapacity: 0,
       location: "",
       city: "",
+      latitude: 0,
+      longitude: 0,
       agentID: "",
       agentName: "",
       customerName: "",
@@ -153,7 +155,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       }
    }
 
-   const [locationOptions, setLocationOptions] = useState([])
+   const [locationOptions, setLocationOptions] = useState({})
    const [cityOptions, setCityOptions] = useState([])
    const [agentOptions, setAgentOptions] = useState([])
    const [errorMessage, setErrorMessage] = useState([])
@@ -175,6 +177,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          inverterCapacity: 0,
          location: "",
          city: "",
+         latitude: 0,
+         longitude: 0,
          agentID: "",
          agentName: "",
          customerName: "",
@@ -185,16 +189,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          solarCableSelect: "Yes",
          switchGearAndProtection: "",
          sprinklerInstallation: "Yes",
-      });
-
-      // useEffect(() => {
-      //    if (loading){
-      //       setOpacity_value(0.3);
-      //    }
-      //    else {
-      //       setOpacity_value(1);
-      //    }
-      // }, [loading]);
+      });      
 
       setCalculationData({
          ratePerWatt: 0,
@@ -215,6 +210,15 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       setErrorMessage([]);
       setIsFormValid(false);
    };
+
+   useEffect(() => {
+      if (formData["city"]) {
+         console.log("latitude", locationOptions[formData["location"]][formData["city"]]["latitude"],
+      "longitude", locationOptions[formData["location"]][formData["city"]]["longitude"])
+      handleFormChange("latitude", locationOptions[formData["location"]][formData["city"]]["latitude"]);
+      handleFormChange("longitude", locationOptions[formData["location"]][formData["city"]]["longitude"]);
+      }
+   }, [formData["city"]]);
 
    useEffect(() => {
       if (errorMessage.length > 0) {
@@ -311,9 +315,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       handleFormChange("totalKiloWatts", formData["numberOfPanels"] * formData["solarModuleWattage"] / 1000);
    }, [formData["numberOfPanels"], formData["solarModuleWattage"]]);
 
-   useEffect(() => {
-      setLocationOptions(LocationOfState);
-   }, [])
+
    useEffect(() => {
       setCityOptions(CityOfState);
    }, [])
@@ -514,9 +516,9 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>Location</InputLabel>
                                  <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
-                                    {LocationOfState.map((option) => (
-                                       <MenuItem key={option["Id"]} value={option["state"]}>
-                                          {option["state"]}
+                                    {Object.keys(locationOptions).map((option) => (
+                                       <MenuItem key={option} value={option}>
+                                          {option}
                                        </MenuItem>
                                     ))}
                                  </Select>
@@ -528,13 +530,26 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                            <TableCell>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>City</InputLabel>
-                                 <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)}>
-                                    {cityOptions.map((option) => (
-                                       <MenuItem key={option["Id"]} value={option["state"]}>
-                                          {option["state"]}
+                                 <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)} disabled={formData["location"] == ""}>
+                                 {Object.keys(locationOptions[formData["location"]]?locationOptions[formData["location"]]:[]).map((option) => (
+                                       <MenuItem key={option} value={option}>
+                                          {option}
                                        </MenuItem>
                                     ))}
+                                    
                                  </Select>
+                              </FormControl>
+                           </TableCell>
+                           <TableCell>
+                              <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                 <InputLabel>Latitude</InputLabel>
+                                 <TextField label="Latitude" value={formData["latitude"]} type="text" name="latitude" onChange={(e) => handleFormChange("latitude", e.target.value)} />
+                              </FormControl>
+                           </TableCell>
+                           <TableCell>
+                              <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                 <InputLabel>Longitude</InputLabel>
+                                 <TextField label="Longitude" value={formData["longitude"]} type="text" name="longitude" onChange={(e) => handleFormChange("longitude", e.target.value)} />
                               </FormControl>
                            </TableCell>
                         </TableRow>
