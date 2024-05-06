@@ -481,13 +481,36 @@ def getAllQuotations():
     # Get the page number and limit from the query parameters
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
-    
+    search_by = request.args.get('searchDropdown').lower().replace(" ", "_")
+    search_for = request.args.get('searchTerm')
+    print(len(search_for), type(search_for))
     # Calculate the total number of pages based on the limit
-    total_pages_query = make_db_call(query=queries['countPages'], type_='returns')
-    total_pages = int(total_pages_query[0][0]) // limit + 1
+    # count = int(make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0])
+    
     
     # Get the quotations for the current page
-    quotations_query = make_db_call(query=queries['getAllQuotations'], type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
+    count=0
+    quotations_query = [[None]]
+    if search_by == 'all':
+        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", ''), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, })
+        count = int(make_db_call(query=queries['countRecords'].replace("##where##", ''), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0])
+    elif search_by == 'agent_name':
+        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_for + '%'})
+        count = make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0]
+        print(count)
+        if count == None:
+            count = 0
+        else:
+            count = int(count)
+        
+    elif search_by == 'consumer_name':
+        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_for + '%'})
+        count = make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0]
+        if count == None:
+            count = 0
+        else:
+            count = int(count)
+    total_pages = count // limit + 1
     
     # Check if there are no quotations for the current page
     if quotations_query == [[None]]:
@@ -534,7 +557,8 @@ def getAllQuotations():
     # Create the response dictionary with the quotations and total pages
     response = {
         "quotations": quotations,
-        "totalPages": total_pages
+        "totalPages": total_pages,
+        "count": count
     }
     # Return the response
     return response
