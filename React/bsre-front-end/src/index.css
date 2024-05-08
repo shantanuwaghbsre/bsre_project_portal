@@ -16,12 +16,15 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #ff7200;
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+  color: #ff7200;
+}
+.css-1y942vo-MuiButtonBase-root-MuiButton-root:hover{
+color: #ff7200;
 }
 
 .body-bgimage {
@@ -100,14 +103,41 @@ button {
 }
 
 button:hover {
-  border-color: #646cff;
+  border-color: #ff7200;
 }
 
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+/* //////////////////////////////Search icon/button ////////////////////////////////////////////// */
+.search-icon:hover{
+  background-color: #ff7200 !important;
+}
 
+.search-place{
+  display: flex;
+  justify-content: end;
+  margin-right: 5%;
+}
+.search, .search:focus{
+  border: 2px solid #000;
+  border-right: none;
+}
+.search-icon{
+  display: flex;
+  padding: 0 5px;
+  border: 1px solid #ff7200;
+  border-top-right-radius: 15%;
+  border-bottom-right-radius: 15%;
+  background-color: #ff7200;
+}
+/* //////////////////////////////////////////record not found ERROR///////////////////////////////////////// */
+.Records_Not_Found{
+  text-align: center !important;
+  font-weight:bold !important;
+  font-size: 16px !important;
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -115,7 +145,7 @@ button:focus-visible {
   }
 
   a:hover {
-    color: #747bff;
+    color: #ff7200;
   }
 
   button {
