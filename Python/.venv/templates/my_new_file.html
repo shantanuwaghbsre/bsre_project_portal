@@ -1,45 +1,45 @@
 <div>
     <img src="D:\bsre_project_portal\React\bsre-front-end\public\Images\header.png" alt="bg-img" style="position: relative;height: 10%;width: 100%;">
     <h1>Quotation Details</h1>
-    <h1>{{ quotation_number }}</h1>
+    <h1></h1>
     <table width="100%">
         <tbody>
             <tr>
                 <td>Date:</td>
-                <td>{{ timestamp }}</td>
+                <td></td>
                 <td>State:</td>
                 <td>
-                    {{ state_or_territory }}
+                    Gujarat
                 </td>
             </tr>
             <tr>
                 <td>Agent ID:</td>
                 <td>
-                        {{ agent_code }}
+                        VAD0002
                 </td>
                 <td>Agent Name:</td>
                 <td>
-                    {{ agent_name }}
+                    Felix M. Adams
                 </td>
             </tr>
             <tr>
                 <td>Customer Name:</td>
                 <td>
-                    {{ consumer_name }}
+                    AEFAEf
                 </td>
                 <td>Address:</td>
                 <td>
-                    {{ consumer_address }}
+                    asefef
                 </td>
             </tr>
             <tr>
                 <td>Mobile No.:</td>
                 <td>
-                    {{ consumer_mobile_number }}
+                    0234652445
                 </td>
                 <td>Email:</td>
                 <td>
-                    {{ consumer_email }}
+                    shantanu.wagh@bsre.in
                 </td>
             </tr>
         </tbody>
@@ -62,21 +62,21 @@
                 <td>1</td>
                 <td>Solar Module</td>
                 <td>
-                    {{solar_module}}
+                    
                 </td>
-                <td>{{ solarModuleWattage }}</td>
+                <td></td>
                 <td>
-                    {{ number_of_panels }}
+                    6
                     <br />
                     <br />
-                    <label>Total Kilowatts - </label>&nbsp;{{ total_kilowatts }} kW
+                    <label>Total Kilowatts - </label>&nbsp;3.24 kW
                 </td>
             </tr>
             <tr>
                 <td>2</td>
                 <td>Solar Inverter</td>
                 <td>
-                    {{solar_inverter_make}}
+                    K SOLAR
                 </td>
                 <td>As per availability</td>
                 <td>1</td>
@@ -85,13 +85,13 @@
                 <td>3</td>
                 <td>Module Mounting Structure</td>
                 <td>
-                    {{ mounting_structure_make }}
+                    
                 </td>
                 <td>
-                    {{ mounting_description }}
+                    
                 </td>
                 <td>
-                    {{ mounting_quantity }}
+                    
                 </td>
             </tr>
         </tbody>
@@ -113,9 +113,9 @@
             <tr>
                 <td>1</td>
                 <td>GUVNL RATE PER KW FOR DESIGN, SUPPLY, INSTALLATION &amp; COMMISIONING OF SOLAR ROOFTOP SYSTEM</td>
-                <td width="1%">{{ total_kilowatts }} kW</td>
+                <td width="1%">3.24 kW</td>
                 <td>
-                    {{ structure }}
+                    
                     <br />
                 </td>
                 <td></td>
@@ -123,48 +123,48 @@
             <tr>
                 <td>2</td>
                 <td>SUBSIDY</td>
-                <td colspan="2">{{ total_kilowatts }}</td>
-                <td>{{ subsidy }}</td>
+                <td colspan="2">3.24</td>
+                <td>1000</td>
             </tr>
             <tr>
                 <td colspan="2">GUVNL SYSTEM AMOUNT</td>
-                <td colspan="3">{{ guvnl_amount }}</td>
+                <td colspan="3">0</td>
             </tr>
             <tr>
                 <td colspan="2">TOTAL SUBSIDY AMOUNT</td>
-                <td colspan="3">{{ subsidy }}</td>
+                <td colspan="3">1000</td>
             </tr>
             <tr>
                 <td colspan="2">NET GUVNL SYSTEM PRICE</td>
-                <td colspan="3">{{ (guvnl_amount - subsidy) }}</td>
+                <td colspan="3">-1000</td>
             </tr>
             <tr>
-                <td colspan="2">{{ structure }} FT ELEVATED STRUCTURE</td>
+                <td colspan="2"> FT ELEVATED STRUCTURE</td>
                 <td colspan="3">INCLUDING</td>
             </tr>
             <tr>
                 <td colspan="2">DISCOM Charges (IF SINGLE PHASE) Connection RGPR (IT MAY BE CHANGED AS PER DISCOM ESTIMATES)</td>
                 <td colspan="2">
                     <label id="demo-row-radio-buttons-group-label">Type - </label>
-                        {{discom_or_torrent}} &nbsp; {{phase}} phase
+                         &nbsp;  phase
                 </td>
-                <td>{{ discom_or_torrent_charges }}</td>
+                <td></td>
             </tr>
             <tr>
                 <td colspan="2">Installation AC MCB Switch charges</td>
                 <td colspan="3">
-                    {{installation_ac_mcb_switch_charges}}
+                    
                 </td>
             </tr>
             <tr>
                 <td colspan="2">GEB AGREEMENT FEES</td>
                 <td colspan="3">
-                    {{geb_agreement_fees}}
+                    
                 </td>
             </tr>
             <tr>
                 <td colspan="2">PROJECT COST</td>
-                <td colspan="3">{{ project_cost }}</td>
+                <td colspan="3"></td>
             </tr>
         </tbody>
     </table>
