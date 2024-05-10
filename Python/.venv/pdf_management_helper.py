@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 load_dotenv()
 
+
 def create_line_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, figsize_=(10, 8)):
     """
     Create and display a line graph.
@@ -64,7 +65,7 @@ def create_bar_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, fi
     # Add the data values on top of the bars
     if individual_bar_values_requested:
         for i in range(len(X_data)):
-            plt.text(i, Y_data[i] // 2, Y_data[i], ha='center')
+            plt.text(i, 0.5 + (Y_data[i] // 1)/2, Y_data[i], ha='center')
 
     # Set the graph title
     plt.title(title)
@@ -128,8 +129,9 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     # Set the path for the temporary PDF file
     temp_pdf_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), 'temp.pdf')
 
+    config = pdfkit.configuration(wkhtmltopdf=os.environ.get("WKHTMLTOPDF_PATH"))
     # Convert the HTML file to a PDF file
-    pdfkit.from_file(html_file_path, temp_pdf_path, options={"enable-local-file-access": ""})
+    pdfkit.from_file(html_file_path, temp_pdf_path, options={"enable-local-file-access": ""}, configuration=config)
 
     # Read the PDF file
     reader = PdfReader(temp_pdf_path)

@@ -100,7 +100,6 @@ def getLocations():
         for location in locations:
             if location[0] == state:
                 response[state][location[1]] = {"latitude":location[2], "longitude":location[3]}
-    print(response)
     # Return the response
     return response
 
@@ -279,20 +278,26 @@ def submitIndustrialCommercialQuotation():
         "November": 30,
         "December": 31
     }
-    request.json["monthly_irradiation_data"] = requests.get(f"https://vedas.sac.gov.in/powerGisService/insol_temp_calc/{request.json['longitude']}/{request.json['latitude']}/kwh").json()["insol_avg"]
-    request.json["daily_irradiation_data"] =[round(i/list(request.json["months"].values())[idx], 2) for idx, i in enumerate(request.json["monthly_irradiation_data"])]
 
-    # Get average daily irradiation data from the database for the specified city
-    irradiation_data = make_db_call(
+
+    request.json["monthly_irradiation_data"] = make_db_call(
         queries["get_average_daily_irradiation_by_month_for_city"],
         parameters={"city": request.json['location']},
         type_="returns"
     )[0]
 
+    if not request.json["monthly_irradiation_data"][0]:
+        request.json["monthly_irradiation_data"] = requests.get(f"https://vedas.sac.gov.in/powerGisService/insol_temp_calc/{request.json['longitude']}/{request.json['latitude']}/kwh").json()["insol_avg"]
+        request.json["irradiation_data"] =[round(i/list(request.json["months"].values())[idx], 2) for idx, i in enumerate(request.json["monthly_irradiation_data"])]
+
+    request.json["irradiation_data"] = [round(float(i), 2) for i in request.json["monthly_irradiation_data"]]
+    
+
     # Set the GRAPHS_FOLDER environment variable
     request.json["GRAPHS_FOLDER"] = os.environ.get("GRAPHS_FOLDER")
 
     # Calculate monthly production based on irradiation data, pr_ratio, efficiency, area, and number of panels
+    print(type(pr_ratio), type(efficiency), type(area), type(request.json['number_of_panels']), type(request.json["monthly_irradiation_data"][0]), pr_ratio, efficiency, area, request.json['number_of_panels'], request.json["monthly_irradiation_data"])
     request.json["monthly_production"] = [
         round(i * pr_ratio * efficiency * area * request.json['number_of_panels'], 2)
         for idx, i in enumerate(request.json["monthly_irradiation_data"])
@@ -332,7 +337,7 @@ def submitIndustrialCommercialQuotation():
     graphs = [
         {
             "X_data": request.json["months"].keys(),
-            "Y_data": request.json['daily_irradiation_data'],
+            "Y_data": request.json['irradiation_data'],
             "x_label": "Months",
             "y_label": "kWh/m2",
             "color": "maroon",
@@ -356,9 +361,9 @@ def submitIndustrialCommercialQuotation():
         },
         {
             "X_data": request.json["months"].keys(),
-            "Y_data": [round(i / 100000, 2) for i in request.json["monthly_earnings"]],
+            "Y_data": [round(i / 1000, 2) for i in request.json["monthly_earnings"]],
             "x_label": "Months",
-            "y_label": "Rs. (in lakhs)",
+            "y_label": "Rs. (in thousands)",
             "color": "green",
             "width": 0.8,
             "title": "Avg. earnings per month",
