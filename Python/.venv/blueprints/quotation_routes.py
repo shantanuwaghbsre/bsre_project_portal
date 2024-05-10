@@ -492,25 +492,16 @@ def getAllQuotations():
     # Calculate the total number of pages based on the limit
     # count = int(make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0])
     
-    
+       
     # Get the quotations for the current page
     count=0
     quotations_query = [[None]]
     if search_by == 'all':
         quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", ''), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, })
         count = int(make_db_call(query=queries['countRecords'].replace("##where##", ''), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0])
-    elif search_by == 'agent_name':
-        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_for + '%'})
-        count = make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0]
-        print(count)
-        if count == None:
-            count = 0
-        else:
-            count = int(count)
-        
-    elif search_by == 'consumer_name':
-        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_for + '%'})
-        count = make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' like %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0]
+    elif search_by == 'agent_name' or search_by == 'consumer_name':
+        quotations_query = make_db_call(query=queries['getAllQuotations'].replace("##where##", 'where '+search_by+' ilike %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_for + '%'})
+        count = make_db_call(query=queries['countRecords'].replace("##where##", 'where '+search_by+' ilike %(' + 'search_for' + ')s'), type_="returns", parameters={"search_for": '%' + search_for + '%'})[0][0]
         if count == None:
             count = 0
         else:
@@ -555,6 +546,24 @@ def getAllQuotations():
             "Timestamp": gmt.localize(row[25]).astimezone(ist),
             "Agent code": row[26],
             "Consumer email": row[27],
+            "Solar cable":row[28],
+            "Switch and Gear":row[29],
+            "Sprinkler installation":row[30],
+            "Rate/W":row[31],
+            "GST/W":row[32],
+            "Unit rate":row[33],
+            "Inflation in unit rate":row[34],
+            "Loan taken?":row[35],
+            "Loan Amount":row[36],
+            "Loan Term":row[37],
+            "Loan Interest":row[38],
+            "Reinvestment rate":row[39],
+            "Extra cost":row[40],
+            "GST on extra cost":row[41],
+            "Subsidy?":row[42],
+            "Subsidy/W":row[43],
+            "Structure":row[44],
+            "Inverter capacity":row[45]
         }
         # Add the quotation to the list
         quotations.append(quotation)

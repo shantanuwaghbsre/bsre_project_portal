@@ -84,12 +84,19 @@ def getAllProjects():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
     
+    search_by = request.args.get('searchDropdown')
+    search_term = request.args.get('searchTerm')
+    print(page, limit, search_by, search_term)
     # Calculate the total number of pages based on the limit
-    total_pages_query = make_db_call(query=queries['countPages'], type_='returns')
-    total_pages = int(total_pages_query[0][0]) // limit + 1
-    
-    projects_query = make_db_call(query=queries['get_all_projects'], type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
+    if search_by == 'consumer_number' and search_term:
+        projects_query = make_db_call(query=queries['get_all_projects'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_term + '%'})
+        total_pages_query = make_db_call(query=queries['countPages'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_='returns', parameters={"search_for": '%' + search_term + '%'})
+    else:
+        projects_query = make_db_call(query=queries['get_all_projects'].replace("##where##", ''), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
+        total_pages_query = make_db_call(query=queries['countPages'].replace("##where##", ''), type_='returns', parameters={"search_for": '%' + search_term + '%'})
 
+    total_pages = int(total_pages_query[0][0]) // limit + 1
+    total_pages = total_pages_query[0][0]
     if projects_query == [[None]]:
         # Return an empty list of projects and total pages as 0
         return {"projects": [], "totalPages": 0}

@@ -72,12 +72,20 @@ def getAllConsumers():
     page = int(request.args.get('page'))
     limit = int(request.args.get('limit'))
     
+    search_by = request.args.get('searchDropdown')
+    search_term = request.args.get('searchTerm')
+    print(page, limit, search_by, search_term)
     # Calculate the total number of pages based on the limit
-    total_pages = int(make_db_call(query=queries['countPages'], type_='returns')[0][0])// limit + 1
-    
-    # Get the consumers for the current page
-    consumers_list = make_db_call(queries["get_all_consumers_list"], 'returns', parameters={"lower": (limit*(page-1)), "limit": limit})
-    
+    if search_by == 'consumer_name' and search_term:
+        # Get the consumers for the current page
+        consumers_list = make_db_call(queries["get_all_consumers_list"].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_='returns', parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_term + '%'})
+        # Calculate the total number of pages based on the limit
+        total_pages = int(make_db_call(query=queries['countPages'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_='returns', parameters={"search_for": '%' + search_term + '%'})[0][0]) // limit + 1
+    else:
+        # Get the consumers for the current page
+        consumers_list = make_db_call(queries["get_all_consumers_list"].replace("##where##", ''), 'returns', parameters={"lower": (limit*(page-1)), "limit": limit})
+        # Calculate the total number of pages based on the limit
+        total_pages = int(make_db_call(query=queries['countPages'].replace("##where##", ''), type_='returns')[0][0]) // limit + 1
     # Check if there are no consumers for the current page
     if consumers_list == [[None]]:
         # Return an empty list of consumers and total pages as 0
