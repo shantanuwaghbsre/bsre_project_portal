@@ -1,3 +1,4 @@
+import base64
 from flask import Blueprint, Flask, request, jsonify, send_file
 import requests
 from service import make_db_call
@@ -49,7 +50,7 @@ def calculate():
     # Extract the values from the JSON payload
     total_kilowatts = request.json.get('totalKiloWatts')
     discom_or_torrent = request.json.get('discomOrTorrent').lower()
-    phase = request.json.get('phase').lower()
+    phase = request.json.get('phase')
     number_of_panels = request.json.get('numberOfPanels')
     structure = request.json.get('structure')
 
@@ -77,6 +78,13 @@ def calculate():
                                                         "totalKiloWatts": total_kilowatts},
                                             type_="returns")[0][0]
 
+    # Calculate the discom or torrent charges based on the input values
+    if total_kilowatts > 6 and discom_or_torrent == 'discom':
+        phase = 'Single'
+    response['discom_or_torrent_charges'] = make_db_call(query=queries['get_'+discom_or_torrent+'_charges'],
+                                              parameters={"phase": phase,
+                                                          "totalKiloWatts": total_kilowatts},
+                                              type_="returns")[0][0]
     # Return the response dictionary
     return response
 
@@ -148,6 +156,12 @@ def submitResidentialQuotation():
     response (dict): A dictionary containing the completion status of the submission and, if successful, the quotation number.
 
     """
+
+    def download_image(file_path):
+        with open(file_path, 'rb') as file:
+            image_data = file.read()
+        return 'data:;base64,' + base64.b64encode(image_data).decode('utf-8')
+
     response = {}
 
     # Retrieve the last quotation number from the database
@@ -195,6 +209,8 @@ def submitResidentialQuotation():
     # Convert the guvnl_amount and subsidy fields to integers
     request.json['guvnl_amount'] = int(request.json['guvnl_amount'])
     request.json['subsidy'] = int(request.json['subsidy'])
+    request.json['header'] = download_image(os.path.join(os.environ.get("ASSETS_FOLDER"), "header.png")),
+    request.json['footer'] = download_image(os.path.join(os.environ.get("ASSETS_FOLDER"), "footer.png"))
 
     # Create an HTML file from a template based on the request JSON
     html_file_path = create_html_from_template(request.json)
@@ -282,7 +298,7 @@ def submitIndustrialCommercialQuotation():
 
     request.json["monthly_irradiation_data"] = make_db_call(
         queries["get_average_daily_irradiation_by_month_for_city"],
-        parameters={"city": request.json['location']},
+        parameters={"city": request.json['city']},
         type_="returns"
     )[0]
 
@@ -506,7 +522,6 @@ def getAllQuotations():
             count = 0
         else:
             count = int(count)
-    total_pages = count // limit + 1
     
     # Check if there are no quotations for the current page
     if quotations_query == [[None]]:
@@ -571,7 +586,6 @@ def getAllQuotations():
     # Create the response dictionary with the quotations and total pages
     response = {
         "quotations": quotations,
-        "totalPages": total_pages,
         "count": count
     }
     # Return the response

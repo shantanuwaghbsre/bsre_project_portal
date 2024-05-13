@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotation Details</title>
     <style>
+
+        body {
+            font-family: Helvetica;
+        }
+
+        .main_title{
+            color: black;
+            text-align: center;
+            font-size: 55px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-decoration: underline;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -12,18 +27,46 @@
         }
 
         table, th, td {
-            border: 1px solid black;
+            border: 0.1px solid rgb(78, 78, 78);
         }
-
+      
         th, td {
             padding: 8px;
             text-align: left;
         }
 
-        th {
-            background-color: #f2f2f2;
+        h3{
+            font-size: 40px;
+            font-weight: bold;
+            color: black;
+            margin-top: 100px;
+            margin-bottom: 40px;
         }
 
+        th {
+            /* background-color: #f2f2f2; */
+            background-color: #ffdd00;
+            padding-top: 25px;
+            padding-bottom: 25px;
+            text-align: left;
+            font-size: 35px;
+            font-weight: semibold;
+            color: black;
+
+        }
+
+        td{
+            font-size: 30px;
+            font-weight: normal;
+            color: black;
+            padding-top: 15px;
+            padding-bottom: 15px;
+
+
+        }
+
+        /* tr:nth-child(even){background-color: #fffac3;} */
+        tr:nth-child(even){background-color: #f2f2f2;}
         .next-page {
         page-break-before: always;
         }
@@ -39,7 +82,7 @@
     </style>
 </head>
 <body>
-    <h2>Quotation Details</h2>
+    <h2 class="main_title">Quotation Details</h2>
 
     <h3>Consumer Details</h3>
     <table>
@@ -49,7 +92,7 @@
         </tr>
         <tr>
             <td>location</td>
-            <td>{{ location }}</td>
+            <td>{{city}}, {{ location }}</td>
         </tr>
         <tr>
             <td>Quotation Type</td>
@@ -112,8 +155,8 @@
             <td>{{ solar_inverter_make }}</td>
         </tr>
         <tr>
-            <td>Number of Inverters</td>
-            <td>{{ number_of_inverters }}</td>
+            <td>Inverter Capacity</td>
+            <td>{{ inverter_capacity }}</td>
         </tr>
         <tr>
             <td>Solar Structure</td>
@@ -128,14 +171,6 @@
         <tr>
             <th>Field</th>
             <th>Value</th>
-        </tr>
-        <tr>
-            <td>Grid Tie Inverter Make</td>
-            <td>{{ grid_tie_inverter_make }}</td>
-        </tr>
-        <tr>
-            <td>Number of Grid Tie Inverters</td>
-            <td>{{ number_of_grid_tie_inverters }}</td>
         </tr>
         <tr>
             <td>Solar Cable</td>
@@ -190,8 +225,12 @@
             <td>{{ "%.2f"|format(any_extra_cost_on_add_on_work + gst_on_add_on_work) }}</td>
         </tr>
         <tr>
-            <td>Is Loan?</td>
-            <td>{{ is_loan }}</td>
+            <td>Is consumer taking a loan?</td>
+            <td>{% if is_loan %}
+                {{"Yes"}} 
+            {% else %}
+                {{"No"}}
+            {% endif %}</td>
         </tr>
         {% if is_loan %}
         <tr>
@@ -228,8 +267,12 @@
             <td>{{ "%.2f"|format(((rate_per_watt + gst_per_watt) * 1000 * total_kilowatts) + (any_extra_cost_on_add_on_work + gst_on_add_on_work)) }}</td>
         </tr>        
         <tr>
-            <td>Is Subsidy?</td>
-            <td>{{ is_subsidy }}</td>
+            <td>Is consumer eligible for subsidy?</td>
+            <td>{% if is_subsidy %}
+                {{"Yes"}} 
+            {% else %}
+                {{"No"}}
+            {% endif %}</td>
         </tr>
         {% if is_subsidy %}
         <tr>
@@ -313,7 +356,7 @@
                 <td></td>
                 <td></td>
             </tr>
-            {% for i in range(25) %}
+            {% for i in range(production_degradation | length) %}
             <tr>
                 <td>{{i+1}}</td>
                 <td>{{ production_degradation[i] }}</td>

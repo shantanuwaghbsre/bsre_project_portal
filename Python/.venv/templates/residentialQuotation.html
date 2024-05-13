@@ -1,5 +1,4 @@
 <div>
-    <img src="D:\bsre_project_portal\React\bsre-front-end\public\Images\header.png" alt="bg-img" style="position: relative;height: 10%;width: 100%;">
     <h1>Quotation Details</h1>
     <h1>{{ quotation_number }}</h1>
     <table width="100%">
@@ -9,7 +8,7 @@
                 <td>{{ timestamp }}</td>
                 <td>State:</td>
                 <td>
-                    {{ state_or_territory }}
+                    {{ location }}
                 </td>
             </tr>
             <tr>
@@ -62,9 +61,9 @@
                 <td>1</td>
                 <td>Solar Module</td>
                 <td>
-                    {{solar_module}}
+                    {{solar_module_name}}
                 </td>
-                <td>{{ solarModuleWattage }}</td>
+                <td>{{ solar_module_wattage }}</td>
                 <td>
                     {{ number_of_panels }}
                     <br />
@@ -118,7 +117,7 @@
                     {{ structure }}
                     <br />
                 </td>
-                <td></td>
+                <td>{{ guvnl_amount }}</td>
             </tr>
             <tr>
                 <td>2</td>

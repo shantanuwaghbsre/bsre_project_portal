@@ -126,12 +126,23 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     Returns:
         None
     """
+
     # Set the path for the temporary PDF file
     temp_pdf_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), 'temp.pdf')
 
     config = pdfkit.configuration(wkhtmltopdf=os.environ.get("WKHTMLTOPDF_PATH"))
     # Convert the HTML file to a PDF file
-    pdfkit.from_file(html_file_path, temp_pdf_path, options={"enable-local-file-access": ""}, configuration=config)
+    print(html_file_path, temp_pdf_path)
+    pdfkit.from_file(html_file_path, 
+                     temp_pdf_path, 
+                     options={
+                         "enable-local-file-access": "", 
+                         "disable-external-links":"",
+                         "--header-html": "file:///" + os.environ.get('TEMPLATES_FOLDER') + "header.html", 
+                        "--footer-html": "file:///" + os.environ.get('TEMPLATES_FOLDER') + "footer.html"
+                        }, 
+                    configuration=config
+                )
 
     # Read the PDF file
     reader = PdfReader(temp_pdf_path)

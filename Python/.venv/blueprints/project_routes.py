@@ -88,18 +88,20 @@ def getAllProjects():
     search_term = request.args.get('searchTerm')
     print(page, limit, search_by, search_term)
     # Calculate the total number of pages based on the limit
+    count=0
+    projects_query = [[None]]
     if search_by == 'consumer_number' and search_term:
         projects_query = make_db_call(query=queries['get_all_projects'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit, "search_for": '%' + search_term + '%'})
-        total_pages_query = make_db_call(query=queries['countPages'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_='returns', parameters={"search_for": '%' + search_term + '%'})
+        count = make_db_call(query=queries['countPages'].replace("##where##", f' WHERE {search_by} ilike %(' + 'search_for' + ')s'), type_='returns', parameters={"search_for": '%' + search_term + '%'})[0][0]
+        if count == None:
+            count = 0
     else:
         projects_query = make_db_call(query=queries['get_all_projects'].replace("##where##", ''), type_="returns", parameters={"lower": (limit*(page-1)), "limit": limit})
-        total_pages_query = make_db_call(query=queries['countPages'].replace("##where##", ''), type_='returns', parameters={"search_for": '%' + search_term + '%'})
+        count = make_db_call(query=queries['countPages'].replace("##where##", ''), type_='returns', parameters={"search_for": '%' + search_term + '%'})[0][0]
 
-    total_pages = int(total_pages_query[0][0]) // limit + 1
-    total_pages = total_pages_query[0][0]
     if projects_query == [[None]]:
         # Return an empty list of projects and total pages as 0
-        return {"projects": [], "totalPages": 0}
+        return {"projects": [], "count": 0}
     
     # Process the projects query results and create a list of projects
     projects = []
@@ -115,8 +117,9 @@ def getAllProjects():
     # Create the response dictionary with the projects and total pages
     response = {
         "projects": projects,
-        "totalPages": total_pages
+        "count": count
     }
+    print(response)
     # Return the response
     return response
 

@@ -27,7 +27,7 @@
         }
 
         table, th, td {
-            /* border: 0.1px solid rgb(78, 78, 78); */
+            border: 0.1px solid rgb(78, 78, 78);
         }
       
         th, td {
@@ -92,7 +92,7 @@
         </tr>
         <tr>
             <td>location</td>
-            <td>{{ location }}</td>
+            <td>{{city}}, {{ location }}</td>
         </tr>
         <tr>
             <td>Quotation Type</td>
@@ -155,8 +155,8 @@
             <td>{{ solar_inverter_make }}</td>
         </tr>
         <tr>
-            <td>Number of Inverters</td>
-            <td>{{ number_of_inverters }}</td>
+            <td>Inverter Capacity</td>
+            <td>{{ inverter_capacity }}</td>
         </tr>
         <tr>
             <td>Solar Structure</td>
@@ -171,14 +171,6 @@
         <tr>
             <th>Field</th>
             <th>Value</th>
-        </tr>
-        <tr>
-            <td>Grid Tie Inverter Make</td>
-            <td>{{ grid_tie_inverter_make }}</td>
-        </tr>
-        <tr>
-            <td>Number of Grid Tie Inverters</td>
-            <td>{{ number_of_grid_tie_inverters }}</td>
         </tr>
         <tr>
             <td>Solar Cable</td>
@@ -233,8 +225,12 @@
             <td>{{ "%.2f"|format(any_extra_cost_on_add_on_work + gst_on_add_on_work) }}</td>
         </tr>
         <tr>
-            <td>Is Loan?</td>
-            <td>{{ is_loan }}</td>
+            <td>Is consumer taking a loan?</td>
+            <td>{% if is_loan %}
+                {{"Yes"}} 
+            {% else %}
+                {{"No"}}
+            {% endif %}</td>
         </tr>
         {% if is_loan %}
         <tr>
@@ -271,8 +267,12 @@
             <td>{{ "%.2f"|format(((rate_per_watt + gst_per_watt) * 1000 * total_kilowatts) + (any_extra_cost_on_add_on_work + gst_on_add_on_work)) }}</td>
         </tr>        
         <tr>
-            <td>Is Subsidy?</td>
-            <td>{{ is_subsidy }}</td>
+            <td>Is consumer eligible for subsidy?</td>
+            <td>{% if is_subsidy %}
+                {{"Yes"}} 
+            {% else %}
+                {{"No"}}
+            {% endif %}</td>
         </tr>
         {% if is_subsidy %}
         <tr>
