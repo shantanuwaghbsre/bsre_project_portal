@@ -6,21 +6,26 @@ import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 
 const ViewAllConsumers = (props: any) => {
+  //for showing columns in table record
+  const columns = ["Email Address", "Mobile Number", "Consumer name", "Agent code", "Action"];
   axios.defaults.headers.common['token'] = props.token
   const [consumers, setConsumers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(Number)
+  const [querywords, setQuerywords] = useState('');
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [searchDropdown, setSearchDropdown] = useState("all");
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
+  const [count, setCount] = useState(0);
 
-  
+
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllConsumers?page=${page + 1}&limit=${limit}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllConsumers?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
       console.log(response.data);
       setConsumers(response.data['consumers']);
       setTotalPages(response.data['totalPages']);
@@ -34,16 +39,23 @@ const ViewAllConsumers = (props: any) => {
 
   useEffect(() => {
     fetchData(page, rowsPerPage);
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, searchTerm, searchDropdown]);
   // Handel Search for Records
   const handleSearch = (event: any) => {
-    const val = event.target.value;
-    if (val.length > 0) {
+    if (querywords.length > 0 && searchDropdown != "all") {
       setIsSearching(true);
-      setSearchTerm(val);
+      setSearchTerm(querywords);
     }
     else {
       setIsSearching(false);
+    }
+  }
+  // Handel Search for Records by dropdown
+  const handleSelectChange = (e: any) => {
+    const dropval = e.target.value;
+    if (dropval != "" || dropval != null) {
+      setIsSearching(false);
+      setSearchDropdown(e.target.value);
     }
   }
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: React.SetStateAction<number>) => {
@@ -55,43 +67,59 @@ const ViewAllConsumers = (props: any) => {
     setPage(0);
     setLoading(true);
   };
-
-
   return (
     <>
       {loading ?
-        <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
+        <div className='loadinginComponent'>
           <Loading />
         </div>
         :
         <div className='table-data'>
           <div className="search-place">
-            
-            <input className='search' type="text" disabled={isDisabled} onChange={(e) => handleSearch(e)} placeholder="Search For Record" />
+            <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
+              <option value={"all"}>All</option>
+              <option value={"consumer_name"}>Consumer Name</option>
+            </select>
+            &nbsp;&nbsp;
+            <input className='search' type="text" disabled={isDisabled} onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." />
             <div className='search-icon' aria-label="search" >
-              <SearchIcon />
+              <SearchIcon onClick={handleSearch} />
             </div>
           </div>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  {consumers.length ? Object.keys(consumers[0]).map((key) => (
+                  {/* {consumers.length ? Object.keys(consumers[0]).map((key) => (
                     ["consumer_name", "consumer_mobile_number", "consumer_email", "onboarded_by_agent_code"].includes(key) ?
-                      <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key} >{key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}</TableCell> : null
-                  )) : 
-                  <>
+                      <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key} >{key === 'consumer_email' ? 'Email Address' : key === 'consumer_mobile_number' ? 'Mobile Number' : key === 'onboarded_by_agent_code' ? 'Agent code' : key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}</TableCell> : null
+                  )) :
+                    <>
                       <TableCell colSpan={8} className="Records_Not_Found">
-                        <p style={{ fontSize: '14px' }}>Records Not Found</p>
-                        <p style={{ color: 'red', fontSize: '12px' }}>Error 500:Internal Server Error</p>
+                        <p>Error 500:Internal Server Error</p>
                       </TableCell>
                     </>
                   }
                   {
                     consumers.length != 0 ? <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }}>Action</TableCell> : null
+                  } */}
+                  {
+                    columns.map((key) => (
+                      <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key} >
+                        {key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}
+                      </TableCell>
+                    ))
                   }
 
                 </TableRow>
+                {!consumers.length ?
+                  <TableRow>
+                    <TableCell colSpan={8} className="Records_Not_Found">
+                      <p>Error 500:Internal Server Error</p>
+                    </TableCell>
+                  </TableRow>
+                  : null
+                }
               </TableHead>
               <TableBody>
                 {!isSearching ?
@@ -113,7 +141,7 @@ const ViewAllConsumers = (props: any) => {
                     if (searchTerm == "") {
                       return index;
                     }
-                    else if (index.consumer_name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
                       return index;
                     }
                   }).length ?
@@ -121,7 +149,7 @@ const ViewAllConsumers = (props: any) => {
                       if (searchTerm == "") {
                         return index;
                       }
-                      else if (index.consumer_name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                      else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
                         return index;
                       }
                     }).map((row, index) => {
@@ -129,7 +157,7 @@ const ViewAllConsumers = (props: any) => {
                         <TableRow key={index}>
                           {Object.keys(row).map((key) => (
                             ["consumer_name", "consumer_mobile_number", "consumer_email", "onboarded_by_agent_code"].includes(key as string) ?
-                            <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell> : null
+                              <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell> : null
                           ))}
                           <TableCell>
                             <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewConsumer' }} state={{ "consumer": consumers[index] }}>View this Customer</Button>
@@ -139,7 +167,9 @@ const ViewAllConsumers = (props: any) => {
                     })
                     :
                     <TableRow>
-                        <TableCell colSpan={5} className="Records_Not_Found">Records Not Found</TableCell>
+                      <TableCell colSpan={5} className="Records_Not_Found">
+                        <p>Records Not Found</p>
+                      </TableCell>
                     </TableRow>
                 }
               </TableBody>
@@ -148,7 +178,7 @@ const ViewAllConsumers = (props: any) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={totalPages * rowsPerPage}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(event, newPage) => handleChangePage(event, newPage)}
@@ -163,12 +193,3 @@ const ViewAllConsumers = (props: any) => {
 }
 
 export default ViewAllConsumers
-
-
-// return (
-//     <div>
-//
-//         View this Customer
-//       </Button>
-//     </div>
-//   )

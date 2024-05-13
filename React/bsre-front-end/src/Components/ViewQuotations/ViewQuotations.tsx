@@ -6,45 +6,62 @@ import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 
 const ViewQuotations = (props: any) => {
+  //for showing columns in table record
+  const columns = ["Agent name", "Consumer name", "Quotation type", "Solar panel type", "Structure", "Total kilowatts", "Action"];
   axios.defaults.headers.common['token'] = props.token
   const [quotations, setQuotations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [totalPages, setTotalPages] = useState(Number);
+  const [querywords, setQuerywords] = useState('');
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [norecords, setNorecords] = useState("");
+  const [searchDropdown, setSearchDropdown] = useState("all");
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
-
+  const [count, setCount] = useState(0);
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?page=${page + 1}&limit=${limit}`);
-      setQuotations(response.data['quotations']);
-      setTotalPages(response.data['totalPages']);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
+      if (response.data['quotations'].length == 0) {
+        setQuotations([{ "Consumer name": "", "Agent name": "", "Total kilowatts": "", "Structure": "", "Solar panel type": "", "Quotation type": "" }]);
+      }
+      else {
+        setQuotations(response.data['quotations']);
+      }
+      setCount(response.data['count'] || 0);
       setIsDisabled(false);
-      console.log(response.data);
+      console.log("data of search===>", response.data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
+      setNorecords("Error 500:Internal Server Error");
     }
   };
-
   useEffect(() => {
     fetchData(page, rowsPerPage);
-  }, [page, rowsPerPage]);
-  // Handel Search for Records
+  }, [page, rowsPerPage, searchTerm, searchDropdown]);
+  // Handle Search for Records
   const handleSearch = (event: any) => {
-    const val = event.target.value;
-    if (val.length > 0) {
+    setSearchTerm(querywords);
+    if (querywords.length > 0 && searchDropdown != "all") {
       setIsSearching(true);
-      setSearchTerm(val);
     }
-    else {
+    if (querywords.length == 0 || querywords.length == null && searchDropdown == "all") {
       setIsSearching(false);
     }
   }
+  // Handle Search for Records by dropdown
+  const handleSelectChange = (e: any) => {
+    const dropval = e.target.value;
+    if (dropval != "" || dropval != null) {
+      setIsSearching(false);
+      setSearchDropdown(e.target.value);
+    }
+  }
+
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: React.SetStateAction<number>) => {
     setPage(newPage);
   };
@@ -54,106 +71,88 @@ const ViewQuotations = (props: any) => {
     setPage(0);
     setLoading(true);
   };
+
   return (
     <>
       {loading ?
-        <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
+        <div className='loadinginComponent'>
           <Loading />
         </div>
         :
         <div className='table-data'>
           <div className="search-place">
-
-            <input className='search' type="text" disabled={isDisabled} onChange={(e) => handleSearch(e)} placeholder="Search For Record" />
+            <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
+              <option value={"all"}>All</option>
+              <option value={"Agent name"}>Agent Name</option>
+              <option value={"Consumer name"}>Consumer Name</option>
+            </select>
+            &nbsp;&nbsp;
+            <input className='search' type="text" disabled={isDisabled} onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." />
             <div className='search-icon' aria-label="search" >
-              <SearchIcon />
+              <SearchIcon onClick={handleSearch} />
             </div>
           </div>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  {
-                    quotations.length ? Object.keys(quotations[0]).map((key) => (
+                  {/* {quotations.length != 0 ?
+                    Object.keys(quotations[0]).map((key) => (
                       ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key) ?
-                        // ["Agent code","Agent name","Consumer address","Consumer email","Consumer mobile number","Consumer name","DISCOM/Torrent","GEB agreement fees","GUVNL amount","Installation AC MCB switch charges","Location","Net GUVNL system price","Number of panels"].includes(key) ?
-                        <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key}</TableCell>
+                        <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key === 'Solar panel type' ? 'Panel Type' : key}</TableCell>
                         : null
-                    )) : 
-                    <>
-                      <TableCell colSpan={8} className="Records_Not_Found">
-                        <p style={{ fontSize: '14px' }}>Records Not Found</p>
-                        <p style={{ color: 'red', fontSize: '12px' }}>Error 500:Internal Server Error</p>
-                      </TableCell>
-                    </>
-                    }
+                    ))
+                    : null
+                  }
                   {
                     quotations.length != 0 ? <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }}>Action</TableCell> : null
-                  }
+                  } */}
+                  {columns.map((key) => (
+                    <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key === 'Solar panel type' ? 'Panel Type' : key}</TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!isSearching ?
-                  quotations.length ? quotations.map((row, index) => (
-                    <TableRow key={index}>
-                      {Object.keys(row).map((key) => (
-                        ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key as string) ?
-                          <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell> :
-                          null
-                      ))}
-                      <TableCell>
-                        <Button className='btn btn-info' component={Link} to={{ pathname: '/ConsumerOnboarding', }} state={{ "quotation": quotations[index] }}>Onboard this Customer</Button>
-                      </TableCell>
-                    </TableRow>
-                  )) : <TableRow />
-                  :
-                  Object.values(quotations).filter((index) => {
-                    if (searchTerm == "") {
-                      return index;
-                    }
-                    else if (index['Agent name'].toLowerCase().includes(searchTerm.toLowerCase())) {
-                      return index;
-                    }
-                  }).length ?
-                    Object.values(quotations).filter((index) => {
-                      if (searchTerm == "") {
-                        return index;
-                      }
-                      else if (index['Agent name'].toLowerCase().includes(searchTerm.toLowerCase())) {
-                        return index;
-                      }
-                    }).map((row, index) => {
-                      return (
-                        <TableRow key={index}>
-                          {Object.keys(row).map((key) => (
-                            ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key as string) ?
-                              <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell> : null
-                          ))}
-                          <TableCell>
-                            <Button className='btn btn-info' component={Link} to={{ pathname: '/ConsumerOnboarding', }} state={{ "quotation": quotations[index] }}>Onboard this Customer</Button>
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })
+                {
+                  quotations.length >0
+                    ?
+                    quotations.map((row, index) => (
+                      <TableRow key={index}>
+                        {Object.keys(row).map((key) => (
+                          ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key as string) ?
+                            <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                            : null
+                        ))}
+                        <TableCell>
+                          <Button className='btn btn-info' component={Link} to={{ pathname: '/ConsumerOnboarding', }} state={{ "quotation": quotations[index] }}>Onboard this Customer</Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
                     :
                     <TableRow>
-                      <TableCell colSpan={8} className="Records_Not_Found">Records Not Found</TableCell>
+                      <TableCell colSpan={8} className="Records_Not_Found">
+                        <p>
+                          {
+                            norecords ? norecords : "Records Not Found"
+                          }
+                        </p>
+                      </TableCell>
                     </TableRow>
                 }
               </TableBody>
+
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={totalPages * rowsPerPage}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(event, newPage) => handleChangePage(event, newPage)}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </div>
-
       }
     </>
   );

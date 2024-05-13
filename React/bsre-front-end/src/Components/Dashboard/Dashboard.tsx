@@ -2,32 +2,36 @@ import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import './style.css';
 import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 
 
 const Dashboard = (props: any) => {
+  //for showing columns in table record
+  const columns = ["Consumer number", "Consumer Id", "Meter number", "Project address", "Email Address", "Project in phase", "Project type", "Action"];
   axios.defaults.headers.common['token'] = props.token
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [totalPages, setTotalPages] = useState(Number);
+  const [querywords, setQuerywords] = useState('');
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [searchDropdown, setSearchDropdown] = useState("all");
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
+  const [count, setCount] = useState(0);
+
 
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllProjects?page=${page + 1}&limit=${limit}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllProjects?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
       setProjects(response.data['projects']);
-      setTotalPages(response.data['totalPages']);
+      setCount(response.data['count'] || 0);
       setLoading(false);
       setIsDisabled(false);
-      console.log(response.data);
+      console.log("data of search===>", response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
@@ -36,18 +40,27 @@ const Dashboard = (props: any) => {
 
   useEffect(() => {
     fetchData(page, rowsPerPage);
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, searchTerm, searchDropdown]);
   // Handel Search for Records
   const handleSearch = (event: any) => {
-    const val = event.target.value;
-    if (val.length > 0) {
+    if (querywords.length > 0 && searchDropdown != "all") {
       setIsSearching(true);
-      setSearchTerm(val);
+      setSearchTerm(querywords);
     }
     else {
       setIsSearching(false);
+      setSearchTerm(querywords);
     }
   }
+  // Handel Search for Records by dropdown
+  const handleSelectChange = (e: any) => {
+    const dropval = e.target.value;
+    if (dropval != "" || dropval != null) {
+      setIsSearching(false);
+      setSearchDropdown(e.target.value);
+    }
+  }
+
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null, newPage: React.SetStateAction<number>) => {
     setPage(newPage);
   };
@@ -57,65 +70,71 @@ const Dashboard = (props: any) => {
     setPage(0);
     setLoading(true);
   };
+
   return (
     <>
       {loading ?
-        <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
+        <div className='loadinginComponent'>
           <Loading />
         </div>
         :
         <div className='table-data'>
           <div className="search-place">
-
-            <input className='search' type="text" disabled={isDisabled} onChange={(e) => handleSearch(e)} placeholder="Search For Record" />
-            <div className='search-icon' aria-label="search">
-              <SearchIcon />
+            <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
+              <option value={"all"}>All</option>
+              <option value={"consumer_number"}>Consumer Number</option>
+            </select>
+            &nbsp;&nbsp;
+            <input className='search' type="text" onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." disabled={isDisabled} />
+            <div className='search-icon' aria-label="search" >
+              <SearchIcon onClick={handleSearch} />
             </div>
           </div>
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  {projects.length ? Object.keys(projects[0]).map((key) => (
-                    <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}</TableCell>
-                  )) :
-                    <>
-                      <TableCell colSpan={8} className="Records_Not_Found">
-                        <p style={{ fontSize: '14px' }}>Records Not Found</p>
-                        <p style={{ color: 'red', fontSize: '12px' }}>Error 500:Internal Server Error</p>
-                      </TableCell>
-                    </>
-                  }
-                  {
-                    projects.length != 0 ? <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }}>Action</TableCell> : null
-                  }
+                  {columns.map((key) => (
+                    <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>
+                      {key === 'for_consumer_id' ? 'Consumer Id' : key === 'project_email' ? 'Email Address' : key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}
+                    </TableCell>
+
+                  ))}
                 </TableRow>
+
+                {!projects.length &&
+                  <TableRow>
+                    <TableCell colSpan={8} className="Records_Not_Found">
+                      <p>Error 500:Internal Server Error</p>
+                    </TableCell>
+                  </TableRow>
+                }
               </TableHead>
               <TableBody>
                 {
-                  !isSearching ? projects.length ? projects.map((row, index) => (
-                    <TableRow key={index}>
-                      {Object.keys(row).map((key) => (
-                        <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
-                      ))}
-                      <TableCell>
-                        <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
-                      </TableCell>
-                    </TableRow>
-
-                  )) : <TableRow />
+                  !isSearching && searchDropdown === "all"
+                    ? projects.length ? projects.map((row, index) => (
+                      <TableRow key={index}>
+                        {Object.keys(row).map((key) => (
+                          <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                        ))}
+                        <TableCell>
+                          <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
+                        </TableCell>
+                      </TableRow>
+                    )) : <TableRow />
                     : Object.values(projects).filter((index) => {
                       if (searchTerm === "") {
                         return index;
                       }
-                      else if (index.consumer_number.toLowerCase().includes(searchTerm.toLowerCase()) || index.consumer_number.toUpperCase().includes(searchTerm.toUpperCase())) {
+                      else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
                         return index;
                       }
                     }).length ? Object.values(projects).filter((index) => {
                       if (searchTerm === "") {
                         return index;
                       }
-                      else if (index.consumer_number.toLowerCase().includes(searchTerm.toLowerCase()) || index.consumer_number.toUpperCase().includes(searchTerm.toUpperCase())) {
+                      else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
                         return index;
                       }
                     }).map((row, index) => {
@@ -131,7 +150,9 @@ const Dashboard = (props: any) => {
                       )
                     }) :
                       <TableRow>
-                        <TableCell colSpan={8} className="Records_Not_Found">Records Not Found</TableCell>
+                        <TableCell colSpan={8} className="Records_Not_Found">
+                          <p>Records Not Found</p>
+                        </TableCell>
                       </TableRow>
                 }
               </TableBody>
@@ -140,7 +161,7 @@ const Dashboard = (props: any) => {
           <TablePagination className='table-data'
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={totalPages * rowsPerPage}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={(event, newPage) => handleChangePage(event, newPage)}

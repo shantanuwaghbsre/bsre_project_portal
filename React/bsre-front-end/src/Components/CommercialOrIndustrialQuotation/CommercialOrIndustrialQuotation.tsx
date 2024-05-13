@@ -122,6 +122,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       installmentOfLoanPerMonth: 0,
       anyExtraCostOnAddOnWork: 0,
       gstOnAddOnWork: 0,
+      isMeterChargesSelfPaid: false,
       isLoan: false,
       isSubsidy: false
    });
@@ -136,10 +137,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    };
 
    const handleCalculationDataChange = (e: React.BaseSyntheticEvent) => {
-      //    $('#input').on("wheel", function (e) {
-      //       $(this).blur();
-      //   });
-      if (e.target.name != 'isLoan' && e.target.name != 'isSubsidy') {
+      if (e.target.name != 'isLoan' && e.target.name != 'isSubsidy' && e.target.name != 'isMeterChargesSelfPaid') {
          e.target.value = e.target.valueAsNumber
          setCalculationData((prevData) => ({
             ...prevData,
@@ -154,6 +152,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          }));
       }
    }
+
 
    const [locationOptions, setLocationOptions] = useState({})
    const [cityOptions, setCityOptions] = useState([])
@@ -189,7 +188,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          solarCableSelect: "Yes",
          switchGearAndProtection: "",
          sprinklerInstallation: "Yes",
-      });      
+      });
 
       setCalculationData({
          ratePerWatt: 0,
@@ -204,6 +203,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          installmentOfLoanPerMonth: 0,
          anyExtraCostOnAddOnWork: 0,
          gstOnAddOnWork: 0,
+         isMeterChargesSelfPaid: false,
          isLoan: false,
          isSubsidy: false
       })
@@ -214,15 +214,15 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    useEffect(() => {
       if (formData["city"]) {
          console.log("latitude", locationOptions[formData["location"]][formData["city"]]["latitude"],
-      "longitude", locationOptions[formData["location"]][formData["city"]]["longitude"])
-      handleFormChange("latitude", locationOptions[formData["location"]][formData["city"]]["latitude"]);
-      handleFormChange("longitude", locationOptions[formData["location"]][formData["city"]]["longitude"]);
+            "longitude", locationOptions[formData["location"]][formData["city"]]["longitude"])
+         handleFormChange("latitude", locationOptions[formData["location"]][formData["city"]]["latitude"]);
+         handleFormChange("longitude", locationOptions[formData["location"]][formData["city"]]["longitude"]);
       }
    }, [formData["city"]]);
 
    useEffect(() => {
       if (errorMessage.length > 0) {
-         toast.error(<div>Please fill the required fields.<br/>{errorMessage.map((error) => <li style={{textAlign:"left"}}>{error}</li>)}<br/></div>,{position: "top-right",autoClose:false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,});  
+         toast.error(<div>Please fill the required fields.<br />{errorMessage.map((error) => <li style={{ textAlign: "left" }}>{error}</li>)}<br /></div>, { position: "top-right", autoClose: false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, });
       }
    }, [errorMessage]);
 
@@ -296,11 +296,11 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       if (isNaN(calculationData["gstOnAddOnWork"])) {
          errorMessage_.push("GST On Add On Work must be a number.");
       }
-      if(!errorMessage_.length) {
+      if (!errorMessage_.length) {
          isFormValid_ = true;
       }
-      else{
-      setErrorMessage(errorMessage_);
+      else {
+         setErrorMessage(errorMessage_);
       }
       setIsFormValid(isFormValid_);
    }
@@ -321,7 +321,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    }, [])
    useEffect(() => {
       console.log(urls);
-      
+
       axios.get(urls["getAgentsURL"])
          .then(function (response) {
             setAgentOptions(response.data);
@@ -340,8 +340,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    }, [formData, calculationData])
 
    const urls = {
-      "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
-      "dummyURL": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
+      // "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
+      // "dummyURL": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
       "submitURL": import.meta.env.VITE_BACKEND_URL + "/submitIndustrialCommercialQuotation",
       "getAgentsURL": import.meta.env.VITE_BACKEND_URL + "/getAgents",
       "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations"
@@ -422,14 +422,13 @@ const CommercialOrIndustrialQuotation = (props: any) => {
          "subsidy_per_watt": 0
 
       }
-      axios.post(urls["dummyURL"], postObject)//Should ['submitURL']
+      axios.post(urls["submitURL"], postObject)//Should ['submitURL'] else we can use ['dummyURL']
          .then(function (response) {
             setLoading(false);
             setOpacity_value(1);
             if (response.data.completed) {
                resetForm()
-               // setSuccessMessage("Successfully created Quotation number - " + response.data.quotation_number);
-               toast.success("Successfully created Quotation number - " + response.data.quotation_number, { position: "top-center",theme: "colored", autoClose: 2000, hideProgressBar: true });
+               toast.success("Successfully created Quotation number - " + response.data.quotation_number, { position: "top-center", theme: "colored", autoClose: 2000, hideProgressBar: true });
             }
             else {
                setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Error while creating Quotation"]);
@@ -449,17 +448,6 @@ const CommercialOrIndustrialQuotation = (props: any) => {
       }
    }
 
-
-
-   // const handleLocationSelect = (e: SelectChangeEvent<string>): void => {
-   //    handleFormChange("location", e.target.value);
-   //    for (let i = 0; i < locationOptions.length; i++) {
-   //       if (locationOptions[i]["city"] === e.target.value) {
-   //          handleFormChange("location", locationOptions[i]["city"]);
-   //       }
-   //    }
-   // }
-
    const handleQuotationTypeSelect = (e: SelectChangeEvent<string>): void => {
       handleFormChange("quotationType", e.target.value);
       for (let i = 0; i < quotationTypeOptions.length; i++) {
@@ -471,48 +459,21 @@ const CommercialOrIndustrialQuotation = (props: any) => {
    return (
       <>
          {loading ?
-            <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
+            <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center' }}>
                <Loading />
             </div>
             :
-            // <></>
             <div className="table-data" style={{ marginTop: "5%", padding: "45px", opacity: opacity_value }} id="quotation">
-               {/* {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()} anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
-                  <Alert onClose={handleClose} severity="error" sx={{ width: '100%',marginTop:"15%"}}>
-                     {errorMessage}
-                  </Alert>
-               </Snackbar>} */}
-
-               
-                  
-               {/* {
-                  <Snackbar open={successMessage.length > 0} autoHideDuration={50000} onClose={() => handleClose()} anchorOrigin={{ vertical: 'top', horizontal: 'center', }}>
-                     <Alert onClose={handleClose} severity="success" sx={{ width: '100%', marginTop: "15%" }}>
-                        {successMessage}
-                     </Alert>
-                  </Snackbar>
-               } */}
                <TableContainer component={Paper}>
                   <Table aria-label="simple table">
                      <TableBody>
                         <TableRow>
                            <TableCell>Date:</TableCell>
-                           <TableCell>{currentDate}</TableCell>
+                           <TableCell colSpan={3}>{currentDate}</TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Location</TableCell>
-                           <TableCell>
-                              {/* <FormControl sx={{ m: 1, minWidth: 220 }}>
-                           <InputLabel>Location</InputLabel>
-                           <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) =>
-                              handleLocationSelect(e)}>
-                              {locationOptions.map((option) => (
-                                 <MenuItem key={option["city"]} value={option["city"]}>
-                                    {option["city"]}
-                                 </MenuItem>
-                              ))}
-                           </Select>
-                        </FormControl> */}
+                           <TableCell colSpan={3}>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>Location</InputLabel>
                                  <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
@@ -531,31 +492,29 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>City</InputLabel>
                                  <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)} disabled={formData["location"] == ""}>
-                                 {Object.keys(locationOptions[formData["location"]]?locationOptions[formData["location"]]:[]).map((option) => (
+                                    {Object.keys(locationOptions[formData["location"]] ? locationOptions[formData["location"]] : []).map((option) => (
                                        <MenuItem key={option} value={option}>
                                           {option}
                                        </MenuItem>
                                     ))}
-                                    
+
                                  </Select>
                               </FormControl>
                            </TableCell>
                            <TableCell>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Latitude</InputLabel>
-                                 <TextField label="Latitude" value={formData["latitude"]} type="text" name="latitude" onChange={(e) => handleFormChange("latitude", e.target.value)} />
+                                 <TextField label="Latitude" value={formData["latitude"]} type="text" name="latitude" onChange={(e) => handleFormChange("latitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
                               </FormControl>
                            </TableCell>
                            <TableCell>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Longitude</InputLabel>
-                                 <TextField label="Longitude" value={formData["longitude"]} type="text" name="longitude" onChange={(e) => handleFormChange("longitude", e.target.value)} />
+                                 <TextField label="Longitude" value={formData["longitude"]} type="number" name="longitude" onChange={(e) => handleFormChange("longitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
                               </FormControl>
                            </TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Quotation Type</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>Quotation Type</InputLabel>
                                  <Select label="Quotation Type" value={formData["quotationType"]} onChange={(e) =>
@@ -571,7 +530,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                         </TableRow>
                         <TableRow>
                            <TableCell>Agent ID</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <FormControl sx={{ m: 1, minWidth: 220 }}>
                                  <InputLabel>Agent ID</InputLabel>
                                  <Select label="AgentID" value={formData["agentID"]} onChange={(e) =>
@@ -582,39 +541,40 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                        </MenuItem>
                                     ))}
                                  </Select>
+                                 <h3>{formData["agentName"]}</h3>
                               </FormControl>
                            </TableCell>
                         </TableRow>
-                        <TableRow>
+                        {/* <TableRow>
                            <TableCell>Agent Name</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               {formData["agentName"]}
                            </TableCell>
-                        </TableRow>
+                        </TableRow> */}
                         <TableRow>
                            <TableCell>Customer Name:</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) =>
                                  handleFormChange("customerName", e.target.value)} />
                            </TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Address:</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) =>
                                  handleFormChange("customerAddress", e.target.value)} />
                            </TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Mobile No.:</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) =>
                                  handleFormChange("customerPhoneNumber", e.target.value)} />
                            </TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Email:</TableCell>
-                           <TableCell>
+                           <TableCell colSpan={3}>
                               <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) =>
                                  handleFormChange("customerEmail", e.target.value)} />
                            </TableCell>
@@ -820,6 +780,40 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                      </TableHead>
                      <TableBody>
                         <TableRow>
+                           <TableCell>Registartion charges</TableCell>
+                           <TableCell>
+                              ₹15340.00/-
+                           </TableCell>
+                           <TableCell>Stamp charges</TableCell>
+                           <TableCell>
+                              ₹660.00/-
+                           </TableCell>
+                        </TableRow>
+                        <TableRow>
+                           <TableCell>Meter charges</TableCell>
+                           <TableCell colSpan={3}>
+                              <RadioGroup
+                                 row
+                                 aria-labelledby="demo-row-radio-buttons-group-label"
+                                 name="isMeterChargesSelfPaid"
+                                 value={calculationData["isMeterChargesSelfPaid"]}
+                                 onChange={handleCalculationDataChange}
+                              >
+                                 <FormControlLabel value={true} control={
+                                    <Radio />
+                                 } label="Self Paid" />
+                                 <FormControlLabel value={false} control={
+                                    <Radio />
+                                 } label="Comapny Paid" />
+                              </RadioGroup>
+                              {!calculationData["isMeterChargesSelfPaid"] &&
+                                 <>
+                                    ₹15543.00/- <sup>*</sup>(Approximate)
+                                 </>
+                              }
+                           </TableCell>
+                        </TableRow>
+                        <TableRow>
                            <TableCell>Rate per watt</TableCell>
                            <TableCell>
                               <TextField value={calculationData["ratePerWatt"]} type="number" name="ratePerWatt" onChange={handleCalculationDataChange} />
@@ -898,16 +892,31 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                         </TableRow>
                         <TableRow>
                            <TableCell>Value of project without Gst</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                           <TableCell colSpan={3}>
+                              {
+                                 !calculationData["isMeterChargesSelfPaid"] ?
+                                    <>
+                                       ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100).toLocaleString('en-IN')}
+                                    </>
+                                    :
+                                    <>
+                                       ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100).toLocaleString('en-IN')}
+                                    </>
+                              }
+                           </TableCell>
                         </TableRow>
                         <TableRow>
                            <TableCell>Value of project with Gst</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                           <TableCell colSpan={3}>₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
                         </TableRow>
 
                         <TableRow>
                            <TableCell>Final cost of project incl. add-on work</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                           <TableCell colSpan={3}>
+                              <b className="final-price">
+                                 ₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}
+                              </b>
+                           </TableCell>
                         </TableRow>
 
                         {formData["quotationType"] == "Industrial" && <TableRow>
@@ -941,17 +950,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                            <TableRow>
                               <TableCell>Total value of project after subsidy</TableCell>
                               <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                           </TableRow></>}
-                        {/* <TableRow>
-                <TableCell></TableCell>
-                <TableCell colSpan={3}>{calculationData[""]}</TableCell>
-             </TableRow>
-             <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-             </TableRow> */}
+                           </TableRow>
+                        </>}
                      </TableBody>
                   </Table>
                </TableContainer>

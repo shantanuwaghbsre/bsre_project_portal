@@ -27,8 +27,7 @@
 
 .RSPBprogressBar {
     height: 2px;
-    /* width: 30%; */
-    width: 90%;
+    width: 100%;
     line-height: 1;
     border-radius: 10px;
     position: relative;

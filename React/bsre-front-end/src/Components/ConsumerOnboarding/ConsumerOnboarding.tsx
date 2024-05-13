@@ -160,7 +160,7 @@ const ConsumerOnboarding = (props: any) => {
 
 
   return (
-    <div style={{ paddingTop: 64 }} className='table-data'>
+    <div  className='table-data'>
       {currentPage === 1 && (
         <form onSubmit={handleSubmit}>
           <Table>

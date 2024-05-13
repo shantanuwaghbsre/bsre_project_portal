@@ -89,7 +89,8 @@ const ResidentialQuotation = (props: any) => {
     installmentAcMcbSwitchCharge: 500,
     gebAgreementFees: 300,
     projectCost: 0,
-    customerEmail: ""
+    customerEmail: "",
+    discomOrTorrentCharges: "",
   });
 
   const handleFormChange = (field: any, value: any) => {
@@ -133,7 +134,8 @@ const ResidentialQuotation = (props: any) => {
       installmentAcMcbSwitchCharge: 500,
       gebAgreementFees: 300,
       projectCost: 0,
-      customerEmail: ""
+      customerEmail: "",
+      discomOrTorrentCharges: "",
     });
     setErrorMessage([]);
     setIsFormValid(false);
@@ -141,14 +143,14 @@ const ResidentialQuotation = (props: any) => {
 
   useEffect(() => {
     if (errorMessage.length > 0) {
-       toast.error(<div>Please fill the required fields.<br/>{errorMessage.map((error) => <li style={{textAlign:"left"}}>{error}</li>)}<br/></div>,{position: "top-right",autoClose:false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,});  
+      toast.error(<div>Please fill the required fields.<br />{errorMessage.map((error) => <li style={{ textAlign: "left" }}>{error}</li>)}<br /></div>, { position: "top-right", autoClose: false, theme: "colored", hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, });
     }
- }, [errorMessage]);
+  }, [errorMessage]);
 
   const validateAndCalculate = () => {
     let errorMessage_ = []
     if (!formData["agentID"]) {
-      errorMessage_.push( "Agent ID number required");
+      errorMessage_.push("Agent ID number required");
     }
     if (!formData["customerName"] || !formData["customerPhoneNumber"] || !formData["customerAddress"] || !formData["customerEmail"]) {
       errorMessage_.push("Customer details required");
@@ -209,14 +211,16 @@ const ResidentialQuotation = (props: any) => {
           if (response.data["guvnl_amount"] == null) {
             setErrorMessage(["Error calculating GUVNL Amount. Please check your inputs."]);
           }
-          else{
-          setFormData((prevData) => ({
-            ...prevData,
-            ["calculatedGUVNLAmount"]: response.data["guvnl_amount"],
-            ["calculatedSubsidy"]: response.data["subsidy"],
-            ["projectCost"]: response.data["guvnl_amount"] - response.data["subsidy"] + formData["gebAgreementFees"] + formData["installmentAcMcbSwitchCharge"],
-          }))
-        }})
+          else {
+            setFormData((prevData) => ({
+              ...prevData,
+              ["discomOrTorrentCharges"]: response.data["discom_or_torrent_charges"],
+              ["calculatedGUVNLAmount"]: response.data["guvnl_amount"],
+              ["calculatedSubsidy"]: response.data["subsidy"],
+              ["projectCost"]: response.data["guvnl_amount"] - response.data["subsidy"] + formData["gebAgreementFees"] + formData["installmentAcMcbSwitchCharge"],
+            }))
+          }
+        })
         .catch(function (error) {
           console.log(error);
         });
@@ -296,7 +300,8 @@ const ResidentialQuotation = (props: any) => {
       "solar_panel_type": formData["solarModuleType"],
       "solar_module_name": formData["solarModule"],
       "consumer_name": formData["customerName"],
-      "consumer_email": formData["customerEmail"]
+      "consumer_email": formData["customerEmail"],
+      "discom_or_torrent_charges": formData["discomOrTorrentCharges"],
     }
     axios.post(urls["submitURL"], postObject)
       .then(function (response) {
@@ -306,7 +311,7 @@ const ResidentialQuotation = (props: any) => {
           setSuccessMessage("Successfully created Quotation number - " + response.data.quotation_number);
         }
         else {
-          setErrorMessage(prevErrorMessage => [...prevErrorMessage,"Error while creating Quotation"]);
+          setErrorMessage(prevErrorMessage => [...prevErrorMessage, "Error while creating Quotation"]);
         };
       })
       .catch(function (error) {
@@ -327,24 +332,12 @@ const ResidentialQuotation = (props: any) => {
   return (
     <>
       {loading ?
-        <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center', height: '90vh', }}>
+        <div style={{ display: 'flex', borderRadius: '50%', justifyContent: 'center', alignItems: 'center' }}>
           <Loading />
         </div>
         :
         <div className="table-data">
-          {/* {<Snackbar open={!isFormValid && errorMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()}anchorOrigin={{vertical: 'top',horizontal: 'right',}}>
-            <Alert onClose={handleClose} severity="error" sx={{ width: '100%',marginTop:"15%" }}>
-              {errorMessage}
-            </Alert>
-          </Snackbar>}
-          {<Snackbar open={successMessage.length > 0} autoHideDuration={10000} onClose={() => handleClose()}anchorOrigin={{vertical: 'top',horizontal: 'center',}}>
-            <Alert onClose={handleClose} severity="success" sx={{ width: '100%',marginTop:"15%" }}>
-              {successMessage}
-            </Alert>
-          </Snackbar>} */}
-          <ToastContainer style={{ width: "400px", marginTop : "60px"}} />
-
-
+          <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
           <TableContainer component={Paper}>
             <Table aria-label="simple table">
               <TableBody>
@@ -355,13 +348,6 @@ const ResidentialQuotation = (props: any) => {
                 <TableRow>
                   <TableCell>State:</TableCell>
                   <TableCell>
-                    {/* <Select value={formData["location"]} onChange={(e) => handleFormChange("location", e.target.value)}>
-                  {stateOptions.map((option) => (
-                    <MenuItem key={option["Id"]} value={option["state"]} >
-                      {option["state"]}
-                    </MenuItem>
-                  ))}
-                </Select> */}
                     <FormControl sx={{ m: 1, minWidth: 220 }}>
                       <InputLabel>Location</InputLabel>
                       <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
@@ -455,7 +441,7 @@ const ResidentialQuotation = (props: any) => {
                     {formData["solarModuleWattage"]}
                   </TableCell>
                   <TableCell>
-                    <TextField value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e) => handleFormChange("numberOfPanels", parseInt((e.target as HTMLInputElement).value))} />
+                    <TextField value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e) => handleFormChange("numberOfPanels", parseInt((e.target as HTMLInputElement).value))} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
                     <br />
                     <br />
                     <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
@@ -584,19 +570,19 @@ const ResidentialQuotation = (props: any) => {
                   <TableCell>2</TableCell>
                   <TableCell>SUBSIDY</TableCell>
                   <TableCell colSpan={2}>{formData["totalKiloWatts"]}</TableCell>
-                  <TableCell>{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
+                  <TableCell>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>GUVNL SYSTEM AMOUNT</TableCell>
-                  <TableCell colSpan={3}>{formData["calculatedGUVNLAmount"].toLocaleString('en-IN')}</TableCell>
+                  <TableCell colSpan={3}>₹{formData["calculatedGUVNLAmount"].toLocaleString('en-IN')}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>TOTAL SUBSIDY AMOUNT</TableCell>
-                  <TableCell colSpan={3}>{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
+                  <TableCell colSpan={3}>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>NET GUVNL SYSTEM PRICE</TableCell>
-                  <TableCell colSpan={3}>{(formData["calculatedGUVNLAmount"] - formData["calculatedSubsidy"]).toLocaleString('en-IN')}</TableCell>
+                  <TableCell colSpan={3}>₹{(formData["calculatedGUVNLAmount"] - formData["calculatedSubsidy"]).toLocaleString('en-IN')}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>{formData["structure"]} FT ELEVATED STRUCTURE</TableCell>
@@ -616,6 +602,7 @@ const ResidentialQuotation = (props: any) => {
                       <FormControlLabel value="DISCOM" control={<Radio />} label="DISCOM" />
                       <FormControlLabel value="Torrent" control={<Radio />} label="Torrent" />
                     </RadioGroup>
+
                     <><FormLabel id="demo-row-radio-buttons-group-label">Select Phase</FormLabel><RadioGroup
                       row
                       aria-labelledby="demo-row-radio-buttons-group-label"
@@ -626,6 +613,7 @@ const ResidentialQuotation = (props: any) => {
                       <FormControlLabel value="Single" control={<Radio />} label="Single" />
                       <FormControlLabel value="Three" control={<Radio />} label="Three" />
                     </RadioGroup></>
+                    {<div>{formData["discomOrTorrentCharges"]}</div>}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -654,7 +642,11 @@ const ResidentialQuotation = (props: any) => {
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>PROJECT COST</TableCell>
-                  <TableCell colSpan={3}>{formData["projectCost"].toLocaleString('en-IN')}</TableCell>
+                  <TableCell colSpan={3}>
+                    <b className="final-price">
+                      ₹{formData["projectCost"].toLocaleString('en-IN')}
+                    </b>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>

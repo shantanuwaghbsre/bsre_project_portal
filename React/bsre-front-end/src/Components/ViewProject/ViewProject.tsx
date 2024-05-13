@@ -135,7 +135,7 @@ const ViewProject = (props: any) => {
     // console.log(project.phase_1.solar_panel_type)
     try {
       if (location.state) {
-        console.log("location.state - ", location.state)
+        // console.log("location.state - ", location.state)
         setCurrentPage(location.state.project_in_phase);
         try {
           axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?consumer_number=${location.state.consumer_number}`).then(
@@ -152,14 +152,14 @@ const ViewProject = (props: any) => {
                   ...phase_8_document_options.filter((option) => option.key_ != "agreement_residential" && option.key_ != "vendor_agreement"),
                 ])
               }
-              console.log(response.data);
+              // console.log(response.data);
               setIsLoading(false);
               setCurrentPage(Number(response.data.phase_1.project_in_phase));
               for (let i = 0; i < response.data.phase_1["other_documents_names"].length; i++) {
-                console.log(newOptions);
+                // console.log(newOptions);
                 newOptions.push({ label: response.data.phase_1["other_documents_names"][i], value: response.data.phase_1["other_documents_names"][i] });
               }
-              console.log(newOptions);
+              // console.log(newOptions);
               if (options.length == 3) {
                 setOptions(options.concat(newOptions));
               }
@@ -218,7 +218,7 @@ const ViewProject = (props: any) => {
     if (!project.phase_1.consumer_name) {
       axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         (response_consumer_details) => {
-          console.log("consumer details", response_consumer_details);
+          // console.log("consumer details", response_consumer_details);
           setProject((prevProject) => {
             // Retrieve the dictionary you want to modify
             const dictToUpdate = prevProject.phase_1 || {};
@@ -232,7 +232,7 @@ const ViewProject = (props: any) => {
             // Update the state variable with the modified dictionary
             return { ...prevProject, phase_1: updatedDict };
           });
-          console.log(project.phase_1)
+          // console.log(project.phase_1)
         });
     }
   }, [location.state.for_consumer_id, project.phase_1.consumer_name])
@@ -489,15 +489,13 @@ const ViewProject = (props: any) => {
     }
   }
   return (
-    <div className='table-data' >
-      {/* ProgressBar */}
-      <MultiStepProgressBar page={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
+    <div className='table-data' style={{ width: '1000px', height: '100%', margin: 'auto' }}>
+      <MultiStepProgressBar page={currentPage} key={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
       <h1>{project.phase_1.consumer_name}</h1>
-      <Table>
+      {/* <Table>
         <TableBody>
           <TableRow>
-            {/* ProgressBar */}
-            {/* {Array.from({ length: 10 }, (_, index) => (
+            {Array.from({ length: 10 }, (_, index) => (
               <TableCell key={index}>
                 <Button 
                   variant={currentPage - 1 === index ? 'contained' : 'outlined'}
@@ -507,10 +505,10 @@ const ViewProject = (props: any) => {
                   {index + 1}
                 </Button>
               </TableCell>
-            ))} */}
+            ))}
           </TableRow>
         </TableBody>
-      </Table>
+      </Table> */}
       <h2>Phase {currentPage}</h2>
       {currentPage != 8 && (!editable[currentPage - 1] ? <Button onClick={() => handleEditable(currentPage)}>Edit</Button> : <Button onClick={() => handleSave(currentPage)}>Save</Button>)}
       {currentPage == 1 && !isLoading &&
@@ -525,7 +523,6 @@ const ViewProject = (props: any) => {
                   {editable[currentPage - 1] ? <TextField onChange={(event) => handleInputChange('meter_number', event.target.value)} value={project.phase_1.meter_number} disabled={!editable[currentPage - 1]} /> : project.phase_1.meter_number}
                 </TableCell>
               </TableRow>
-
               <TableRow>
                 <TableCell>
                   <InputLabel>Current Sanctioned Load</InputLabel>
@@ -582,7 +579,6 @@ const ViewProject = (props: any) => {
                   )}
                 </TableCell>
               </TableRow>
-
               <TableRow>
                 <TableCell>
                   <InputLabel>Average Consumption of Unit</InputLabel>
@@ -601,7 +597,6 @@ const ViewProject = (props: any) => {
                   )}
                 </TableCell>
               </TableRow>
-
               <TableRow>
                 <TableCell>
                   <InputLabel>Consumer Number</InputLabel>
@@ -947,12 +942,12 @@ const ViewProject = (props: any) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='right'>
+                <TableCell align='right' colSpan={2} style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1021,28 +1016,28 @@ const ViewProject = (props: any) => {
                   <InputLabel>Notes</InputLabel>
                 </TableCell>
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={project.phase_2.notes} disabled />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_2.notes} disabled />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={newNote} onChange={(e) => setNewNote(e.target.value)} disabled={!editable[currentPage - 1]} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} onChange={(e) => setNewNote(e.target.value)} disabled={!editable[currentPage - 1]} />
                   <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1086,28 +1081,28 @@ const ViewProject = (props: any) => {
                   <InputLabel>Notes</InputLabel>
                 </TableCell>
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={project.phase_3.notes} disabled />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_3.notes} disabled />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
                   <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1150,28 +1145,28 @@ const ViewProject = (props: any) => {
                   <InputLabel>Notes</InputLabel>
                 </TableCell>
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={project.phase_4.notes} disabled />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_4.notes} disabled />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
                   <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1206,28 +1201,28 @@ const ViewProject = (props: any) => {
                   <InputLabel>Notes</InputLabel>
                 </TableCell>
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={project.phase_5.notes} disabled={!editable[currentPage - 1]} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_5.notes} disabled={!editable[currentPage - 1]} />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
                   <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1247,17 +1242,17 @@ const ViewProject = (props: any) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1308,28 +1303,28 @@ const ViewProject = (props: any) => {
                   <InputLabel>Notes</InputLabel>
                 </TableCell>
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={project.phase_7.notes} disabled />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_7.notes} disabled />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  <TextField style={{ maxHeight: 200, width: 1000, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
                   <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1345,17 +1340,17 @@ const ViewProject = (props: any) => {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1416,17 +1411,17 @@ const ViewProject = (props: any) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1481,17 +1476,17 @@ const ViewProject = (props: any) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1507,17 +1502,17 @@ const ViewProject = (props: any) => {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={{border: 'none'}}>
                   {currentPage < project.phase_1.project_in_phase ?
                     <button className='btn-next' type="button" onClick={handleNextPage}>
                       Next
                     </button> :
-                    <button type="button" onClick={promoteToNextPhase}>
+                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
                       Promote
                     </button>}
                 </TableCell>
@@ -1565,7 +1560,7 @@ const ViewProject = (props: any) => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align='left'>
+                <TableCell align='left' style={{border: 'none'}}>
                   <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                     Previous
                   </button>
