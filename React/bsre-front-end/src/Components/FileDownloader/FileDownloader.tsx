@@ -6,7 +6,7 @@ interface FileDownloaderProps {
   downloadOptions: {
     document_required: string,
     id: string
-};
+  };
   options: { label: string; value: string }[];
 }
 

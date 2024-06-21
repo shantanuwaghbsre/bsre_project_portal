@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, InputLabel, FormControl, FormLabel, } from "@mui/material"
-import axios from 'axios'
-import './styles.css'
+import axios from 'axios';
 import Loading from "../Loading/Loading";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AlignHorizontalCenter, VerticalAlignCenter, VerticalAlignTop } from "@mui/icons-material";
+
+
 
 const CommercialOrIndustrialQuotation = (props: any) => {
    axios.defaults.headers.common['token'] = props.token
@@ -463,504 +463,509 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                <Loading />
             </div>
             :
-            <div className="table-data" style={{ marginTop: "5%", padding: "45px", opacity: opacity_value }} id="quotation">
-               <TableContainer component={Paper}>
-                  <Table aria-label="simple table">
-                     <TableBody>
-                        <TableRow>
-                           <TableCell>Date:</TableCell>
-                           <TableCell colSpan={3}>{currentDate}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Location</TableCell>
-                           <TableCell colSpan={3}>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Location</InputLabel>
-                                 <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
-                                    {Object.keys(locationOptions).map((option) => (
-                                       <MenuItem key={option} value={option}>
-                                          {option}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>City</TableCell>
-                           <TableCell>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>City</InputLabel>
-                                 <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)} disabled={formData["location"] == ""}>
-                                    {Object.keys(locationOptions[formData["location"]] ? locationOptions[formData["location"]] : []).map((option) => (
-                                       <MenuItem key={option} value={option}>
-                                          {option}
-                                       </MenuItem>
-                                    ))}
-
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                           <TableCell>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <TextField label="Latitude" value={formData["latitude"]} type="text" name="latitude" onChange={(e) => handleFormChange("latitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
-                              </FormControl>
-                           </TableCell>
-                           <TableCell>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <TextField label="Longitude" value={formData["longitude"]} type="number" name="longitude" onChange={(e) => handleFormChange("longitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
-                              </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Quotation Type</TableCell>
-                           <TableCell colSpan={3}>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Quotation Type</InputLabel>
-                                 <Select label="Quotation Type" value={formData["quotationType"]} onChange={(e) =>
-                                    handleQuotationTypeSelect(e)}>
-                                    {quotationTypeOptions.map((option) => (
-                                       <MenuItem key={option.text} value={option.value}>
-                                          {option.text}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Agent ID</TableCell>
-                           <TableCell colSpan={3}>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Agent ID</InputLabel>
-                                 <Select label="AgentID" value={formData["agentID"]} onChange={(e) =>
-                                    handleAgentSelect(e)}>
-                                    {agentOptions.map((option) => (
-                                       <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
-                                          {option["agent_id"]}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                                 <h3>{formData["agentName"]}</h3>
-                              </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        {/* <TableRow>
+            <>
+               <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                  <div className="table-data" style={{ opacity: opacity_value }} id="quotation">
+                     <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
+                     <label className="search-label">Commercial/Industrial Quotation</label>
+                     <TableContainer component={Paper}>
+                        <Table aria-label="simple table">
+                           <TableBody>
+                              <TableRow>
+                                 <TableCell>Date:</TableCell>
+                                 <TableCell colSpan={3}>{currentDate}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Location</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Location</InputLabel>
+                                       <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
+                                          {Object.keys(locationOptions).map((option) => (
+                                             <MenuItem key={option} value={option}>
+                                                {option}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>City</TableCell>
+                                 <TableCell>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>City</InputLabel>
+                                       <Select label="City" value={formData["city"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("city", e.target.value)} disabled={formData["location"] == ""}>
+                                          {Object.keys(locationOptions[formData["location"]] ? locationOptions[formData["location"]] : []).map((option) => (
+                                             <MenuItem key={option} value={option}>
+                                                {option}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                                 <TableCell>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <TextField label="Latitude" value={formData["latitude"]} type="text" name="latitude" onChange={(e) => handleFormChange("latitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
+                                    </FormControl>
+                                 </TableCell>
+                                 <TableCell>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <TextField label="Longitude" value={formData["longitude"]} type="number" name="longitude" onChange={(e) => handleFormChange("longitude", e.target.value)} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
+                                    </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Quotation Type</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Quotation Type</InputLabel>
+                                       <Select label="Quotation Type" value={formData["quotationType"]} onChange={(e) =>
+                                          handleQuotationTypeSelect(e)}>
+                                          {quotationTypeOptions.map((option) => (
+                                             <MenuItem key={option.text} value={option.value}>
+                                                {option.text}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Agent ID</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Agent ID</InputLabel>
+                                       <Select label="AgentID" value={formData["agentID"]} onChange={(e) =>
+                                          handleAgentSelect(e)}>
+                                          {agentOptions.map((option) => (
+                                             <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
+                                                {option["agent_id"]}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                       <h3>{formData["agentName"]}</h3>
+                                    </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              {/* <TableRow>
                            <TableCell>Agent Name</TableCell>
                            <TableCell colSpan={3}>
                               {formData["agentName"]}
                            </TableCell>
                         </TableRow> */}
-                        <TableRow>
-                           <TableCell>Customer Name:</TableCell>
-                           <TableCell colSpan={3}>
-                              <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) =>
-                                 handleFormChange("customerName", e.target.value)} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Address:</TableCell>
-                           <TableCell colSpan={3}>
-                              <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) =>
-                                 handleFormChange("customerAddress", e.target.value)} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Mobile No.:</TableCell>
-                           <TableCell colSpan={3}>
-                              <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) =>
-                                 handleFormChange("customerPhoneNumber", e.target.value)} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Email:</TableCell>
-                           <TableCell colSpan={3}>
-                              <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) =>
-                                 handleFormChange("customerEmail", e.target.value)} />
-                           </TableCell>
-                        </TableRow>
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-               <TableContainer component={Paper}>
-                  <Table border={2}>
-                     <TableHead>
-                        <TableRow>
-                           <TableCell>SR. NO.</TableCell>
-                           <TableCell>ITEM DESCRIPTION</TableCell>
-                           <TableCell>MAKE</TableCell>
-                           <TableCell>QUANTITY</TableCell>
-                        </TableRow>
-                     </TableHead>
-                     <TableBody>
-                        <TableRow>
-                           <TableCell>1</TableCell>
-                           <TableCell>Solar Module</TableCell>
-                           <TableCell>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Solar Module</InputLabel>
-                                 <Select label="Solar Module" value={formData["solarModule"]} onChange={(e) =>
-                                    handleFormChange("solarModule", e.target.value)}>
-                                    <MenuItem>
-                                       <em>None</em>
-                                    </MenuItem>
-                                    {solarModuleOptions.map((option) => (
-                                       <MenuItem key={option.value} value={option.value}>
-                                          {option.text}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                              <br />
-                              <br />
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Solar Module Type</InputLabel>
-                                 <Select label="Solar Module Type" value={formData["solarModuleType"]} onChange={(e) =>
-                                    handleFormChange("solarModuleType", e.target.value)}>
-                                    {solarModuleTypeOptions.map((option) => (
-                                       <MenuItem key={option.value} value={option.value}>
-                                          {option.text}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                           <TableCell>
-                              <TextField label="Solar Module Wattage" value={formData["solarModuleWattage"]}
-                                 type="text" name="solarModuleWattage" placeholder="Solar Module Wattage"
-                                 onChange={(e: React.BaseSyntheticEvent) => {
-                                    handleFormChange("solarModuleWattage", isNaN(e.target.value) ? 0 : e.target.value)
-                                 }} /> &nbsp; W <br /><br />
-                              <TextField label="Number of Panels" value={formData["numberOfPanels"]}
-                                 type="number" name="numberOfPanels" placeholder="Enter number of panels"
-                                 onChange={(e: React.BaseSyntheticEvent) => {
-                                    e.target.value = isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber;
-                                    handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber)
-                                 }} />
-                              <br />
-                              <br />
-                              <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>2</TableCell>
-                           <TableCell>Solar Inverter</TableCell>
-                           <TableCell>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Solar Inverter</InputLabel>
-                                 <Select label="Solar Inverter" value={formData["solarInverter"]} onChange={(e) =>
-                                    handleFormChange("solarInverter", e.target.value)}>
-                                    {solarInverterOptions.map((option) => (
-                                       <MenuItem key={option.value} value={option.value}>
-                                          {option.text}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                           <TableCell>
-                              <TextField label="Inverter Capacity" value={formData["inverterCapacity"]} type="number" name="inverterCapacity" placeholder="Enter capacity of Inverter" onChange={(e: React.BaseSyntheticEvent) => { e.target.value = isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber; handleFormChange("inverterCapacity", isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber) }} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>3</TableCell>
-                           <TableCell>Solar Structure</TableCell>
-                           <TableCell colSpan={2}><FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <InputLabel>Solar Structure</InputLabel>
-                              <Select label="Solar Structure" value={formData["solarStructure"]} onChange={(e) =>
-                                 handleFormChange("solarStructure", e.target.value)}>
-                                 {solarStructureOptions.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                       {option.value}
-                                    </MenuItem>
-                                 ))}
-                              </Select>
-                           </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>4</TableCell>
-                           <TableCell>Solar Cable</TableCell>
-                           <TableCell>KEI</TableCell>
-                           <TableCell>
-                              <RadioGroup
-                                 row
-                                 aria-labelledby="demo-row-radio-buttons-group-label"
-                                 name="row-radio-buttons-group"
-                                 onChange={(e) =>
-                                    handleFormChange("solarCableSelect", e.target.value)}
-                                 value={formData["solarCableSelect"]}
-                              >
-                                 <FormControlLabel value="Yes" control={
-                                    <Radio />
-                                 } label="Yes" />
-                                 <FormControlLabel value="No" control={
-                                    <Radio />
-                                 } label="No" />
-                              </RadioGroup>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>5</TableCell>
-                           <TableCell>Switch Gear and Protection</TableCell>
-                           <TableCell colSpan={2}>
-                              <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                 <InputLabel>Switch Gear & Protection</InputLabel>
-                                 <Select label="switchGearAndProtection" value={formData["switchGearAndProtection"]} onChange={(e) =>
-                                    handleFormChange("switchGearAndProtection", e.target.value)}>
-                                    {switchGearAndProtectionOptions.map((option) => (
-                                       <MenuItem key={option.value} value={option.value}>
-                                          {option.text}
-                                       </MenuItem>
-                                    ))}
-                                 </Select>
-                              </FormControl>
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>6</TableCell>
-                           <TableCell>Sprinkler Installation</TableCell>
-                           <TableCell></TableCell>
-                           <TableCell>
-                              <RadioGroup
-                                 row
-                                 aria-labelledby="demo-row-radio-buttons-group-label"
-                                 name="row-radio-buttons-group"
-                                 onChange={(e) =>
-                                    handleFormChange("sprinklerInstallation", e.target.value)}
-                                 value={formData["sprinklerInstallation"]}
-                              >
-                                 <FormControlLabel value="Yes" control={
-                                    <Radio />
-                                 } label="Yes" />
-                                 <FormControlLabel value="No" control={
-                                    <Radio />
-                                 } label="No" />
-                              </RadioGroup>
-                           </TableCell>
-                        </TableRow>
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-               <br />
-               <br />
-               <TableContainer>
-                  <Table border={2}>
-                     <TableHead>
-                        <TableRow>
-                           <TableCell colSpan={2} align="center">Guarantee and Warranty</TableCell>
-                        </TableRow>
-                     </TableHead>
-                     <TableBody>
-                        <TableRow>
-                           <TableCell>AMC</TableCell>
-                           <TableCell>5 Years</TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Solar Panel</TableCell>
-                           <TableCell>10 year manufacturing fault guarantee <br /> 25 year generation guarantee</TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Grid Tie Inverter</TableCell>
-                           <TableCell>5 year Guarantee and warranty</TableCell>
-                        </TableRow>
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-               <br />
-               <br />
-               <TableContainer>
-                  <Table border={2}>
-                     <TableHead>
-                        <TableRow>
-                           <TableCell colSpan={4} align="center">
-                              Calculations {formData["totalKiloWatts"] > 0 && <span>for {formData["totalKiloWatts"]} KiloWatts</span>}
-                           </TableCell>
-                        </TableRow>
-                     </TableHead>
-                     <TableBody>
-                        <TableRow>
-                           <TableCell>Registartion charges</TableCell>
-                           <TableCell>
-                              ₹15340.00/-
-                           </TableCell>
-                           <TableCell>Stamp charges</TableCell>
-                           <TableCell>
-                              ₹660.00/-
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Meter charges</TableCell>
-                           <TableCell colSpan={3}>
-                              <RadioGroup
-                                 row
-                                 aria-labelledby="demo-row-radio-buttons-group-label"
-                                 name="isMeterChargesSelfPaid"
-                                 value={calculationData["isMeterChargesSelfPaid"]}
-                                 onChange={handleCalculationDataChange}
-                              >
-                                 <FormControlLabel value={true} control={
-                                    <Radio />
-                                 } label="Self Paid" />
-                                 <FormControlLabel value={false} control={
-                                    <Radio />
-                                 } label="Comapny Paid" />
-                              </RadioGroup>
-                              {!calculationData["isMeterChargesSelfPaid"] &&
-                                 <>
-                                    ₹15543.00/- <sup>*</sup>(Approximate)
-                                 </>
-                              }
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Rate per watt</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["ratePerWatt"]} type="number" name="ratePerWatt" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                           <TableCell>GST per watt</TableCell>
-                           <TableCell><TextField value={calculationData["gstPerWatt"]} type="number" name="gstPerWatt" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Total Rate</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                        </TableRow>
+                              <TableRow>
+                                 <TableCell>Customer Name:</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) =>
+                                       handleFormChange("customerName", e.target.value)} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Address:</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) =>
+                                       handleFormChange("customerAddress", e.target.value)} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Mobile No.:</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) =>
+                                       handleFormChange("customerPhoneNumber", e.target.value)} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Email:</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) =>
+                                       handleFormChange("customerEmail", e.target.value)} />
+                                 </TableCell>
+                              </TableRow>
+                           </TableBody>
+                        </Table>
+                     </TableContainer>
+                     <TableContainer component={Paper}>
+                        <Table border={2}>
+                           <TableHead>
+                              <TableRow>
+                                 <TableCell>SR. NO.</TableCell>
+                                 <TableCell>ITEM DESCRIPTION</TableCell>
+                                 <TableCell>MAKE</TableCell>
+                                 <TableCell>QUANTITY</TableCell>
+                              </TableRow>
+                           </TableHead>
+                           <TableBody>
+                              <TableRow>
+                                 <TableCell>1</TableCell>
+                                 <TableCell>Solar Module</TableCell>
+                                 <TableCell>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Solar Module</InputLabel>
+                                       <Select label="Solar Module" value={formData["solarModule"]} onChange={(e) =>
+                                          handleFormChange("solarModule", e.target.value)}>
+                                          <MenuItem>
+                                             <em>None</em>
+                                          </MenuItem>
+                                          {solarModuleOptions.map((option) => (
+                                             <MenuItem key={option.value} value={option.value}>
+                                                {option.text}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                    <br />
+                                    <br />
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Solar Module Type</InputLabel>
+                                       <Select label="Solar Module Type" value={formData["solarModuleType"]} onChange={(e) =>
+                                          handleFormChange("solarModuleType", e.target.value)}>
+                                          {solarModuleTypeOptions.map((option) => (
+                                             <MenuItem key={option.value} value={option.value}>
+                                                {option.text}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                                 <TableCell>
+                                    <TextField label="Solar Module Wattage" value={formData["solarModuleWattage"]}
+                                       type="text" name="solarModuleWattage" placeholder="Solar Module Wattage"
+                                       onChange={(e: React.BaseSyntheticEvent) => {
+                                          handleFormChange("solarModuleWattage", isNaN(e.target.value) ? 0 : e.target.value)
+                                       }} /> &nbsp; W <br /><br />
+                                    <TextField label="Number of Panels" value={formData["numberOfPanels"]}
+                                       type="number" name="numberOfPanels" placeholder="Enter number of panels"
+                                       onChange={(e: React.BaseSyntheticEvent) => {
+                                          e.target.value = isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber;
+                                          handleFormChange("numberOfPanels", isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber)
+                                       }} />
+                                    <br />
+                                    <br />
+                                    <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>2</TableCell>
+                                 <TableCell>Solar Inverter</TableCell>
+                                 <TableCell>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Solar Inverter</InputLabel>
+                                       <Select label="Solar Inverter" value={formData["solarInverter"]} onChange={(e) =>
+                                          handleFormChange("solarInverter", e.target.value)}>
+                                          {solarInverterOptions.map((option) => (
+                                             <MenuItem key={option.value} value={option.value}>
+                                                {option.text}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                                 <TableCell>
+                                    <TextField label="Inverter Capacity" value={formData["inverterCapacity"]} type="number" name="inverterCapacity" placeholder="Enter capacity of Inverter" onChange={(e: React.BaseSyntheticEvent) => { e.target.value = isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber; handleFormChange("inverterCapacity", isNaN(e.target.valueAsNumber) ? 0 : e.target.valueAsNumber) }} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>3</TableCell>
+                                 <TableCell>Solar Structure</TableCell>
+                                 <TableCell colSpan={2}><FormControl sx={{ m: 1, minWidth: 250 }}>
+                                    <InputLabel>Solar Structure</InputLabel>
+                                    <Select label="Solar Structure" value={formData["solarStructure"]} onChange={(e) =>
+                                       handleFormChange("solarStructure", e.target.value)}>
+                                       {solarStructureOptions.map((option) => (
+                                          <MenuItem key={option.value} value={option.value}>
+                                             {option.value}
+                                          </MenuItem>
+                                       ))}
+                                    </Select>
+                                 </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>4</TableCell>
+                                 <TableCell>Solar Cable</TableCell>
+                                 <TableCell>KEI</TableCell>
+                                 <TableCell>
+                                    <RadioGroup
+                                       row
+                                       aria-labelledby="demo-row-radio-buttons-group-label"
+                                       name="row-radio-buttons-group"
+                                       onChange={(e) =>
+                                          handleFormChange("solarCableSelect", e.target.value)}
+                                       value={formData["solarCableSelect"]}
+                                    >
+                                       <FormControlLabel value="Yes" control={
+                                          <Radio />
+                                       } label="Yes" />
+                                       <FormControlLabel value="No" control={
+                                          <Radio />
+                                       } label="No" />
+                                    </RadioGroup>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>5</TableCell>
+                                 <TableCell>Switch Gear and Protection</TableCell>
+                                 <TableCell colSpan={2}>
+                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                       <InputLabel>Switch Gear & Protection</InputLabel>
+                                       <Select label="switchGearAndProtection" value={formData["switchGearAndProtection"]} onChange={(e) =>
+                                          handleFormChange("switchGearAndProtection", e.target.value)}>
+                                          {switchGearAndProtectionOptions.map((option) => (
+                                             <MenuItem key={option.value} value={option.value}>
+                                                {option.text}
+                                             </MenuItem>
+                                          ))}
+                                       </Select>
+                                    </FormControl>
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>6</TableCell>
+                                 <TableCell>Sprinkler Installation</TableCell>
+                                 <TableCell></TableCell>
+                                 <TableCell>
+                                    <RadioGroup
+                                       row
+                                       aria-labelledby="demo-row-radio-buttons-group-label"
+                                       name="row-radio-buttons-group"
+                                       onChange={(e) =>
+                                          handleFormChange("sprinklerInstallation", e.target.value)}
+                                       value={formData["sprinklerInstallation"]}
+                                    >
+                                       <FormControlLabel value="Yes" control={
+                                          <Radio />
+                                       } label="Yes" />
+                                       <FormControlLabel value="No" control={
+                                          <Radio />
+                                       } label="No" />
+                                    </RadioGroup>
+                                 </TableCell>
+                              </TableRow>
+                           </TableBody>
+                        </Table>
+                     </TableContainer>
+                     <br />
+                     <br />
+                     <TableContainer>
+                        <Table border={2}>
+                           <TableHead>
+                              <TableRow>
+                                 <TableCell colSpan={2} align="center">Guarantee and Warranty</TableCell>
+                              </TableRow>
+                           </TableHead>
+                           <TableBody>
+                              <TableRow>
+                                 <TableCell>AMC</TableCell>
+                                 <TableCell>5 Years</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Solar Panel</TableCell>
+                                 <TableCell>10 year manufacturing fault guarantee <br /> 25 year generation guarantee</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Grid Tie Inverter</TableCell>
+                                 <TableCell>5 year Guarantee and warranty</TableCell>
+                              </TableRow>
+                           </TableBody>
+                        </Table>
+                     </TableContainer>
+                     <br />
+                     <br />
+                     <TableContainer>
+                        <Table border={2}>
+                           <TableHead>
+                              <TableRow>
+                                 <TableCell colSpan={4} align="center">
+                                    Calculations {formData["totalKiloWatts"] > 0 && <span>for {formData["totalKiloWatts"]} KiloWatts</span>}
+                                 </TableCell>
+                              </TableRow>
+                           </TableHead>
+                           <TableBody>
+                              <TableRow>
+                                 <TableCell>Registartion charges</TableCell>
+                                 <TableCell>
+                                    ₹15340.00/-
+                                 </TableCell>
+                                 <TableCell>Stamp charges</TableCell>
+                                 <TableCell>
+                                    ₹660.00/-
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Meter charges</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <RadioGroup
+                                       row
+                                       aria-labelledby="demo-row-radio-buttons-group-label"
+                                       name="isMeterChargesSelfPaid"
+                                       value={calculationData["isMeterChargesSelfPaid"]}
+                                       onChange={handleCalculationDataChange}
+                                    >
+                                       <FormControlLabel value={true} control={
+                                          <Radio />
+                                       } label="Self Paid" />
+                                       <FormControlLabel value={false} control={
+                                          <Radio />
+                                       } label="Comapny Paid" />
+                                    </RadioGroup>
+                                    {!calculationData["isMeterChargesSelfPaid"] &&
+                                       <>
+                                          ₹15543.00/- <sup>*</sup>(Approximate)
+                                       </>
+                                    }
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Rate per watt</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["ratePerWatt"]} type="number" name="ratePerWatt" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                                 <TableCell>GST per watt</TableCell>
+                                 <TableCell><TextField value={calculationData["gstPerWatt"]} type="number" name="gstPerWatt" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Total Rate</TableCell>
+                                 <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                              </TableRow>
 
-                        <TableRow>
-                           <TableCell>Electricity unit rate</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["electricityUnitRate"]} type="number" name="electricityUnitRate" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                           <TableCell>Inflation in unit rate</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["inflationInUnitRate"]} type="number" name="inflationInUnitRate" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Loan</TableCell>
-                           <TableCell colSpan={3}>
-                              <RadioGroup
-                                 row
-                                 aria-labelledby="demo-row-radio-buttons-group-label"
-                                 name="isLoan"
-                                 value={calculationData["isLoan"]}
-                                 onChange={handleCalculationDataChange}
-                              >
-                                 <FormControlLabel value={true} control={
-                                    <Radio />
-                                 } label="Yes" />
-                                 <FormControlLabel value={false} control={
-                                    <Radio />
-                                 } label="No" />
-                              </RadioGroup>
-                           </TableCell>
-                        </TableRow>
-                        {calculationData["isLoan"] && <><TableRow>
-                           <TableCell>Loan amount on project </TableCell>
-                           <TableCell><TextField value={calculationData["loanAmountOnProject"]} type="number" name="loanAmountOnProject" onChange={handleCalculationDataChange} /></TableCell>
-                           <TableCell>Loan term </TableCell>
-                           <TableCell><TextField value={calculationData["loanTerm"]} type="number" name="loanTerm" onChange={handleCalculationDataChange} /></TableCell>
-                        </TableRow>
-                           <TableRow>
-                              <TableCell>Interest Rate on loan</TableCell>
-                              <TableCell><TextField value={calculationData["interestRateOnLoan"]} type="number" name="interestRateOnLoan" onChange={handleCalculationDataChange} />
-                              </TableCell>
-                              <TableCell>Installment of Loan per month</TableCell>
-                              <TableCell>{(isNaN(Math.round(((calculationData["loanAmountOnProject"] * (1 + (calculationData["interestRateOnLoan"] * calculationData["loanTerm"]) / 1200) / 12) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["loanAmountOnProject"] * (1 + (calculationData["interestRateOnLoan"] * calculationData["loanTerm"]) / 1200) / 12) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                           </TableRow></>}
-                        <TableRow>
-                           <TableCell>Total GST</TableCell>
-                           <TableCell>{(isNaN(Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                           <TableCell>Reinvestment Rate</TableCell>
-                           <TableCell><TextField value={calculationData["reinvestmentRate"]} type="number" name="reinvestmentRate" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Any extra cost on add-on work</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["anyExtraCostOnAddOnWork"]} type="number" name="anyExtraCostOnAddOnWork" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                           <TableCell>GST on add-on work</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["gstOnAddOnWork"]} type="number" name="gstOnAddOnWork" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Total add-on amount</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Value of project without Gst</TableCell>
-                           <TableCell colSpan={3}>
-                              {
-                                 !calculationData["isMeterChargesSelfPaid"] ?
-                                    <>
-                                       ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100).toLocaleString('en-IN')}
-                                    </>
-                                    :
-                                    <>
-                                       ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100).toLocaleString('en-IN')}
-                                    </>
-                              }
-                           </TableCell>
-                        </TableRow>
-                        <TableRow>
-                           <TableCell>Value of project with Gst</TableCell>
-                           <TableCell colSpan={3}>₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                        </TableRow>
+                              <TableRow>
+                                 <TableCell>Electricity unit rate</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["electricityUnitRate"]} type="number" name="electricityUnitRate" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                                 <TableCell>Inflation in unit rate</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["inflationInUnitRate"]} type="number" name="inflationInUnitRate" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Loan</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <RadioGroup
+                                       row
+                                       aria-labelledby="demo-row-radio-buttons-group-label"
+                                       name="isLoan"
+                                       value={calculationData["isLoan"]}
+                                       onChange={handleCalculationDataChange}
+                                    >
+                                       <FormControlLabel value={true} control={
+                                          <Radio />
+                                       } label="Yes" />
+                                       <FormControlLabel value={false} control={
+                                          <Radio />
+                                       } label="No" />
+                                    </RadioGroup>
+                                 </TableCell>
+                              </TableRow>
+                              {calculationData["isLoan"] && <><TableRow>
+                                 <TableCell>Loan amount on project </TableCell>
+                                 <TableCell><TextField value={calculationData["loanAmountOnProject"]} type="number" name="loanAmountOnProject" onChange={handleCalculationDataChange} /></TableCell>
+                                 <TableCell>Loan term </TableCell>
+                                 <TableCell><TextField value={calculationData["loanTerm"]} type="number" name="loanTerm" onChange={handleCalculationDataChange} /></TableCell>
+                              </TableRow>
+                                 <TableRow>
+                                    <TableCell>Interest Rate on loan</TableCell>
+                                    <TableCell><TextField value={calculationData["interestRateOnLoan"]} type="number" name="interestRateOnLoan" onChange={handleCalculationDataChange} />
+                                    </TableCell>
+                                    <TableCell>Installment of Loan per month</TableCell>
+                                    <TableCell>{(isNaN(Math.round(((calculationData["loanAmountOnProject"] * (1 + (calculationData["interestRateOnLoan"] * calculationData["loanTerm"]) / 1200) / 12) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["loanAmountOnProject"] * (1 + (calculationData["interestRateOnLoan"] * calculationData["loanTerm"]) / 1200) / 12) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                                 </TableRow></>}
+                              <TableRow>
+                                 <TableCell>Total GST</TableCell>
+                                 <TableCell>{(isNaN(Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["gstPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                                 <TableCell>Reinvestment Rate</TableCell>
+                                 <TableCell><TextField value={calculationData["reinvestmentRate"]} type="number" name="reinvestmentRate" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Any extra cost on add-on work</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["anyExtraCostOnAddOnWork"]} type="number" name="anyExtraCostOnAddOnWork" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                                 <TableCell>GST on add-on work</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["gstOnAddOnWork"]} type="number" name="gstOnAddOnWork" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Total add-on amount</TableCell>
+                                 <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Value of project without Gst</TableCell>
+                                 <TableCell colSpan={3}>
+                                    {
+                                       !calculationData["isMeterChargesSelfPaid"] ?
+                                          <>
+                                             ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660 + 15543) * 100) / 100).toLocaleString('en-IN')}
+                                          </>
+                                          :
+                                          <>
+                                             ₹ {(isNaN(Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100) ? 0 : Math.round(((calculationData["ratePerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON + 15340 + 660) * 100) / 100).toLocaleString('en-IN')}
+                                          </>
+                                    }
+                                 </TableCell>
+                              </TableRow>
+                              <TableRow>
+                                 <TableCell>Value of project with Gst</TableCell>
+                                 <TableCell colSpan={3}>₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                              </TableRow>
 
-                        <TableRow>
-                           <TableCell>Final cost of project incl. add-on work</TableCell>
-                           <TableCell colSpan={3}>
-                              <b className="final-price">
-                                 ₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}
-                              </b>
-                           </TableCell>
-                        </TableRow>
+                              <TableRow>
+                                 <TableCell>Final cost of project incl. add-on work</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <b className="final-price">
+                                       ₹{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}
+                                    </b>
+                                 </TableCell>
+                              </TableRow>
 
-                        {formData["quotationType"] == "Industrial" && <TableRow>
-                           <TableCell>Subsidy</TableCell>
-                           <TableCell colSpan={3}>
-                              <RadioGroup
-                                 row
-                                 aria-labelledby="demo-row-radio-buttons-group-label"
-                                 name="isSubsidy"
-                                 value={calculationData["isSubsidy"]}
-                                 onChange={handleCalculationDataChange}
-                              >
-                                 <FormControlLabel value={true} control={
-                                    <Radio />
-                                 } label="Yes" />
-                                 <FormControlLabel value={false} control={
-                                    <Radio />
-                                 } label="No" />
-                              </RadioGroup>
-                           </TableCell>
-                        </TableRow>}
-                        {(calculationData["isSubsidy"] && formData["quotationType"] == "Industrial") && <><TableRow>
-                           <TableCell>Subsidy per watt</TableCell>
-                           <TableCell>
-                              <TextField value={calculationData["subsidyPerWatt"]} type="number" name="subsidyPerWatt" onChange={handleCalculationDataChange} />
-                           </TableCell>
-                           <TableCell>Total Subsidy</TableCell>
-                           <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                              {formData["quotationType"] == "Industrial" && <TableRow>
+                                 <TableCell>Subsidy</TableCell>
+                                 <TableCell colSpan={3}>
+                                    <RadioGroup
+                                       row
+                                       aria-labelledby="demo-row-radio-buttons-group-label"
+                                       name="isSubsidy"
+                                       value={calculationData["isSubsidy"]}
+                                       onChange={handleCalculationDataChange}
+                                    >
+                                       <FormControlLabel value={true} control={
+                                          <Radio />
+                                       } label="Yes" />
+                                       <FormControlLabel value={false} control={
+                                          <Radio />
+                                       } label="No" />
+                                    </RadioGroup>
+                                 </TableCell>
+                              </TableRow>}
+                              {(calculationData["isSubsidy"] && formData["quotationType"] == "Industrial") && <><TableRow>
+                                 <TableCell>Subsidy per watt</TableCell>
+                                 <TableCell>
+                                    <TextField value={calculationData["subsidyPerWatt"]} type="number" name="subsidyPerWatt" onChange={handleCalculationDataChange} />
+                                 </TableCell>
+                                 <TableCell>Total Subsidy</TableCell>
+                                 <TableCell colSpan={3}>{(isNaN(Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round(((calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
 
-                        </TableRow>
-                           <TableRow>
-                              <TableCell>Total value of project after subsidy</TableCell>
-                              <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
-                           </TableRow>
-                        </>}
-                     </TableBody>
-                  </Table>
-               </TableContainer>
-               <br />
-               <br />
-               <Button variant="contained" onClick={() => resetForm()}>Reset</Button>&nbsp;
-               <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
-               {isFormValid && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
-            </div>
+                              </TableRow>
+                                 <TableRow>
+                                    <TableCell>Total value of project after subsidy</TableCell>
+                                    <TableCell colSpan={3}>{(isNaN(Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100) ? 0 : Math.round((((calculationData["ratePerWatt"] + calculationData["gstPerWatt"]) * 1000 * formData["totalKiloWatts"]) - (calculationData["subsidyPerWatt"] * 1000 * formData["totalKiloWatts"]) + (calculationData["anyExtraCostOnAddOnWork"] + calculationData["gstOnAddOnWork"]) + Number.EPSILON) * 100) / 100).toLocaleString('en-IN')}</TableCell>
+                                 </TableRow>
+                              </>}
+                           </TableBody>
+                        </Table>
+                     </TableContainer>
+                     <br />
+                     <br />
+                     <Button variant="contained" onClick={() => resetForm()}>Reset</Button>&nbsp;
+                     <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
+                     {isFormValid && errorMessage.length == 0 && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
+                  </div>
+               </Paper>
+            </>
          }
       </>
    );

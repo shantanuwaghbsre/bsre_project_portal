@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Select, MenuItem, Paper, FormLabel, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, SelectChangeEvent, FormControl, InputLabel, } from "@mui/material"
-import axios from 'axios'
-import './styles.css'
+import axios from 'axios';
 import Loading from "../Loading/Loading";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common['token'] = props.token
-
-
 
   const solarModuleOptions = [
     { value: '', text: '--Choose a module--' },
@@ -336,326 +332,331 @@ const ResidentialQuotation = (props: any) => {
           <Loading />
         </div>
         :
-        <div className="table-data">
-          <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableBody>
-                <TableRow>
-                  <TableCell>Date:</TableCell>
-                  <TableCell>{currentDate}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>State:</TableCell>
-                  <TableCell>
-                    <FormControl sx={{ m: 1, minWidth: 220 }}>
-                      <InputLabel>Location</InputLabel>
-                      <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
-                        {stateOptions.map((option) => (
-                          <MenuItem key={option["Id"]} value={option["state"]}>
-                            {option["state"]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Agent ID</TableCell>
-                  <TableCell>
-                    <Select value={formData["agentID"]} onChange={(e) => handleAgentSelect(e)}>
-                      {agentOptions.map((option) => (
-                        <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
-                          {option["agent_id"]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Agent Name</TableCell>
-                  <TableCell>
-                    {formData["agentName"]}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Customer Name:</TableCell>
-                  <TableCell>
-                    <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) => handleFormChange("customerName", e.target.value)} />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Address:</TableCell>
-                  <TableCell>
-                    <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) => handleFormChange("customerAddress", e.target.value)} />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Mobile No.:</TableCell>
-                  <TableCell>
-                    <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) => handleFormChange("customerPhoneNumber", e.target.value)} />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Email:</TableCell>
-                  <TableCell>
-                    <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) => handleFormChange("customerEmail", e.target.value)} />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TableContainer component={Paper}>
-            <Table border={2}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>SR. NO.</TableCell>
-                  <TableCell>ITEM DESCRIPTION</TableCell>
-                  <TableCell>MAKE</TableCell>
-                  <TableCell>DESCRIPTION</TableCell>
-                  <TableCell>QTY.</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>1</TableCell>
-                  <TableCell>Solar Module</TableCell>
-                  <TableCell>
-                    <Select value={formData["solarModule"]} onChange={(e) => handleFormChange("solarModule", e.target.value)}>
-                      {solarModuleOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    <br />
-                    <Select value={formData["solarModuleType"]} onChange={(e) => handleFormChange("solarModuleType", e.target.value)}>
-                      {solarModuleTypeOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {formData["solarModuleWattage"]}
-                  </TableCell>
-                  <TableCell>
-                    <TextField value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e) => handleFormChange("numberOfPanels", parseInt((e.target as HTMLInputElement).value))} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
-                    <br />
-                    <br />
-                    <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>2</TableCell>
-                  <TableCell>Solar Inverter</TableCell>
-                  <TableCell>
-                    <Select value={formData["solarInverter"]} onChange={(e) => handleFormChange("solarInverter", e.target.value)}>
-                      {solarInverterOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                  <TableCell>As per availability</TableCell>
-                  <TableCell>1</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>3</TableCell>
-                  <TableCell>Module Mounting Structure</TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      name="Module Mounting Structure Make"
-                      defaultValue={formData["moduleMountingStructureMake"]}
-                      onChange={(e) => handleFormChange("moduleMountingStructureMake", e.target.value)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      name="Module Mounting Structure Description"
-                      defaultValue={formData["moduleMountingStructureDescription"]}
-                      // size={moduleMountingStructureDescription.length}
-                      onChange={(e) => handleFormChange("moduleMountingStructureDescription", e.target.value)}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      type="text"
-                      name="Module Mounting Structure Quantity"
-                      defaultValue={formData["moduleMountingStructureQuantity"]}
-                      // size={moduleMountingStructureQuantity.length}
-                      onChange={(e) => handleFormChange("moduleMountingStructureQuantity", e.target.value)}
-                    />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>4</TableCell>
-                  <TableCell>ACDB</TableCell>
-                  <TableCell>IP 65 enclosure (As per Standard Industry require)</TableCell>
-                  <TableCell>Standard</TableCell>
-                  <TableCell>1</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>5</TableCell>
-                  <TableCell>DCDB</TableCell>
-                  <TableCell>IP 65 enclosure (As per Standard Industry require)</TableCell>
-                  <TableCell>Standard</TableCell>
-                  <TableCell>1</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>6</TableCell>
-                  <TableCell>AC/DC Cable</TableCell>
-                  <TableCell>As per Standard Unbreakable-KEI</TableCell>
-                  <TableCell>KEI</TableCell>
-                  <TableCell>As Per Site</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>7</TableCell>
-                  <TableCell>Earthing Cable</TableCell>
-                  <TableCell>As per Standard Unbreakable-KEI 16xmm</TableCell>
-                  <TableCell>KEI</TableCell>
-                  <TableCell>As Per Site</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>8</TableCell>
-                  <TableCell>Earthing</TableCell>
-                  <TableCell>Proper Chemical earth thing as per Standard with full Protection with LA</TableCell>
-                  <TableCell>Standard</TableCell>
-                  <TableCell>3</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>9</TableCell>
-                  <TableCell>Wiring Pipe</TableCell>
-                  <TableCell>White pvc Standard pipe</TableCell>
-                  <TableCell>Standard</TableCell>
-                  <TableCell>As Per Site</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <>
+          <Paper sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column" }}>
+            <div className="table-data">
+              <label className="search-label">Residential Quotation</label>
+              <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Date:</TableCell>
+                      <TableCell>{currentDate}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>State:</TableCell>
+                      <TableCell>
+                        <FormControl sx={{ m: 1, minWidth: 220 }}>
+                          <InputLabel>Location</InputLabel>
+                          <Select label="Location" value={formData["location"]} MenuProps={{ style: { maxHeight: 300 } }} onChange={(e) => handleFormChange("location", e.target.value)}>
+                            {stateOptions.map((option) => (
+                              <MenuItem key={option["Id"]} value={option["state"]}>
+                                {option["state"]}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Agent ID</TableCell>
+                      <TableCell>
+                        <Select value={formData["agentID"]} onChange={(e) => handleAgentSelect(e)}>
+                          {agentOptions.map((option) => (
+                            <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
+                              {option["agent_id"]}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Agent Name</TableCell>
+                      <TableCell>
+                        {formData["agentName"]}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Customer Name:</TableCell>
+                      <TableCell>
+                        <TextField type="text" name="Customer Name" value={formData["customerName"]} onChange={(e) => handleFormChange("customerName", e.target.value)} />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Address:</TableCell>
+                      <TableCell>
+                        <TextField type="text" name="Address" value={formData["customerAddress"]} onChange={(e) => handleFormChange("customerAddress", e.target.value)} />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Mobile No.:</TableCell>
+                      <TableCell>
+                        <TextField type="text" name="Mobile No." value={formData["customerPhoneNumber"]} onChange={(e) => handleFormChange("customerPhoneNumber", e.target.value)} />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Email:</TableCell>
+                      <TableCell>
+                        <TextField type="text" name="Email" value={formData["customerEmail"]} onChange={(e) => handleFormChange("customerEmail", e.target.value)} />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TableContainer component={Paper}>
+                <Table border={2}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>SR. NO.</TableCell>
+                      <TableCell>ITEM DESCRIPTION</TableCell>
+                      <TableCell>MAKE</TableCell>
+                      <TableCell>DESCRIPTION</TableCell>
+                      <TableCell>QTY.</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>1</TableCell>
+                      <TableCell>Solar Module</TableCell>
+                      <TableCell>
+                        <Select value={formData["solarModule"]} onChange={(e) => handleFormChange("solarModule", e.target.value)}>
+                          {solarModuleOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.text}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        <br />
+                        <Select value={formData["solarModuleType"]} onChange={(e) => handleFormChange("solarModuleType", e.target.value)}>
+                          {solarModuleTypeOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.text}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        {formData["solarModuleWattage"]}
+                      </TableCell>
+                      <TableCell>
+                        <TextField value={formData["numberOfPanels"]} type="number" name="numberOfPanels" placeholder="Enter number of panels" onChange={(e) => handleFormChange("numberOfPanels", parseInt((e.target as HTMLInputElement).value))} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
+                        <br />
+                        <br />
+                        <label>Total Kilowatts - </label>&nbsp;{formData["totalKiloWatts"]} kW
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>2</TableCell>
+                      <TableCell>Solar Inverter</TableCell>
+                      <TableCell>
+                        <Select value={formData["solarInverter"]} onChange={(e) => handleFormChange("solarInverter", e.target.value)}>
+                          {solarInverterOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.text}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                      <TableCell>As per availability</TableCell>
+                      <TableCell>1</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>3</TableCell>
+                      <TableCell>Module Mounting Structure</TableCell>
+                      <TableCell>
+                        <TextField
+                          type="text"
+                          name="Module Mounting Structure Make"
+                          defaultValue={formData["moduleMountingStructureMake"]}
+                          onChange={(e) => handleFormChange("moduleMountingStructureMake", e.target.value)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          type="text"
+                          name="Module Mounting Structure Description"
+                          defaultValue={formData["moduleMountingStructureDescription"]}
+                          // size={moduleMountingStructureDescription.length}
+                          onChange={(e) => handleFormChange("moduleMountingStructureDescription", e.target.value)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          type="text"
+                          name="Module Mounting Structure Quantity"
+                          defaultValue={formData["moduleMountingStructureQuantity"]}
+                          // size={moduleMountingStructureQuantity.length}
+                          onChange={(e) => handleFormChange("moduleMountingStructureQuantity", e.target.value)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>4</TableCell>
+                      <TableCell>ACDB</TableCell>
+                      <TableCell>IP 65 enclosure (As per Standard Industry require)</TableCell>
+                      <TableCell>Standard</TableCell>
+                      <TableCell>1</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>5</TableCell>
+                      <TableCell>DCDB</TableCell>
+                      <TableCell>IP 65 enclosure (As per Standard Industry require)</TableCell>
+                      <TableCell>Standard</TableCell>
+                      <TableCell>1</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>6</TableCell>
+                      <TableCell>AC/DC Cable</TableCell>
+                      <TableCell>As per Standard Unbreakable-KEI</TableCell>
+                      <TableCell>KEI</TableCell>
+                      <TableCell>As Per Site</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>7</TableCell>
+                      <TableCell>Earthing Cable</TableCell>
+                      <TableCell>As per Standard Unbreakable-KEI 16xmm</TableCell>
+                      <TableCell>KEI</TableCell>
+                      <TableCell>As Per Site</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>8</TableCell>
+                      <TableCell>Earthing</TableCell>
+                      <TableCell>Proper Chemical earth thing as per Standard with full Protection with LA</TableCell>
+                      <TableCell>Standard</TableCell>
+                      <TableCell>3</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>9</TableCell>
+                      <TableCell>Wiring Pipe</TableCell>
+                      <TableCell>White pvc Standard pipe</TableCell>
+                      <TableCell>Standard</TableCell>
+                      <TableCell>As Per Site</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-          <br />
-          <br />
+              <br />
+              <br />
 
-          <TableContainer>
-            <Table border={2}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>SR. NO.</TableCell>
-                  <TableCell>DESCRIPTION</TableCell>
-                  <TableCell>KW POWER</TableCell>
-                  <TableCell>STRUCTURE</TableCell>
-                  <TableCell>TOTAL</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>1</TableCell>
-                  <TableCell>GUVNL RATE PER KW FOR DESIGN, SUPPLY, INSTALLATION &amp; COMMISIONING OF SOLAR ROOFTOP SYSTEM</TableCell>
-                  <TableCell width="1%">{formData["totalKiloWatts"]} kW</TableCell>
-                  <TableCell>
-                    <TextField type="text" name="structure" placeholder="Enter structure type" value={formData["structure"]} onChange={(e) => handleFormChange("structure", e.target.value)} />
-                    <br />
-                    <Button variant="contained" onClick={() => handleFormChange("structure", "2//6")}>2//6</Button>&nbsp;
-                    <Button variant="contained" onClick={() => handleFormChange("structure", "4//8")}>4//8</Button>&nbsp;
-                    <Button variant="contained" onClick={() => handleFormChange("structure", "6//10")}>6//10</Button>
-                  </TableCell>
-                  <TableCell />
-                </TableRow>
-                <TableRow>
-                  <TableCell>2</TableCell>
-                  <TableCell>SUBSIDY</TableCell>
-                  <TableCell colSpan={2}>{formData["totalKiloWatts"]}</TableCell>
-                  <TableCell>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>GUVNL SYSTEM AMOUNT</TableCell>
-                  <TableCell colSpan={3}>₹{formData["calculatedGUVNLAmount"].toLocaleString('en-IN')}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>TOTAL SUBSIDY AMOUNT</TableCell>
-                  <TableCell colSpan={3}>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>NET GUVNL SYSTEM PRICE</TableCell>
-                  <TableCell colSpan={3}>₹{(formData["calculatedGUVNLAmount"] - formData["calculatedSubsidy"]).toLocaleString('en-IN')}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>{formData["structure"]} FT ELEVATED STRUCTURE</TableCell>
-                  <TableCell colSpan={3}>INCLUDING</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>DISCOM and Phase</TableCell>
-                  <TableCell colSpan={3}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">Type of Quotation</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      onChange={(e) => handleFormChange("discomOrTorrent", e.target.value)}
-                      value={formData["discomOrTorrent"]}
-                    >
-                      <FormControlLabel value="DISCOM" control={<Radio />} label="DISCOM" />
-                      <FormControlLabel value="Torrent" control={<Radio />} label="Torrent" />
-                    </RadioGroup>
+              <TableContainer>
+                <Table border={2}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>SR. NO.</TableCell>
+                      <TableCell>DESCRIPTION</TableCell>
+                      <TableCell>KW POWER</TableCell>
+                      <TableCell>STRUCTURE</TableCell>
+                      <TableCell>TOTAL</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>1</TableCell>
+                      <TableCell>GUVNL RATE PER KW FOR DESIGN, SUPPLY, INSTALLATION &amp; COMMISIONING OF SOLAR ROOFTOP SYSTEM</TableCell>
+                      <TableCell width="1%">{formData["totalKiloWatts"]} kW</TableCell>
+                      <TableCell>
+                        <TextField type="text" name="structure" placeholder="Enter structure type" value={formData["structure"]} onChange={(e) => handleFormChange("structure", e.target.value)} />
+                        <br />
+                        <Button variant="contained" onClick={() => handleFormChange("structure", "2//6")}>2//6</Button>&nbsp;
+                        <Button variant="contained" onClick={() => handleFormChange("structure", "4//8")}>4//8</Button>&nbsp;
+                        <Button variant="contained" onClick={() => handleFormChange("structure", "6//10")}>6//10</Button>
+                      </TableCell>
+                      <TableCell />
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>2</TableCell>
+                      <TableCell>SUBSIDY</TableCell>
+                      <TableCell colSpan={2}>{formData["totalKiloWatts"]}</TableCell>
+                      <TableCell>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>GUVNL SYSTEM AMOUNT</TableCell>
+                      <TableCell colSpan={3}>₹{formData["calculatedGUVNLAmount"].toLocaleString('en-IN')}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>TOTAL SUBSIDY AMOUNT</TableCell>
+                      <TableCell colSpan={3}>₹{formData["calculatedSubsidy"].toLocaleString('en-IN')}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>NET GUVNL SYSTEM PRICE</TableCell>
+                      <TableCell colSpan={3}>₹{(formData["calculatedGUVNLAmount"] - formData["calculatedSubsidy"]).toLocaleString('en-IN')}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>{formData["structure"]} FT ELEVATED STRUCTURE</TableCell>
+                      <TableCell colSpan={3}>INCLUDING</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>DISCOM and Phase</TableCell>
+                      <TableCell colSpan={3}>
+                        <FormLabel id="demo-row-radio-buttons-group-label">Type of Quotation</FormLabel>
+                        <RadioGroup
+                          row
+                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          name="row-radio-buttons-group"
+                          onChange={(e) => handleFormChange("discomOrTorrent", e.target.value)}
+                          value={formData["discomOrTorrent"]}
+                        >
+                          <FormControlLabel value="DISCOM" control={<Radio />} label="DISCOM" />
+                          <FormControlLabel value="Torrent" control={<Radio />} label="Torrent" />
+                        </RadioGroup>
 
-                    <><FormLabel id="demo-row-radio-buttons-group-label">Select Phase</FormLabel><RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      onChange={(e) => handleFormChange("phase", e.target.value)}
-                      value={formData["phase"]}
-                    >
-                      <FormControlLabel value="Single" control={<Radio />} label="Single" />
-                      <FormControlLabel value="Three" control={<Radio />} label="Three" />
-                    </RadioGroup></>
-                    {<div>{formData["discomOrTorrentCharges"]}</div>}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>Installation AC MCB Switch charges</TableCell>
-                  <TableCell colSpan={3}>
-                    <Select value={formData["installmentAcMcbSwitchCharge"]} onChange={(e) => handleFormChange("installmentAcMcbSwitchCharge", parseInt((e.target as HTMLInputElement).value))}>
-                      {installmentAcMcbSwitchChargeOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>GEB AGREEMENT FEES</TableCell>
-                  <TableCell colSpan={3}>
-                    <Select value={formData["gebAgreementFees"]} onChange={(e) => handleFormChange("gebAgreementFees", parseInt((e.target as HTMLInputElement).value))}>
-                      {gebAgreementFeesOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={2}>PROJECT COST</TableCell>
-                  <TableCell colSpan={3}>
-                    <b className="final-price">
-                      ₹{formData["projectCost"].toLocaleString('en-IN')}
-                    </b>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <br />
-          <br />
-          <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
-          {formData["projectCost"] > 0 && isFormValid && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
-        </div>
+                        <><FormLabel id="demo-row-radio-buttons-group-label">Select Phase</FormLabel><RadioGroup
+                          row
+                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          name="row-radio-buttons-group"
+                          onChange={(e) => handleFormChange("phase", e.target.value)}
+                          value={formData["phase"]}
+                        >
+                          <FormControlLabel value="Single" control={<Radio />} label="Single" />
+                          <FormControlLabel value="Three" control={<Radio />} label="Three" />
+                        </RadioGroup></>
+                        {<div>{formData["discomOrTorrentCharges"]}</div>}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>Installation AC MCB Switch charges</TableCell>
+                      <TableCell colSpan={3}>
+                        <Select value={formData["installmentAcMcbSwitchCharge"]} onChange={(e) => handleFormChange("installmentAcMcbSwitchCharge", parseInt((e.target as HTMLInputElement).value))}>
+                          {installmentAcMcbSwitchChargeOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.text}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>GEB AGREEMENT FEES</TableCell>
+                      <TableCell colSpan={3}>
+                        <Select value={formData["gebAgreementFees"]} onChange={(e) => handleFormChange("gebAgreementFees", parseInt((e.target as HTMLInputElement).value))}>
+                          {gebAgreementFeesOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.text}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>PROJECT COST</TableCell>
+                      <TableCell colSpan={3}>
+                        <b className="final-price">
+                          ₹{formData["projectCost"].toLocaleString('en-IN')}
+                        </b>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <br />
+              <br />
+              <Button variant="contained" onClick={() => validateAndCalculate()}>Validate and Calculate</Button>&nbsp;
+              {formData["projectCost"] > 0 && isFormValid && errorMessage.length == 0 && <Button variant="contained" onClick={() => handleSubmit()}>Submit</Button>}
+            </div>
+          </Paper>
+        </>
       }
     </>
   );

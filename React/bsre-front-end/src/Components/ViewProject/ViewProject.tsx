@@ -134,7 +134,7 @@ const ViewProject = (props: any) => {
   useEffect(() => {
     // console.log(project.phase_1.solar_panel_type)
     try {
-      if (location.state) {
+      if (location.state.consumer_number) {
         // console.log("location.state - ", location.state)
         setCurrentPage(location.state.project_in_phase);
         try {
@@ -163,6 +163,44 @@ const ViewProject = (props: any) => {
               if (options.length == 3) {
                 setOptions(options.concat(newOptions));
               }
+            }
+
+          );
+        }
+        catch (error) {
+          console.error(error);
+        }
+      }
+      else {
+        //From ViewAgentPage by Usenavigate
+        console.log("Agent location.state - ", location.state)
+        setCurrentPage(location.state.project_in_phase);
+        try {
+          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?agent_id=${location.state.agent_id}`).then(
+            (response) => {
+              // console.log(response.data);
+              // setProject(response.data);
+              // if (response.data.phase_1.project_type == "Residential") {
+              //   setPhase_8_document_options([
+              //     ...phase_8_document_options.filter((option) => option.key_ != "agreement_industrial"),
+              //   ])
+              // }
+              // else {
+              //   setPhase_8_document_options([
+              //     ...phase_8_document_options.filter((option) => option.key_ != "agreement_residential" && option.key_ != "vendor_agreement"),
+              //   ])
+              // }
+              // console.log(response.data);
+              setIsLoading(false);
+              // setCurrentPage(Number(response.data.phase_1.project_in_phase));
+              // for (let i = 0; i < response.data.phase_1["other_documents_names"].length; i++) {
+              //   // console.log(newOptions);
+              //   newOptions.push({ label: response.data.phase_1["other_documents_names"][i], value: response.data.phase_1["other_documents_names"][i] });
+              // }
+              // // console.log(newOptions);
+              // if (options.length == 3) {
+              //   setOptions(options.concat(newOptions));
+              // }
             }
 
           );
@@ -215,7 +253,7 @@ const ViewProject = (props: any) => {
   }, [project.phase_1, project.phase_2])
 
   useEffect(() => {
-    if (!project.phase_1.consumer_name) {
+    if (location.state.for_consumer_id && !project.phase_1.consumer_name) {
       axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
         (response_consumer_details) => {
           // console.log("consumer details", response_consumer_details);
@@ -489,10 +527,11 @@ const ViewProject = (props: any) => {
     }
   }
   return (
-    <div className='table-data' style={{ width: '1000px', height: '100%', margin: 'auto' }}>
-      <MultiStepProgressBar page={currentPage} key={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
-      <h1>{project.phase_1.consumer_name}</h1>
-      {/* <Table>
+    <Paper sx={{ width: '100%' }}>
+      <div className='table-data' style={{ width: '1000px', height: '100%', marginTop: '10px' }}>
+        <MultiStepProgressBar page={currentPage} key={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
+        <h1>{project.phase_1.consumer_name}</h1>
+        {/* <Table>
         <TableBody>
           <TableRow>
             {Array.from({ length: 10 }, (_, index) => (
@@ -509,1068 +548,1069 @@ const ViewProject = (props: any) => {
           </TableRow>
         </TableBody>
       </Table> */}
-      <h2>Phase {currentPage}</h2>
-      {currentPage != 8 && (!editable[currentPage - 1] ? <Button onClick={() => handleEditable(currentPage)}>Edit</Button> : <Button onClick={() => handleSave(currentPage)}>Save</Button>)}
-      {currentPage == 1 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Meter Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? <TextField onChange={(event) => handleInputChange('meter_number', event.target.value)} value={project.phase_1.meter_number} disabled={!editable[currentPage - 1]} /> : project.phase_1.meter_number}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Current Sanctioned Load</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) =>
-                        handleInputChange('current_sanctioned_load', event.target.value)
+        <span style={{ fontSize: '30px' }}>Phase {currentPage}</span>
+        {currentPage != 8 && (!editable[currentPage - 1] ? <Button onClick={() => handleEditable(currentPage)}>Edit</Button> : <Button onClick={() => handleSave(currentPage)}>Save</Button>)}
+        {currentPage == 1 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Meter Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? <TextField onChange={(event) => handleInputChange('meter_number', event.target.value)} value={project.phase_1.meter_number} disabled={!editable[currentPage - 1]} /> : project.phase_1.meter_number}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Current Sanctioned Load</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange('current_sanctioned_load', event.target.value)
+                        }
+                        value={project.phase_1.current_sanctioned_load}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.current_sanctioned_load
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Current Phase</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange('current_phase', event.target.value)
+                        }
+                        value={project.phase_1.current_phase}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.current_phase
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Installation Phase</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange('installation_phase', event.target.value)
+                        }
+                        value={project.phase_1.installation_phase}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.installation_phase
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Average Consumption of Unit</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange('average_consumption_of_unit', event.target.value)
+                        }
+                        value={project.phase_1.average_consumption_of_unit}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.average_consumption_of_unit
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange('consumer_number', event.target.value)
+                        }
+                        value={project.phase_1.consumer_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.consumer_number
+                    )}
+                  </TableCell>
+                </TableRow>
+
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Project Type</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('project_type', event.target.value)}
+                        value={project.phase_1.project_type}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.project_type
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Project Address</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('project_address', event.target.value)}
+                        value={project.phase_1.project_address}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.project_address
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Latitude</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('latitude', event.target.value)}
+                        value={project.phase_1.latitude}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.latitude
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Longitude</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('longitude', event.target.value)}
+                        value={project.phase_1.longitude}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.longitude
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Total Kilowatts</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('total_kilowatts', event.target.value)}
+                        value={project.phase_1.total_kilowatts}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.total_kilowatts
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Solar Panel Type</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('solar_panel_type', event.target.value)}
+                        value={project.phase_1.solar_panel_type}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.solar_panel_type
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Solar Inverter Make</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('solar_inverter_make', event.target.value)}
+                        value={project.phase_1.solar_inverter_make}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.solar_inverter_make
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Project Cost</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('project_cost', event.target.value)}
+                        value={project.phase_1.project_cost}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.project_cost
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Deposit Amount</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('deposit_amount', event.target.value)}
+                        value={project.phase_1.deposit_amount}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.deposit_amount
+                    )}
+                  </TableCell>
+                </TableRow>
+
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Remaining Balance</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('remaining_balance', event.target.value)}
+                        value={project.phase_1.remaining_balance}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.remaining_balance
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Deposited Money in Words</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('deposited_money_in_words', event.target.value)}
+                        value={project.phase_1.deposited_money_in_words}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.deposited_money_in_words
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Payment Type</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('payment_type', event.target.value)}
+                        value={project.phase_1.payment_type}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.payment_type
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Transaction Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('transaction_number', event.target.value)}
+                        value={project.phase_1.transaction_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.transaction_number
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Bank Details with Branch</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('bank_details_with_branch', event.target.value)}
+                        value={project.phase_1.bank_details_with_branch}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.bank_details_with_branch
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Registration Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('national_portal_registration_number', event.target.value)}
+                        value={project.phase_1.national_portal_registration_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.national_portal_registration_number
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>From Quotation</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('from_quotation', event.target.value)}
+                        value={project.phase_1.from_quotation}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.from_quotation
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Project Email</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('project_email', event.target.value)}
+                        value={project.phase_1.project_email}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.project_email
+                    )}
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Project in Phase</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('project_in_phase', event.target.value)}
+                        value={project.phase_1.project_in_phase}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.project_in_phase
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <Select label="Document Required"
+                      value={documentRequired}
+                      onChange={(e) => {
+                        setDocumentRequired(e.target.value);
+                      }}>
+                      {(options.concat(newOptions)).map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleDownload(documentRequired, '')}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='right' colSpan={2} style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_2 && currentPage === 2 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        value={project.phase_2.consumer_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_2.consumer_number
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Discom Name</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Select label="Discom Name"
+                      value={project.phase_2.discom || ''}
+                      onChange={(e) => {
+                        handleInputChange('discom', e.target.value);
                       }
-                      value={project.phase_1.current_sanctioned_load}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.current_sanctioned_load
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Current Phase</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) =>
-                        handleInputChange('current_phase', event.target.value)
                       }
-                      value={project.phase_1.current_phase}
                       disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.current_phase
-                  )}
-                </TableCell>
-              </TableRow>
+                    >
+                      {
+                        phase_2_discom_options
+                          .map((option) => (
+                            <MenuItem key={option.key_} value={option.key_}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                    </Select>
 
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Installation Phase</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) =>
-                        handleInputChange('installation_phase', event.target.value)
-                      }
-                      value={project.phase_1.installation_phase}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.installation_phase
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Average Consumption of Unit</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) =>
-                        handleInputChange('average_consumption_of_unit', event.target.value)
-                      }
-                      value={project.phase_1.average_consumption_of_unit}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.average_consumption_of_unit
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) =>
-                        handleInputChange('consumer_number', event.target.value)
-                      }
-                      value={project.phase_1.consumer_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.consumer_number
-                  )}
-                </TableCell>
-              </TableRow>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Discom Approval</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={project.phase_2.discom_approval} onClick={() => handleInputChange('discom_approval', !project.phase_2.discom_approval)} disabled={!editable[currentPage - 1]} />
+                    {project.phase_2.discom_approval}
+                  </TableCell>
+                </TableRow>
 
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Project Type</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('project_type', event.target.value)}
-                      value={project.phase_1.project_type}
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Notes</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_2.notes} disabled />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} onChange={(e) => setNewNote(e.target.value)} disabled={!editable[currentPage - 1]} />
+                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_3 && currentPage === 3 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        value={project.phase_3.consumer_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_3.consumer_number
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Client CAD Approval</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={project.phase_3.project_manager_approval} onClick={() => handleInputChange('project_manager_approval', !project.phase_3.project_manager_approval)} disabled={!editable[currentPage - 1]} />
+                    {project.phase_3.project_manager_approval}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Notes</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_3.notes} disabled />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_4 && currentPage === 4 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        value={project.phase_4.consumer_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_4.consumer_number
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Structure Ready</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={project.phase_4.structure_ready} onClick={() => handleInputChange('structure_ready', !project.phase_4.structure_ready)} disabled={!editable[currentPage - 1]} />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Notes</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_4.notes} disabled />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_5 && currentPage === 5 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {project.phase_5.consumer_number}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Ready to Transport</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={project.phase_5.ready_to_transport} onClick={() => handleInputChange('ready_to_transport', !project.phase_5.ready_to_transport)} disabled={!editable[currentPage - 1]} />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Notes</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_5.notes} disabled={!editable[currentPage - 1]} />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_6 && currentPage === 6 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <h1>SKIP FOR INVENTORY</h1>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type != "Residential" &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {project.phase_7.consumer_number}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>GEDA Approval for electric diagram</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <CheckBox checked={project.phase_7.geda_approval} onClick={() => handleInputChange('geda_approval', !project.phase_7.geda_approval)} disabled={!editable[currentPage - 1]} />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Electrical Diagram</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
                       disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.project_type
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Project Address</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('project_address', event.target.value)}
-                      value={project.phase_1.project_address}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.project_address
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Latitude</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('latitude', event.target.value)}
-                      value={project.phase_1.latitude}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.latitude
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Longitude</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('longitude', event.target.value)}
-                      value={project.phase_1.longitude}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.longitude
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Total Kilowatts</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('total_kilowatts', event.target.value)}
-                      value={project.phase_1.total_kilowatts}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.total_kilowatts
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Solar Panel Type</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('solar_panel_type', event.target.value)}
-                      value={project.phase_1.solar_panel_type}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.solar_panel_type
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Solar Inverter Make</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('solar_inverter_make', event.target.value)}
-                      value={project.phase_1.solar_inverter_make}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.solar_inverter_make
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Project Cost</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('project_cost', event.target.value)}
-                      value={project.phase_1.project_cost}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.project_cost
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Deposit Amount</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('deposit_amount', event.target.value)}
-                      value={project.phase_1.deposit_amount}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.deposit_amount
-                  )}
-                </TableCell>
-              </TableRow>
-
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Remaining Balance</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('remaining_balance', event.target.value)}
-                      value={project.phase_1.remaining_balance}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.remaining_balance
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Deposited Money in Words</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('deposited_money_in_words', event.target.value)}
-                      value={project.phase_1.deposited_money_in_words}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.deposited_money_in_words
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Payment Type</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('payment_type', event.target.value)}
-                      value={project.phase_1.payment_type}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.payment_type
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Transaction Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('transaction_number', event.target.value)}
-                      value={project.phase_1.transaction_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.transaction_number
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Bank Details with Branch</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('bank_details_with_branch', event.target.value)}
-                      value={project.phase_1.bank_details_with_branch}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.bank_details_with_branch
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Registration Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('national_portal_registration_number', event.target.value)}
-                      value={project.phase_1.national_portal_registration_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.national_portal_registration_number
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>From Quotation</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('from_quotation', event.target.value)}
-                      value={project.phase_1.from_quotation}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.from_quotation
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Project Email</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('project_email', event.target.value)}
-                      value={project.phase_1.project_email}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.project_email
-                  )}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Project in Phase</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('project_in_phase', event.target.value)}
-                      value={project.phase_1.project_in_phase}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_1.project_in_phase
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Select label="Document Required"
-                    value={documentRequired}
+                    >
+                      Upload Electrical Diagram
+                      <input type="file" name="electrical_diagram" onChange={(e) => handleInputChange('electrical_diagram', e.target.files[0])} hidden />
+                    </Button>
+                    <Button onClick={() => handleDownload("electrical_diagram", "")}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Notes</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_7.notes} disabled />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell />
+                  <TableCell>
+                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
+                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type == "Residential" &&
+          <>
+            <span style={{fontSize:'30px'}}>Phase 7 not applicable for Residential Projects. Move to phase 8.</span>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </>
+        }
+        {
+          project.phase_8 && currentPage === 8 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <Select
+                    value={fileChoice[0] + "_" + fileChoice[1]}
                     onChange={(e) => {
-                      setDocumentRequired(e.target.value);
-                    }}>
-                    {(options.concat(newOptions)).map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </TableCell>
-                <TableCell>
-                  <Button onClick={() => handleDownload(documentRequired, '')}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='right' colSpan={2} style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_2 && currentPage === 2 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('consumer_number', event.target.value)}
-                      value={project.phase_2.consumer_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_2.consumer_number
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Discom Name</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Select label="Discom Name"
-                    value={project.phase_2.discom || ''}
-                    onChange={(e) => {
-                      handleInputChange('discom', e.target.value);
-                    }
-                    }
-                    disabled={!editable[currentPage - 1]}
-                  >
+                      setFileChoice(e.target.value.split("_"));
+                    }}
+                    sx={{ minWidth: 320 }}>
                     {
-                      phase_2_discom_options
+                      phase_8_document_options
                         .map((option) => (
                           <MenuItem key={option.key_} value={option.key_}>
                             {option.label}
                           </MenuItem>
                         ))}
                   </Select>
-
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Discom Approval</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <CheckBox checked={project.phase_2.discom_approval} onClick={() => handleInputChange('discom_approval', !project.phase_2.discom_approval)} disabled={!editable[currentPage - 1]} />
-                  {project.phase_2.discom_approval}
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Notes</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_2.notes} disabled />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell />
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} onChange={(e) => setNewNote(e.target.value)} disabled={!editable[currentPage - 1]} />
-                  <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_3 && currentPage === 3 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('consumer_number', event.target.value)}
-                      value={project.phase_3.consumer_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_3.consumer_number
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Client CAD Approval</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <CheckBox checked={project.phase_3.project_manager_approval} onClick={() => handleInputChange('project_manager_approval', !project.phase_3.project_manager_approval)} disabled={!editable[currentPage - 1]} />
-                  {project.phase_3.project_manager_approval}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Notes</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_3.notes} disabled />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell />
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                  <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_4 && currentPage === 4 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {editable[currentPage - 1] ? (
-                    <TextField
-                      onChange={(event) => handleInputChange('consumer_number', event.target.value)}
-                      value={project.phase_4.consumer_number}
-                      disabled={!editable[currentPage - 1]}
-                    />
-                  ) : (
-                    project.phase_4.consumer_number
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Structure Ready</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <CheckBox checked={project.phase_4.structure_ready} onClick={() => handleInputChange('structure_ready', !project.phase_4.structure_ready)} disabled={!editable[currentPage - 1]} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Notes</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_4.notes} disabled />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell />
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                  <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_5 && currentPage === 5 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {project.phase_5.consumer_number}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Ready to Transport</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <CheckBox checked={project.phase_5.ready_to_transport} onClick={() => handleInputChange('ready_to_transport', !project.phase_5.ready_to_transport)} disabled={!editable[currentPage - 1]} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Notes</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_5.notes} disabled={!editable[currentPage - 1]} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell />
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                  <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_6 && currentPage === 6 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <h1>SKIP FOR INVENTORY</h1>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type != "Residential" &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {project.phase_7.consumer_number}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>GEDA Approval for electric diagram</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <CheckBox checked={project.phase_7.geda_approval} onClick={() => handleInputChange('geda_approval', !project.phase_7.geda_approval)} disabled={!editable[currentPage - 1]} />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Electrical Diagram</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    disabled={!editable[currentPage - 1]}
-                  >
-                    Upload Electrical Diagram
-                    <input type="file" name="electrical_diagram" onChange={(e) => handleInputChange('electrical_diagram', e.target.files[0])} hidden />
-                  </Button>
-                  <Button onClick={() => handleDownload("electrical_diagram", "")}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Notes</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_7.notes} disabled />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell />
-                <TableCell>
-                  <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                  <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type == "Residential" &&
-        <>
-          <h2>Phase 7 not applicable for Residential Projects. Move to phase 8.</h2>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </>
-      }
-      {
-        project.phase_8 && currentPage === 8 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <Select
-                  value={fileChoice[0] + "_" + fileChoice[1]}
-                  onChange={(e) => {
-                    setFileChoice(e.target.value.split("_"));
-                  }}
-                  sx={{ minWidth: 320 }}>
-                  {
-                    phase_8_document_options
-                      .map((option) => (
-                        <MenuItem key={option.key_} value={option.key_}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                </Select>
-              </TableRow>
-              {
-                fileChoice[0] == "agreement" &&
-                <TableRow>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Field{fileChoice[2]}</TableCell>
-                          <TableCell>Value</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {Object.entries(inputOptions.agreement).map((field) => (
-                          <TableRow key={field[0]}>
-                            <TableCell>{field[1].replace(/_/g, ' ')}</TableCell>
-                            <TableCell>
-                              <TextField onChange={(e) => setAgreementValues({ ...agreementValues, [field[1]]: e.target.value })}></TextField>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
                 </TableRow>
-              }
-              <TableRow>
-                <TableCell>
-                  <Button onClick={() => handleDownload(fileChoice[0], fileChoice[1])}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type == "Residential" &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {project.phase_9.consumer_number}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Meter Report</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    disabled={!editable[currentPage - 1]}
-                  >
-                    Upload Meter Report
-                    <input type="file" name="meter_report" onChange={(e) => handleInputChange('meter_report', e.target.files[0])} hidden />
-                  </Button>
-                  <Button onClick={() => handleDownload("meter_report", "")}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Joint Inspection</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    disabled={!editable[currentPage - 1]}
-                  >
-                    Upload Joint Inspection
-                    <input type="file" name="joint_inspection" onChange={(e) => handleInputChange('joint_inspection', e.target.files[0])} hidden />
-                  </Button>
-                  <Button onClick={() => handleDownload("joint_inspection", "")}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-      {
-        project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type != "Residential" &&
-        <>
-          <h2>Phase 9 not applicable for Residential Projects. Move to phase 10.</h2>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right' style={{border: 'none'}}>
-                  {currentPage < project.phase_1.project_in_phase ?
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
-                      Next
-                    </button> :
-                    <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                      Promote
-                    </button>}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </>
+                {
+                  fileChoice[0] == "agreement" &&
+                  <TableRow>
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Field{fileChoice[2]}</TableCell>
+                            <TableCell>Value</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {Object.entries(inputOptions.agreement).map((field) => (
+                            <TableRow key={field[0]}>
+                              <TableCell>{field[1].replace(/_/g, ' ')}</TableCell>
+                              <TableCell>
+                                <TextField onChange={(e) => setAgreementValues({ ...agreementValues, [field[1]]: e.target.value })}></TextField>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </TableRow>
+                }
+                <TableRow>
+                  <TableCell>
+                    <Button onClick={() => handleDownload(fileChoice[0], fileChoice[1])}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type == "Residential" &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {project.phase_9.consumer_number}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Meter Report</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Upload Meter Report
+                      <input type="file" name="meter_report" onChange={(e) => handleInputChange('meter_report', e.target.files[0])} hidden />
+                    </Button>
+                    <Button onClick={() => handleDownload("meter_report", "")}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Joint Inspection</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Upload Joint Inspection
+                      <input type="file" name="joint_inspection" onChange={(e) => handleInputChange('joint_inspection', e.target.files[0])} hidden />
+                    </Button>
+                    <Button onClick={() => handleDownload("joint_inspection", "")}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+        {
+          project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type != "Residential" &&
+          <>
+            <span style={{fontSize:'30px'}}>Phase 9 not applicable for Residential Projects. Move to phase 10.</span>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right' style={{ border: 'none' }}>
+                    {currentPage < project.phase_1.project_in_phase ?
+                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                        Next
+                      </button> :
+                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                        Promote
+                      </button>}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </>
 
-      }
-      {
-        project.phase_10 && currentPage === 10 && !isLoading &&
-        <form>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer Number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {project.phase_10.consumer_number}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Invoice from accounts</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    disabled={!editable[currentPage - 1]}
-                  >
-                    Upload Invoice
-                    <input type="file" name="invoice_from_accounts" onChange={(e) => handleInputChange('invoice_from_accounts', e.target.files[0])} hidden />
-                  </Button>
-                  <Button onClick={() => handleDownload("invoice_from_accounts", "")}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>DCR</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button onClick={() => handleDownload("dcr", "")}>Download</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left' style={{border: 'none'}}>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      }
-    </div>
+        }
+        {
+          project.phase_10 && currentPage === 10 && !isLoading &&
+          <form>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer Number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {project.phase_10.consumer_number}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Invoice from accounts</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Upload Invoice
+                      <input type="file" name="invoice_from_accounts" onChange={(e) => handleInputChange('invoice_from_accounts', e.target.files[0])} hidden />
+                    </Button>
+                    <Button onClick={() => handleDownload("invoice_from_accounts", "")}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>DCR</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleDownload("dcr", "")}>Download</Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left' style={{ border: 'none' }}>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        }
+      </div>
+    </Paper>
   )
 }
 

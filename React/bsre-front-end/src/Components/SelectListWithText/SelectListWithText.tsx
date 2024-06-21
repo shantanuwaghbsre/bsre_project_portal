@@ -2,13 +2,13 @@ import { FormControl, InputLabel, Select, ListSubheader, TextField, InputAdornme
 import SearchIcon from "@mui/icons-material/Search";
 
 const SelectListWithText = ({
-    searchResults, value, change, label
+  searchResults, value, change, label
 }
 ) => {
   return (
     <>
-            <FormControl sx={{ m: 1, minWidth: 320 }}>
-            <InputLabel id="search-select-label">{label}</InputLabel>
+      <FormControl sx={{ m: 1, minWidth: 320 }}>
+        <InputLabel id="search-select-label">{label}</InputLabel>
         <Select
           // Disables auto focus on MenuItems and allows TextField to be in focus
           MenuProps={{ autoFocus: false }}
@@ -53,8 +53,7 @@ const SelectListWithText = ({
           ))}
         </Select>
       </FormControl>
-        </>
+    </>
   )
 }
-
 export default SelectListWithText
