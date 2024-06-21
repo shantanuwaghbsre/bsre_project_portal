@@ -1,0 +1,7 @@
+{
+    "add_agent": "INSERT INTO public.\"Agents\"(agent_branch, agent_name, agent_state, agent_code, agent_mobile_number, bank_ifsc, bank_branch_name, aadhar_card, pan_card, cancelled_cheque) VALUES (%(agent_branch)s, %(agent_name)s, %(agent_state)s, %(agent_code)s, %(agent_mobile_number)s,%(bank_ifsc)s, %(bank_branch_name)s, %(aadhar_card)s, %(pan_card)s, %(cancelled_cheque)s);",
+    "get_agents": "SELECT agent_code, agent_name, agent_mobile_number, agent_branch, agent_state FROM public.\"Agents\";",
+    "get_last_agent_code": "SELECT agent_code FROM public.\"Agents\" where agent_branch = %(agent_branch)s ORDER BY agent_code DESC limit 1",
+    "get_agent_sales": "select total_kilowatts, timestamp, consumer_number from public.\"Projects\" where from_quotation in (select quotation_number from (select quotation_number from (select quotation_number, agent_code from public.\"Residential_quotations\" union select quotation_number, agent_code from public.\"Industrial_commercial_quotations\") where agent_code = %(agent_code)s))",
+    "get_agent_details": "select agent_branch, agent_name, agent_state, agent_code, agent_mobile_number, bank_ifsc, bank_branch_name, aadhar_card, pan_card, cancelled_cheque from public.\"Agents\" where agent_code = %(agent_code)s"
+}

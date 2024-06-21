@@ -1,3 +1,4 @@
+import random
 from flask import Blueprint, Flask, request, jsonify, send_file
 from service import make_db_call
 import datetime
@@ -181,12 +182,46 @@ def update_phase_data():
             )
     return {"success": True}
 
-@blueprint.route("/dummyAPI", methods=["POST"])
+@blueprint.route("/dummyAPI", methods=["GET", "POST"])
 def dummyAPI():
-    time.sleep(5)
+    kw = {}
+    projects = {}
+    for i in range(12):
+        projects[i] = []
+        for j in range(random.randint(1, 5)):
+            projects[i].append(["project " + str(i) + " " + str(j) + "", random.randint(2, int((random.random()*100)//1)+2)])
+        kw[i] = 0
+        for j in projects[i]:
+            kw[i] += j[1]
     return {
-        "completed": True,
-        "quotation_number": "123/123/123/123"
+         "sales": {
+            "January":kw[0],
+            "February":kw[1],
+            "March":kw[2],
+            "April":kw[3],
+            "May":kw[4],
+            "June":kw[5],
+            "July":kw[6],
+            "August":kw[7],
+            "September":kw[8],
+            "October":kw[9],
+            "November":kw[10],
+            "December":kw[11]
+            },
+            "projects": {
+                "January":projects[0],
+                "February":projects[1],
+                "March":projects[2],
+                "April":projects[3],
+                "May":projects[4],
+                "June":projects[5],
+                "July":projects[6],
+                "August":projects[7],
+                "September":projects[8],
+                "October":projects[9],
+                "November":projects[10],
+                "December":projects[11]            
+            }
     }
 
 @blueprint.route('/downloadFile', methods=['GET'])

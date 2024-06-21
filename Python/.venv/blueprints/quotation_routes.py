@@ -111,36 +111,6 @@ def getLocations():
     # Return the response
     return response
 
-@blueprint.route('/getAgents', methods=['GET'])
-def getAgents():
-    """
-    Get a list of agent details from the database.
-
-    Returns:
-        list: A list of dictionaries containing agent details. Each dictionary has the following keys:
-            - agent_id (int): The ID of the agent.
-            - agent_name (str): The name of the agent.
-            - agent_mobile_number (str): The mobile number of the agent.
-            - agent_address (str): The address of the agent.
-            - agent_state (str): The state of the agent.
-
-    """
-    # Query the database to get agent details
-    agent_details_list = make_db_call(query=queries['get_agents'], type_="returns")
-    # Create a response list by iterating over each agent details
-    response = [
-        {
-            "agent_id": agent_details[0],
-            "agent_name": agent_details[1],
-            "agent_mobile_number": str(agent_details[2]),
-            "agent_address": agent_details[3],
-            "agent_state": agent_details[4]
-        }
-        for agent_details in agent_details_list
-    ]
-
-    # Return the response list
-    return response
 
 @blueprint.route('/submitResidentialQuotation', methods=['POST'])
 def submitResidentialQuotation():
