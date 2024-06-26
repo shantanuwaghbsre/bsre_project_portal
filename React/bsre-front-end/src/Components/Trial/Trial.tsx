@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
 const FileDownloader = () => {
   const [selectedOption, setSelectedOption] = useState('');
 
@@ -26,7 +25,7 @@ const FileDownloader = () => {
         // Create a temporary link element to trigger the download
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', selectedOption+".pdf");
+        link.setAttribute('download', selectedOption + ".pdf");
         // Simulate a click on the link to start the download
         link.click();
       })
@@ -46,10 +45,8 @@ const FileDownloader = () => {
       </select>
       <button onClick={handleDownload}>Download File</button>
     </div>
+
   );
 };
-
-
-
 
 export default FileDownloader;

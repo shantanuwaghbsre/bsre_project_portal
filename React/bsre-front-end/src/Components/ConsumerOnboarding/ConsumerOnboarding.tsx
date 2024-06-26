@@ -1,9 +1,11 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useLocation } from 'react-router';
-import { TextField, InputLabel, Table, TableBody, TableCell, TableRow, Button, Grid, FormControl, Select, MenuItem, SelectChangeEvent, List, ListItem, ListItemText } from '@mui/material';
+import { TextField, InputLabel, Table, TableBody, TableCell, TableRow, Button, Grid, FormControl, Select, MenuItem, SelectChangeEvent, List, ListItem, ListItemText, Paper } from '@mui/material';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import ViewAllConsumers from '../ViewAllConsumers/ViewAllConsumers';
+
+
 
 const urls = {
   "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
@@ -34,7 +36,7 @@ const ConsumerOnboarding = (props: any) => {
   let location = useLocation();
   let navigate = useNavigate();
 
-  const goToConsumer = (consumer) => navigate('/ViewConsumer', { state: { "consumer": consumer } });
+  const goToConsumer = (consumer:any) => navigate('/ViewConsumer', { state: { "consumer": consumer } });
 
   useEffect(() => {
     axios.get(urls["getAgentsURL"])
@@ -160,270 +162,271 @@ const ConsumerOnboarding = (props: any) => {
 
 
   return (
-    <div  className='table-data'>
-      {currentPage === 1 && (
-        <form onSubmit={handleSubmit}>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Agent or distributor name</InputLabel>
-                </TableCell>
-                <TableCell>
-                  {formData.agentOrDistributorName}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Agent code</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <FormControl sx={{ m: 1, minWidth: 220 }}>
-                    <InputLabel>Agent Code</InputLabel>
-                    <Select label="Agent Code" name="onboardedByAgentCode" value={formData.onboardedByAgentCode} onChange={(e) => handleChange(e)}>
-                      {agentOptions.map((option) => (
-                        <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
-                          {option["agent_id"]}
-                        </MenuItem>
+    <Paper sx={{ width: '100%' }}>
+      <div className='table-data'>
+        {currentPage === 1 && (
+          <form onSubmit={handleSubmit}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Agent or distributor name</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    {formData.agentOrDistributorName}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Agent code</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <FormControl sx={{ m: 1, minWidth: 220 }}>
+                      <InputLabel>Agent Code</InputLabel>
+                      <Select label="Agent Code" name="onboardedByAgentCode" value={formData.onboardedByAgentCode} onChange={(e) => handleChange(e)}>
+                        {agentOptions.map((option) => (
+                          <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
+                            {option["agent_id"]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={2} align='right'>
+                    <button className='btn-next' type="button" onClick={handleNextPage}>
+                      Next
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        )}
+
+        {currentPage === 2 && (
+          <form onSubmit={handleSubmit}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer name</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Consumer name"
+                      type="text"
+                      name="consumerName"
+                      value={formData.consumerName}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer address</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Consumer address"
+                      type="text"
+                      name="consumerAddress"
+                      value={formData.consumerAddress}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer mobile number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Consumer mobile number"
+                      type="text"
+                      name="consumerMobileNumber"
+                      value={formData.consumerMobileNumber}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Alternate phone number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Alternate phone number"
+                      type="text"
+                      name="alternatePhoneNumber"
+                      value={formData.alternatePhoneNumber}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Consumer email</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Consumer email"
+                      type="text"
+                      name="consumerEmail"
+                      value={formData.consumerEmail}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+
+
+                <TableRow>
+                  <TableCell align='left'>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right'>
+                    <button className='btn-next' type="button" onClick={handleNextPage}>
+                      Next
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        )}
+        {currentPage === 3 && (
+          <form onSubmit={handleSubmit}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>aadhar card</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                    >
+                      Upload aadhar card
+                      <input type="file" name="aadharCard" onChange={handleChange} hidden />
+                    </Button>
+
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Aadhar card number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Aadhar card number"
+                      type="text"
+                      name="aadharCardNumber"
+                      value={formData.aadharCardNumber}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Pan card</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                    >
+                      Upload pan card
+                      <input type="file" name="panCard" onChange={handleChange} hidden />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Pan card number</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="Pan card number"
+                      type="text"
+                      name="panCardNumber"
+                      value={formData.panCardNumber}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Passport photo</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                    >
+                      Upload passport photo
+                      <input type="file" name="passportPhoto" onChange={handleChange} hidden />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Other documents</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                    >
+                      Upload other documents
+                      <input type="file" name="otherDocuments" onChange={handleChange} hidden />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <InputLabel>Uploaded Documents</InputLabel>
+                  </TableCell>
+                  <TableCell>
+                    <List>
+                      {formData.otherDocumentsNames.map((documentName, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={documentName} />
+                          <Button
+                            style={{ backgroundColor: "red", color: "white" }}
+                            variant="contained"
+                            component="label"
+                            onClick={() => handleRemoveDocument(index)}
+                          >
+                            Remove
+                          </Button>
+                        </ListItem>
                       ))}
-                    </Select>
-                  </FormControl>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={2} align='right'>
-                  <button className='btn-next' type="button" onClick={handleNextPage}>
-                    Next
-                  </button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      )}
-
-      {currentPage === 2 && (
-        <form onSubmit={handleSubmit}>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer name</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Consumer name"
-                    type="text"
-                    name="consumerName"
-                    value={formData.consumerName}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer address</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Consumer address"
-                    type="text"
-                    name="consumerAddress"
-                    value={formData.consumerAddress}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer mobile number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Consumer mobile number"
-                    type="text"
-                    name="consumerMobileNumber"
-                    value={formData.consumerMobileNumber}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Alternate phone number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Alternate phone number"
-                    type="text"
-                    name="alternatePhoneNumber"
-                    value={formData.alternatePhoneNumber}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Consumer email</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Consumer email"
-                    type="text"
-                    name="consumerEmail"
-                    value={formData.consumerEmail}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-
-
-              <TableRow>
-                <TableCell align='left'>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right'>
-                  <button className='btn-next' type="button" onClick={handleNextPage}>
-                    Next
-                  </button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      )}
-      {currentPage === 3 && (
-        <form onSubmit={handleSubmit}>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>aadhar card</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                  >
-                    Upload aadhar card
-                    <input type="file" name="aadharCard" onChange={handleChange} hidden />
-                  </Button>
-
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Aadhar card number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Aadhar card number"
-                    type="text"
-                    name="aadharCardNumber"
-                    value={formData.aadharCardNumber}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Pan card</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                  >
-                    Upload pan card
-                    <input type="file" name="panCard" onChange={handleChange} hidden />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Pan card number</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Pan card number"
-                    type="text"
-                    name="panCardNumber"
-                    value={formData.panCardNumber}
-                    onChange={(e) => handleChange(e)}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Passport photo</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                  >
-                    Upload passport photo
-                    <input type="file" name="passportPhoto" onChange={handleChange} hidden />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Other documents</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    component="label"
-                  >
-                    Upload other documents
-                    <input type="file" name="otherDocuments" onChange={handleChange} hidden />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <InputLabel>Uploaded Documents</InputLabel>
-                </TableCell>
-                <TableCell>
-                  <List>
-                    {formData.otherDocumentsNames.map((documentName, index) => (
-                      <ListItem key={index}>
-                        <ListItemText primary={documentName} />
-                        <Button
-                          style={{ backgroundColor: "red", color: "white" }}
-                          variant="contained"
-                          component="label"
-                          onClick={() => handleRemoveDocument(index)}
-                        >
-                          Remove
-                        </Button>
-                      </ListItem>
-                    ))}
-                  </List>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align='left'>
-                  <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                    Previous
-                  </button>
-                </TableCell>
-                <TableCell align='right'>
-                  <button className='btn-next' type="button" onClick={handleSubmit}>
-                    Submit
-                  </button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </form>
-      )}
-
-    </div>
+                    </List>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell align='left'>
+                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                      Previous
+                    </button>
+                  </TableCell>
+                  <TableCell align='right'>
+                    <button className='btn-next' type="button" onClick={handleSubmit}>
+                      Submit
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </form>
+        )}
+      </div>
+    </Paper>
   );
 };
 

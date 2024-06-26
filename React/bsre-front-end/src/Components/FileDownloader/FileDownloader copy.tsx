@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 
+
 const FileDownloader = (props: { consumer_id: any; }) => {
   const [selectedOption, setSelectedOption] = useState('');
 
@@ -26,7 +27,7 @@ const FileDownloader = (props: { consumer_id: any; }) => {
         // Create a temporary link element to trigger the download
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', selectedOption+".pdf");
+        link.setAttribute('download', selectedOption + ".pdf");
         // Simulate a click on the link to start the download
         link.click();
       })
@@ -48,9 +49,6 @@ const FileDownloader = (props: { consumer_id: any; }) => {
     </div>
   );
 };
-
-
-
 
 export default FileDownloader;
 

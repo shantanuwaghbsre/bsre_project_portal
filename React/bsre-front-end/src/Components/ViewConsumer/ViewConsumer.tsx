@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router';
-import { Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem } from '@mui/material';
+import { Table, TableHead, TableRow, TableCell, TableBody, Button, Select, MenuItem, Paper } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Loading from "../Loading/Loading";
 
 const ViewConsumer = (props: any) => {
   axios.defaults.headers.common['token'] = props.token
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
   const [consumer, setConsumer] = useState({});
   const [options, setOptions] = useState([
     { label: 'Aadhar card', value: 'aadhar_card' },
@@ -19,7 +21,8 @@ const ViewConsumer = (props: any) => {
       console.log("location", location);
       if (location.state) {
         setConsumer(location.state.consumer);
-        if (location.state.consumer["other_documents_names"].length) {
+        if (location.state.consumer["other_documents_names"].length) {  
+          console.log("Length==>",location.state.consumer["other_documents_names"].length);       
           console.log("reached here might be an issue")
           newOptions = [];
           for (let i = 0; i < location.state.consumer["other_documents_names"].length; i++) {
@@ -30,9 +33,16 @@ const ViewConsumer = (props: any) => {
             setOptions(options.concat(newOptions));
           }
         }
+        else{
+          console.log("ELSELength==>",location.state.consumer["other_documents_names"].length);
+        }
       }
+      setLoading(false);
     }
-    catch (error) { }
+    catch (error) {
+      console.log(error);
+      setLoading(true);
+     }
   }, [location])
 
   // useEffect(() => {
@@ -43,9 +53,6 @@ const ViewConsumer = (props: any) => {
   // }, [newOptions]);
 
   const [documentRequired, setDocumentRequired] = useState('');
-
-
-
 
   function handleDownload(): void {
     let blob = new Blob([]);
@@ -107,69 +114,81 @@ const ViewConsumer = (props: any) => {
   }
 
   return (
-    <div className='table-data'>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Attribute</TableCell>
-            <TableCell>Value</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>Aadhar Card Number</TableCell>
-            <TableCell>{consumer["aadhar_card_number"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Alternate Phone Number</TableCell>
-            <TableCell>{consumer["alternate_phone_number"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Consumer Address</TableCell>
-            <TableCell>{consumer["consumer_address"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Consumer Email</TableCell>
-            <TableCell>{consumer["consumer_email"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Consumer ID</TableCell>
-            <TableCell>{consumer["consumer_id"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Consumer Mobile Number</TableCell>
-            <TableCell>{consumer["consumer_mobile_number"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Consumer Name</TableCell>
-            <TableCell>{consumer["consumer_name"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Onboarded by Agent Code</TableCell>
-            <TableCell>{consumer["onboarded_by_agent_code"]}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>PAN Card Number</TableCell>
-            <TableCell>{consumer["pan_card_number"]}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Select label="Document Required"
-        value={documentRequired}
-        onChange={(e) => {
-          setDocumentRequired(e.target.value);
-        }}>
-        {(options.concat(newOptions)).map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      <Button onClick={handleDownload}>Download</Button>
-      <br />
-      <Button component={Link} to="/StartProject" color="inherit" state={{ consumer: consumer }} >Start New Project</Button>
-    </div>
+    <>
+      {loading ?
+        <div className='loadinginComponent'>
+          <Loading />
+        </div>
+        :
+        <>
+          <Paper sx={{ width: '100%' }}>
+            <div className='table-data'>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Attribute</TableCell>
+                    <TableCell>Value</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Aadhar Card Number</TableCell>
+                    <TableCell>{consumer["aadhar_card_number"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Alternate Phone Number</TableCell>
+                    <TableCell>{consumer["alternate_phone_number"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Consumer Address</TableCell>
+                    <TableCell>{consumer["consumer_address"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Consumer Email</TableCell>
+                    <TableCell>{consumer["consumer_email"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Consumer ID</TableCell>
+                    <TableCell>{consumer["consumer_id"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Consumer Mobile Number</TableCell>
+                    <TableCell>{consumer["consumer_mobile_number"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Consumer Name</TableCell>
+                    <TableCell>{consumer["consumer_name"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Onboarded by Agent Code</TableCell>
+                    <TableCell>{consumer["onboarded_by_agent_code"]}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>PAN Card Number</TableCell>
+                    <TableCell>{consumer["pan_card_number"]}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <Select label="Document Required"
+                value={documentRequired}
+                onChange={(e) => {
+                  setDocumentRequired(e.target.value);
+                }}>
+                {(options.concat(newOptions)).map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Button onClick={handleDownload}>Download</Button>
+              <br />
+              <br />
+              <Button className='btn-next' component={Link} to="/StartProject" color="inherit" state={{ consumer: consumer }} >Start New Project</Button>
+            </div>
+          </Paper>
+        </>
+      }
+    </>
   )
 }
-
 export default ViewConsumer

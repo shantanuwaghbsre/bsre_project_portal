@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 
 const ViewQuotations = (props: any) => {
   //for showing columns in table record
@@ -79,80 +80,70 @@ const ViewQuotations = (props: any) => {
           <Loading />
         </div>
         :
-        <div className='table-data'>
-          <div className="search-place">
-            <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
-              <option value={"all"}>All</option>
-              <option value={"Agent name"}>Agent Name</option>
-              <option value={"Consumer name"}>Consumer Name</option>
-            </select>
-            &nbsp;&nbsp;
-            <input className='search' type="text" disabled={isDisabled} onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." />
-            <div className='search-icon' aria-label="search" >
-              <SearchIcon onClick={handleSearch} />
-            </div>
-          </div>
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  {/* {quotations.length != 0 ?
-                    Object.keys(quotations[0]).map((key) => (
-                      ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key) ?
-                        <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key === 'Solar panel type' ? 'Panel Type' : key}</TableCell>
-                        : null
-                    ))
-                    : null
-                  }
-                  {
-                    quotations.length != 0 ? <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }}>Action</TableCell> : null
-                  } */}
-                  {columns.map((key) => (
-                    <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key === 'Solar panel type' ? 'Panel Type' : key}</TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  quotations.length >0
-                    ?
-                    quotations.map((row, index) => (
-                      <TableRow key={index}>
-                        {Object.keys(row).map((key) => (
-                          ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type"].includes(key as string) ?
-                            <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
-                            : null
-                        ))}
-                        <TableCell>
-                          <Button className='btn btn-info' component={Link} to={{ pathname: '/ConsumerOnboarding', }} state={{ "quotation": quotations[index] }}>Onboard this Customer</Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                    :
+        <>
+          <Paper sx={{ width: '100%' }}>
+            <div className='table-data'>
+              <label className='search-label'>Quotations</label>
+              <div className="search-place">
+                <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
+                  <option value={"all"}>All</option>
+                  <option value={"Agent name"}>Agent Name</option>
+                  <option value={"Consumer name"}>Consumer Name</option>
+                </select>
+                &nbsp;&nbsp;
+                <input className='search' type="text" disabled={isDisabled} onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." />
+                <div className='search-icon' aria-label="search">
+                  <Tooltip title='Click'>
+                    <SearchIcon onClick={handleSearch} />
+                  </Tooltip>
+                </div>
+              </div>
+              <TableContainer component={Paper}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
                     <TableRow>
-                      <TableCell colSpan={8} className="Records_Not_Found">
-                        <p>
-                          {
-                            norecords ? norecords : "Records Not Found"
-                          }
-                        </p>
-                      </TableCell>
+                      {columns.map((key) => (
+                        <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>{key === 'Solar panel type' ? 'Panel Type' : key}</TableCell>
+                      ))}
                     </TableRow>
-                }
-              </TableBody>
-
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(event, newPage) => handleChangePage(event, newPage)}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </div>
+                  </TableHead>
+                  <TableBody>
+                    {quotations.length > 0
+                      ?
+                      quotations.map((row, index) => (
+                        <TableRow key={index}>
+                          {Object.keys(row).map((key) => (
+                            ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type", "Total kilowatts"].includes(key as string) ?
+                              <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                              : null
+                          ))}
+                          <TableCell>
+                            <Button variant="contained" startIcon={<InfoIcon />} component={Link} to={{ pathname: '/ConsumerOnboarding', }} state={{ "quotation": quotations[index] }}>View</Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                      :
+                      <TableRow>
+                        <TableCell colSpan={8} className="Records_Not_Found">
+                          <span>
+                            {norecords ? norecords : "Records Not Found"}
+                          </span>
+                        </TableCell>
+                      </TableRow>}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={count}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => handleChangePage(event, newPage)}
+                onRowsPerPageChange={handleChangeRowsPerPage} />
+            </div>
+          </Paper>
+        </>
       }
     </>
   );

@@ -10,6 +10,7 @@ CORS(app)
 app.register_blueprint(quotation_routes_blueprint)
 app.register_blueprint(consumer_routes_blueprint)
 app.register_blueprint(project_routes_blueprint)
+app.register_blueprint(agent_routes_blueprint)
 
 @app.before_request
 def before_request():
@@ -25,6 +26,8 @@ def before_request():
     # else:
     #     print("from 2")
     #     return "Unauthorized", 401
+
 if __name__ == '__main__':
     # waitress.serve(app=app, host="0.0.0.0", port=5000)
     app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)
+
