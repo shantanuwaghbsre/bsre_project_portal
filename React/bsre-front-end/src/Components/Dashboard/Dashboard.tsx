@@ -26,7 +26,7 @@ const Dashboard = (props: any) => {
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllProjects?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllProjects?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`, { headers: { "Referrer Policy": "Access-Control-Allow-Origin" } });
       setProjects(response.data['projects']);
       setCount(response.data['count'] || 0);
       setLoading(false);
