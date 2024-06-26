@@ -1,10 +1,10 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
-
+import InfoIcon from '@mui/icons-material/Info';
 
 const Dashboard = (props: any) => {
   //for showing columns in table record
@@ -78,96 +78,97 @@ const Dashboard = (props: any) => {
           <Loading />
         </div>
         :
-        <div className='table-data'>
-          <div className="search-place">
-            <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
-              <option value={"all"}>All</option>
-              <option value={"consumer_number"}>Consumer Number</option>
-            </select>
-            &nbsp;&nbsp;
-            <input className='search' type="text" onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." disabled={isDisabled} />
-            <div className='search-icon' aria-label="search" >
-              <SearchIcon onClick={handleSearch} />
-            </div>
-          </div>
-          <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((key) => (
-                    <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>
-                      {key === 'for_consumer_id' ? 'Consumer Id' : key === 'project_email' ? 'Email Address' : key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}
-                    </TableCell>
-
-                  ))}
-                </TableRow>
-
-                {!projects.length &&
-                  <TableRow>
-                    <TableCell colSpan={8} className="Records_Not_Found">
-                      <p>Error 500:Internal Server Error</p>
-                    </TableCell>
-                  </TableRow>
-                }
-              </TableHead>
-              <TableBody>
-                {
-                  !isSearching && searchDropdown === "all"
-                    ? projects.length ? projects.map((row, index) => (
-                      <TableRow key={index}>
-                        {Object.keys(row).map((key) => (
-                          <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
-                        ))}
-                        <TableCell>
-                          <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
+        <>
+          <Paper sx={{ width: '100%' }}>
+            <div className='table-data'>
+              <label className='search-label'>Project List</label>
+              <div className="search-place">
+                <select onChange={(e) => handleSelectChange(e)} disabled={isDisabled}>
+                  <option value={"all"}>All</option>
+                  <option value={"consumer_number"}>Consumer Number</option>
+                </select>
+                &nbsp;&nbsp;
+                <input className='search' type="text" onChange={(e) => setQuerywords(e.target.value)} placeholder="Search Records..." disabled={isDisabled} />
+                <div className='search-icon' aria-label="search">
+                  <Tooltip title='Click'>
+                    <SearchIcon onClick={handleSearch} />
+                  </Tooltip>
+                </div>
+              </div>
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((key) => (
+                        <TableCell style={{ color: 'black', fontWeight: 'bold', fontSize: '17px' }} key={key}>
+                          {key === 'for_consumer_id' ? 'Consumer Id' : key === 'project_email' ? 'Email Address' : key.replace(/_/g, ' ')[0].toUpperCase() + key.replace(/_/g, ' ').slice(1)}
                         </TableCell>
-                      </TableRow>
-                    )) : <TableRow />
-                    : Object.values(projects).filter((index) => {
-                      if (searchTerm === "") {
-                        return index;
-                      }
-                      else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
-                        return index;
-                      }
-                    }).length ? Object.values(projects).filter((index) => {
-                      if (searchTerm === "") {
-                        return index;
-                      }
-                      else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
-                        return index;
-                      }
-                    }).map((row, index) => {
-                      return (
+                      ))}
+                    </TableRow>
+                    {!projects.length &&
+                      <TableRow>
+                        <TableCell colSpan={8} className="Records_Not_Found">
+                          <span>Error 500:Internal Server Error</span>
+                        </TableCell>
+                      </TableRow>}
+                  </TableHead>
+                  <TableBody>
+                    {!isSearching && searchDropdown === "all"
+                      ? projects.length ? projects.map((row, index) => (
                         <TableRow key={index}>
                           {Object.keys(row).map((key) => (
                             <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
                           ))}
                           <TableCell>
-                            <Button className='btn btn-info' component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
+                            <Button variant="contained" startIcon={<InfoIcon />} component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
                           </TableCell>
                         </TableRow>
-                      )
-                    }) :
-                      <TableRow>
-                        <TableCell colSpan={8} className="Records_Not_Found">
-                          <p>Records Not Found</p>
-                        </TableCell>
-                      </TableRow>
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination className='table-data'
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={count}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={(event, newPage) => handleChangePage(event, newPage)}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </div>
+                      )) : <TableRow />
+                      : Object.values(projects).filter((index) => {
+                        if (searchTerm === "") {
+                          return index;
+                        }
+                        else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
+                          return index;
+                        }
+                      }).length ? Object.values(projects).filter((index) => {
+                        if (searchTerm === "") {
+                          return index;
+                        }
+                        else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
+                          return index;
+                        }
+                      }).map((row, index) => {
+                        return (
+                          <TableRow key={index}>
+                            {Object.keys(row).map((key) => (
+                              <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                            ))}
+                            <TableCell>
+                              <Button variant="contained" startIcon={<InfoIcon />} component={Link} to={{ pathname: '/ViewProject' }} state={{ "consumer_number": projects[index].consumer_number, "project_in_phase": projects[index].project_in_phase, "for_consumer_id": projects[index].for_consumer_id }}>View</Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }) :
+                        <TableRow>
+                          <TableCell colSpan={8} className="Records_Not_Found">
+                            <span>Records Not Found</span>
+                          </TableCell>
+                        </TableRow>}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={count}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(event, newPage) => handleChangePage(event, newPage)}
+                onRowsPerPageChange={handleChangeRowsPerPage} />
+            </div>
+          </Paper>
+        </>
       }
     </>
   );
