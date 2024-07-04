@@ -22,6 +22,9 @@ import Typography from '@mui/material/Typography';
 import Drawerwidth from './Components/Navbar/Navbar'
 import { ErrorPage } from './Components/ErrorPage/ErrorPage';
 import { Stack } from '@mui/material';
+import Kusum from './pages/Kusum/Kusum';
+import Ppa from './pages/Ppa/Ppa';
+import SolarPark from './pages/SolarPark/SolarPark';
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -98,11 +101,14 @@ const App = () => {
                   <Route path="/ViewQuotations" element={<ViewQuotations token={kc.token} />} />
                   <Route path="/ConsumerOnboarding" element={<ConsumerOnboarding token={kc.token} />} />
                   <Route path="/AddAgent" element={<AddAgent token={kc.token} />} />
-                  <Route path='/CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation token={kc.token} />} />
+                  <Route path='/kusum' element={<Kusum />} />
+                  <Route path='/ppa' element={<Ppa />} />
+                  <Route path='/solarpark' element={<SolarPark />} />
                   <Route path='/ViewAllConsumers' element={<ViewAllConsumers token={kc.token} />} />
                   <Route path='/ViewConsumer' element={<ViewConsumer token={kc.token} />} />
                   <Route path='/ViewAllAgents' element={<ViewAllAgents token={kc.token} />} />
                   <Route path='/ViewAgent' element={<ViewAgent token={kc.token} />} />
+                  <Route path='/CommercialOrIndustrialQuotation' element={<CommercialOrIndustrialQuotation token={kc.token} />} />
                   <Route path='/StartProject' element={<StartProject token={kc.token} />} />
                   <Route path="/" element={<Dashboard token={kc.token} />} />
                   <Route path="/Dashboard" element={<Dashboard token={kc.token} />} />
