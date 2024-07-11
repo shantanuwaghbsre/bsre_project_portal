@@ -30,7 +30,8 @@ def mail_to_consumer(inputs):
     msg.attach(MIMEText(message_body, 'plain'))
 
     # Add PDF attachment
-    filepath = os.environ.get("TEMPORARY_FILES_FOLDER")
+    TEMPORARY_FILES_FOLDER = os.path.abspath(os.getcwd()) + "/Python/.venv/temporary_files/"
+    filepath =TEMPORARY_FILES_FOLDER
     filename = f"Quotation number {inputs['quotation_number']} for {inputs['consumer_name'].replace(' ', '_')}.pdf"
     with open(filepath + filename, "rb") as attachment:
         part = MIMEBase('application', 'octet-stream')

@@ -1,15 +1,16 @@
-import base64
+import base64, pytz, os, json
 from flask import Blueprint, Flask, request, jsonify, send_file
-import requests
-from service import make_db_call
-import datetime
 from datetime import timezone
-import pytz
-from mailer import mail_to_consumer
-import os
 from dotenv import load_dotenv
 load_dotenv()
-import json
+
+# For Local
+from service import make_db_call
+from mailer import mail_to_consumer
+
+# For Vercel
+# from ..service import make_db_call
+# from ..mailer import mail_to_consumer
 
 # Create a Blueprint object
 blueprint = Blueprint('agents_routes', __name__)
@@ -17,7 +18,10 @@ blueprint = Blueprint('agents_routes', __name__)
 ist = pytz.timezone('Asia/Kolkata')
 gmt = pytz.timezone('GMT')
 
-file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_agents.json'
+# For Local
+# file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_agents.json'
+# For Vercel
+file_path = os.path.abspath(os.getcwd()) + "/Python/.venv/queries/queries_for_agents.json"
 
 try:
     if os.path.exists(file_path):

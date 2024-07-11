@@ -1,7 +1,6 @@
 import base64
 from flask import Blueprint, Flask, request, jsonify, send_file
 import requests
-from service import make_db_call
 import datetime
 from datetime import timezone
 import pytz
@@ -12,13 +11,19 @@ from dotenv import load_dotenv
 load_dotenv()
 import json
 
+#For Vercel
+# from ..service import make_db_call
+
+#For Local
+from service import make_db_call
+
 # Create a Blueprint object
 blueprint = Blueprint('quotation_routes', __name__)
 
 ist = pytz.timezone('Asia/Kolkata')
 gmt = pytz.timezone('GMT')
 
-file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_quotations.json'
+file_path = os.path.abspath(os.getcwd()) + '/Python/.venv/queries/queries_for_quotations.json'
 
 try:
     if os.path.exists(file_path):

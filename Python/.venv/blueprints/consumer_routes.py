@@ -1,5 +1,4 @@
 from flask import Blueprint, Flask, request, jsonify, send_file
-from service import make_db_call
 import datetime
 from datetime import timezone
 from io import BytesIO
@@ -12,9 +11,15 @@ import json
 import re
 import base64
 
+#For Vercel
+# from ..service import make_db_call
+
+#For Local
+from service import make_db_call
+
 # Create a Blueprint object
 blueprint = Blueprint('consumer_routes', __name__)
-file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_consumers.json'
+file_path = os.path.abspath(os.getcwd()) + "/Python/.venv/queries/queries_for_consumers.json"
 
 try:
     if os.path.exists(file_path):

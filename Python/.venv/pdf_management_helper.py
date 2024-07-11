@@ -14,6 +14,9 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 load_dotenv()
 
+GRAPHS_FOLDER = os.path.abspath(os.getcwd()) + "/Python/.venv/graphs/"
+TEMPLATES_FOLDER = os.path.abspath(os.getcwd()) + "/Python/.venv/templates/"
+TEMPORARY_FILES_FOLDER = os.path.abspath(os.getcwd()) + "/Python/.venv/temporary_files/"
 
 def create_line_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, figsize_=(10, 8)):
     """
@@ -32,7 +35,7 @@ def create_line_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, f
     plt.ylabel(Y_label)
     plt.title(title)
     # Save the graph to a file
-    plt.savefig(os.environ.get("GRAPHS_FOLDER") + filename)
+    plt.savefig(GRAPHS_FOLDER + filename)
 
 def create_bar_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, filename, individual_bar_values_requested, figsize_=(10, 8)):
     """
@@ -71,7 +74,7 @@ def create_bar_graph(X_data, Y_data, X_label, Y_label, color_, width_, title, fi
     plt.title(title)
 
     # Save the graph to a file
-    plt.savefig(os.environ.get("GRAPHS_FOLDER") + filename)
+    plt.savefig(GRAPHS_FOLDER + filename)
 
 
 
@@ -87,7 +90,7 @@ def create_html_from_template(context):
     """
 
     # Get the path to the templates folder from environment variable
-    templates_folder = os.environ.get('TEMPLATES_FOLDER')
+    
     
     # Get the necessary values from the context dictionary
     quotation_type = context["quotation_type"]
@@ -98,10 +101,10 @@ def create_html_from_template(context):
     template_name = "residentialQuotation.html" if quotation_type == "Residential" else "industrialQuotation.html"
     
     # Generate a unique file path for the HTML file
-    html_file_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), f"Quotation number {quotation_number} for {consumer_name.replace(' ', '_')}.html")
+    html_file_path = os.path.join(TEMPORARY_FILES_FOLDER, f"Quotation number {quotation_number} for {consumer_name.replace(' ', '_')}.html")
     
     # Create an environment for loading templates from the templates folder
-    environment = Environment(loader=FileSystemLoader(templates_folder))
+    environment = Environment(loader=FileSystemLoader(TEMPLATES_FOLDER))
     
     # Get the template object based on the template path
     template = environment.get_template(template_name)
@@ -128,9 +131,9 @@ def create_encrypted_pdf_from_html(html_file_path, context):
     """
 
     # Set the path for the temporary PDF file
-    temp_pdf_path = os.path.join(os.environ.get("TEMPORARY_FILES_FOLDER"), 'temp.pdf')
+    temp_pdf_path = os.path.join(TEMPORARY_FILES_FOLDER, 'temp.pdf')
 
-    config = pdfkit.configuration(wkhtmltopdf=os.environ.get("WKHTMLTOPDF_PATH"))
+    # config = pdfkit.configuration(wkhtmltopdf=os.environ.get("WKHTMLTOPDF_PATH"))
     # Convert the HTML file to a PDF file
     print(html_file_path, temp_pdf_path)
     pdfkit.from_file(html_file_path, 
@@ -138,10 +141,10 @@ def create_encrypted_pdf_from_html(html_file_path, context):
                      options={
                          "enable-local-file-access": "", 
                          "disable-external-links":"",
-                         "--header-html": "file:///" + os.environ.get('TEMPLATES_FOLDER') + "header.html", 
-                        "--footer-html": "file:///" + os.environ.get('TEMPLATES_FOLDER') + "footer.html"
+                         "--header-html": "file:///" + TEMPLATES_FOLDER + "header.html", 
+                        "--footer-html": "file:///" + TEMPLATES_FOLDER + "footer.html"
                         }, 
-                    configuration=config
+                    # configuration=config
                 )
 
     # Read the PDF file
@@ -181,7 +184,7 @@ def create_pdf_from_doc(doc_file_name, context):
         None
     """
 
-    d = Document(os.environ.get("TEMPLATES_FOLDER") + doc_file_name + '.docx')
+    d = Document(TEMPLATES_FOLDER + doc_file_name + '.docx')
     if d.sections is not None and len(d.sections) > 0:
         for s in d.sections:
             for id_, hp in enumerate(s.header.paragraphs):
@@ -254,13 +257,13 @@ def create_pdf_from_doc(doc_file_name, context):
                     after_para = p.add_run(whole_para_text)
                     after_para.bold = False
     
-    d.save(os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.docx')
+    d.save(TEMPORARY_FILES_FOLDER + doc_file_name + '_edited.docx')
 
     wdFormatPDF = 17
 
-    in_file = os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.docx'
+    in_file = TEMPORARY_FILES_FOLDER + doc_file_name + '_edited.docx'
 
-    out_file = os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf'
+    out_file = TEMPORARY_FILES_FOLDER + doc_file_name + '_edited.pdf'
 
     pythoncom.CoInitialize()
 
@@ -278,5 +281,5 @@ def create_pdf_from_doc(doc_file_name, context):
     # Quit Word application
     word_app.Quit()
     pythoncom.CoUninitialize()
-    print(os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf')
-    return os.environ.get("TEMPORARY_FILES_FOLDER") + doc_file_name + '_edited.pdf'
+    print(TEMPORARY_FILES_FOLDER + doc_file_name + '_edited.pdf')
+    return TEMPORARY_FILES_FOLDER + doc_file_name + '_edited.pdf'

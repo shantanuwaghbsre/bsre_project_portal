@@ -1,10 +1,8 @@
 import random
 from flask import Blueprint, Flask, request, jsonify, send_file
-from service import make_db_call
 import datetime
 from datetime import timezone
 from io import BytesIO
-from pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template, create_bar_graph, create_line_graph, create_pdf_from_doc
 from mailer import mail_to_consumer
 import os
 from dotenv import load_dotenv
@@ -14,6 +12,13 @@ import re
 import base64
 import time
 
+#For Vercel
+# from ..service import make_db_call
+# from ..pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template, create_bar_graph, create_line_graph, create_pdf_from_doc
+
+#For Local
+from service import make_db_call
+from pdf_management_helper import create_encrypted_pdf_from_html, create_html_from_template, create_bar_graph, create_line_graph, create_pdf_from_doc
 
 discom_paragraph = {
       "DGVCL": "Dakshin Gujarat Vij Company Limited, a Company registered under the Companies Act 1956/2013 and functioning as the ”Distribution Company” or “DISCOM” under the Electricity Act 2003 having its Head Office at, “Urja Sadan”, Nana Varachha Road, Kapodara Char Rasta, Surat-395006 (hereinafter referred to as “DGVCL” or “Distribution Licensee” or “DISCOM” which expression shall include its permitted assigns and successors) a Party of the Second Part.",
@@ -24,8 +29,7 @@ discom_paragraph = {
 
 # Create a Blueprint object
 blueprint = Blueprint('project_routes', __name__)
-
-file_path = os.environ.get('QUERIES_FOLDER') + 'queries_for_projects.json'
+file_path = os.path.abspath(os.getcwd()) + "/Python/.venv/queries/queries_for_projects.json"
 
 try:
     if os.path.exists(file_path):
