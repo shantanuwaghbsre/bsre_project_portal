@@ -1,9 +1,17 @@
 from flask import Flask, request, make_response
 from flask_cors import CORS
-from blueprints.quotation_routes import blueprint as quotation_routes_blueprint
-from blueprints.consumer_routes import blueprint as consumer_routes_blueprint
-from blueprints.project_routes import blueprint as project_routes_blueprint
-from blueprints.agent_routes import blueprint as agent_routes_blueprint
+
+# For Vercel
+from .blueprints.quotation_routes import blueprint as quotation_routes_blueprint
+from .blueprints.consumer_routes import blueprint as consumer_routes_blueprint
+from .blueprints.project_routes import blueprint as project_routes_blueprint
+from .blueprints.agent_routes import blueprint as agent_routes_blueprint
+
+# For Local
+# from blueprints.quotation_routes import blueprint as quotation_routes_blueprint
+# from blueprints.consumer_routes import blueprint as consumer_routes_blueprint
+# from blueprints.project_routes import blueprint as project_routes_blueprint
+# from blueprints.agent_routes import blueprint as agent_routes_blueprint
 import waitress
 app = Flask(__name__)
 CORS(app)

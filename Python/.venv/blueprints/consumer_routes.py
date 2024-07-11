@@ -12,10 +12,10 @@ import re
 import base64
 
 #For Vercel
-# from ..service import make_db_call
+from ..service import make_db_call
 
 #For Local
-from service import make_db_call
+# from service import make_db_call
 
 # Create a Blueprint object
 blueprint = Blueprint('consumer_routes', __name__)

@@ -5,12 +5,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # For Local
-from service import make_db_call
-from mailer import mail_to_consumer
+# from service import make_db_call
+# from mailer import mail_to_consumer
 
 # For Vercel
-# from ..service import make_db_call
-# from ..mailer import mail_to_consumer
+from ..service import make_db_call
+from ..mailer import mail_to_consumer
 
 # Create a Blueprint object
 blueprint = Blueprint('agents_routes', __name__)

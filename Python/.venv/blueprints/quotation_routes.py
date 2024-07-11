@@ -12,10 +12,10 @@ load_dotenv()
 import json
 
 #For Vercel
-# from ..service import make_db_call
+from ..service import make_db_call
 
 #For Local
-from service import make_db_call
+# from service import make_db_call
 
 # Create a Blueprint object
 blueprint = Blueprint('quotation_routes', __name__)
