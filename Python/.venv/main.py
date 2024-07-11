@@ -36,8 +36,8 @@ def before_request():
     #     print("from 2")
     #     return "Unauthorized", 401
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     #waitress.serve(app=app, host="0.0.0.0", port=5000)
-    app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)
+    # app.run(debug=True, host='0.0.0.0', port=5000, threaded=True)
 
 
