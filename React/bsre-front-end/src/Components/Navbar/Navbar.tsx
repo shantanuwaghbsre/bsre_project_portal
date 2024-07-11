@@ -63,7 +63,7 @@ export default function Navbar(props: any) {
     };
     //FOR HANDLING Navigator
     const Navigate = useNavigate();
-    const handleNavigation = (path:any) => {
+    const handleNavigation = (path: any) => {
         Navigate(path);
     }
     //FOR HANDLING COLLAPSE of dropdown menu
@@ -146,6 +146,30 @@ export default function Navbar(props: any) {
                                     <FormatQuoteIcon fontSize='small' />
                                 </ListItemIcon>
                                 <ListItemText primary="Commercial/Industrial" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding onClick={() => handleNavigation("/kusum")}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <FormatQuoteIcon fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText primary="Kusum" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding onClick={() => handleNavigation("/ppa")}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <FormatQuoteIcon fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText primary="Ppa" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding onClick={() => handleNavigation("/solarpark")}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <FormatQuoteIcon fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText primary="Solar Park" />
                             </ListItemButton>
                         </ListItem>
                     </List>
@@ -313,7 +337,7 @@ export default function Navbar(props: any) {
                             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         >
                             <MenuItem onClick={handleClose}>
-                            <Avatar /> Profile
+                                <Avatar /> Profile
                             </MenuItem>
                             <MenuItem onClick={handleClose}>
                                 <Avatar /> My account
