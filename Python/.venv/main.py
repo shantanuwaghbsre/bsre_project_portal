@@ -21,6 +21,10 @@ app.register_blueprint(consumer_routes_blueprint)
 app.register_blueprint(project_routes_blueprint)
 app.register_blueprint(agent_routes_blueprint)
 
+@app.route('/')
+def index():
+    return "Hello, World!"
+
 @app.before_request
 def before_request():
     if request.method == "OPTIONS":
