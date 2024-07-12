@@ -3,26 +3,6 @@
       {
         "src": "Python/.venv/main.py",
         "use": "@vercel/python"
-      },
-      {
-        "src": "Python/.venv/service.py",
-        "use": "@vercel/python"
-      },
-      {
-        "src": "Python/.venv/blueprints/agent_routes.py",
-        "use": "@vercel/python"
-      },
-      {
-        "src": "Python/.venv/blueprints/consumer_routes.py",
-        "use": "@vercel/python"
-      },
-      {
-        "src": "Python/.venv/blueprints/project_routes.py",
-        "use": "@vercel/python"
-      },
-      {
-        "src": "Python/.venv/blueprints/quotation_routes.py",
-        "use": "@vercel/python"
       }
     ],
     "routes": [
