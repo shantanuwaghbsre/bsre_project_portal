@@ -420,7 +420,9 @@ export default function Navbar(props: any) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        // sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ ml: { xs: 0, md: "200px" } }}
+        gap={2}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
