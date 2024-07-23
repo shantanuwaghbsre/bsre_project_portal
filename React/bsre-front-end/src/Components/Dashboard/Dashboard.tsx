@@ -140,6 +140,7 @@ const Dashboard = (props: any) => {
                             color: "black",
                             fontWeight: "bold",
                             fontSize: "17px",
+                            whiteSpace: "nowrap",
                           }}
                           key={key}
                         >
