@@ -108,7 +108,6 @@ const App = () => {
               sx={{
                 flexGrow: 1,
                 p: 3,
-                // width: { sm: `calc(100% - ${Drawerwidth}px)` },
                 width: "100%",
               }}
             >
