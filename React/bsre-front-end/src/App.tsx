@@ -99,15 +99,14 @@ const App = () => {
           <Box
             sx={{
               display: "flex",
-              marginTop: "5rem",
-              width: "80% !important",
+              m: "5rem 0 0 0",
+              width: "85% !important",
             }}
           >
             <Box
               component="main"
               sx={{
                 flexGrow: 1,
-                p: 3,
                 width: "100% !important",
               }}
             >
