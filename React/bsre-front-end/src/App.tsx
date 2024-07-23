@@ -100,7 +100,7 @@ const App = () => {
             sx={{
               display: "flex",
               marginTop: "5rem",
-              width: "80%",
+              width: "80% !important",
             }}
           >
             <Box
@@ -108,7 +108,7 @@ const App = () => {
               sx={{
                 flexGrow: 1,
                 p: 3,
-                width: "100%",
+                width: "100% !important",
               }}
             >
               <Typography paragraph>
