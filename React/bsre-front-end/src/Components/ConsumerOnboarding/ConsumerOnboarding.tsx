@@ -1,109 +1,136 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import { useLocation } from 'react-router';
-import { TextField, InputLabel, Table, TableBody, TableCell, TableRow, Button, Grid, FormControl, Select, MenuItem, SelectChangeEvent, List, ListItem, ListItemText, Paper } from '@mui/material';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import ViewAllConsumers from '../ViewAllConsumers/ViewAllConsumers';
-
-
+import React, { useState, ChangeEvent, useEffect } from "react";
+import { useLocation } from "react-router";
+import {
+  TextField,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+  Button,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+} from "@mui/material";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import ViewAllConsumers from "../ViewAllConsumers/ViewAllConsumers";
 
 const urls = {
-  "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
-  "onboardConsumer": import.meta.env.VITE_BACKEND_URL + "/onboardConsumer",
-  "getAgentsURL": import.meta.env.VITE_BACKEND_URL + "/getAgents",
-  "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations",
-  "getConsumerURL": import.meta.env.VITE_BACKEND_URL + "/getConsumer"
-}
+  calculateURL: import.meta.env.VITE_BACKEND_URL + "/calculate",
+  onboardConsumer: import.meta.env.VITE_BACKEND_URL + "/onboardConsumer",
+  getAgentsURL: import.meta.env.VITE_BACKEND_URL + "/getAgents",
+  getLocationsURL: import.meta.env.VITE_BACKEND_URL + "/getLocations",
+  getConsumerURL: import.meta.env.VITE_BACKEND_URL + "/getConsumer",
+};
 
 const ConsumerOnboarding = (props: any) => {
-  axios.defaults.headers.common['token'] = props.token
+  axios.defaults.headers.common["token"] = props.token;
   const blankFormData = {
-    consumerName: '',
-    consumerAddress: '',
-    consumerMobileNumber: '',
-    alternatePhoneNumber: '',
-    consumerEmail: '',
-    aadharCardNumber: '',
-    panCardNumber: '',
-    onboardedByAgentCode: '',
-    agentOrDistributorName: '',
+    consumerName: "",
+    consumerAddress: "",
+    consumerMobileNumber: "",
+    alternatePhoneNumber: "",
+    consumerEmail: "",
+    aadharCardNumber: "",
+    panCardNumber: "",
+    onboardedByAgentCode: "",
+    agentOrDistributorName: "",
     otherDocumentsNames: [],
-  }
+  };
 
-  const [agentOptions, setAgentOptions] = useState([])
+  const [agentOptions, setAgentOptions] = useState([]);
   const [formData, setFormData] = useState(blankFormData);
   const [currentPage, setCurrentPage] = useState(1);
-  let location = useLocation();
-  let navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const goToConsumer = (consumer:any) => navigate('/ViewConsumer', { state: { "consumer": consumer } });
+  const goToConsumer = (consumer: any) =>
+    navigate("/ViewConsumer", { state: { consumer: consumer } });
 
   useEffect(() => {
-    axios.get(urls["getAgentsURL"])
+    axios
+      .get(urls["getAgentsURL"])
       .then(function (response) {
         setAgentOptions(response.data);
+        console.log("sdknfasendn");
       })
       .catch(function (error) {
         console.log(error);
       });
-    console.log(agentOptions);
-  }, [])
+  }, []);
 
   useEffect(() => {
     try {
-      console.log(location)
+      console.log(location);
       if (location.state.quotation) {
         setFormData({
           ...blankFormData,
           consumerName: location.state.quotation["Consumer name"],
           consumerAddress: location.state.quotation["Consumer address"],
-          consumerMobileNumber: location.state.quotation["Consumer mobile number"],
+          consumerMobileNumber:
+            location.state.quotation["Consumer mobile number"],
           agentOrDistributorName: location.state.quotation["Agent name"],
           onboardedByAgentCode: location.state.quotation["Agent code"],
-        })
+        });
+      } else {
+        setFormData(blankFormData);
       }
-      else {
-        setFormData(blankFormData)
-      }
-    }
-    catch (error) { }
-  }, [location.state])
+    } catch (error) {}
+  }, [location.state]);
 
   const [files, setFiles] = useState({
     aadharCard: new Blob(),
     panCard: new Blob(),
     passportPhoto: new Blob(),
-    otherDocuments: []
-  })
+    otherDocuments: [],
+  });
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    console.log(name, value)
+    console.log(name, value);
     if (name == "onboardedByAgentCode") {
       for (let i = 0; i < agentOptions.length; i++) {
-        if (agentOptions[i]["agent_id"] == value) {
-          console.log(agentOptions[i])
-          setFormData({ ...formData, ["agentOrDistributorName"]: agentOptions[i]["agent_name"], [name]: value });
+        if (agentOptions[i]["agent_code"] == value) {
+          console.log(agentOptions[i]);
+          setFormData({
+            ...formData,
+            ["agentOrDistributorName"]: agentOptions[i]["agent_name"],
+            [name]: value,
+          });
         }
       }
-    }
-    else if (name == "aadharCard" || name == "panCard" || name == "passportPhoto") {
-      console.log(typeof (e.target.files[0]))
-      setFiles({ ...files, [e.target.name]: e.target.files[0] })
-    }
-    else if (name == "otherDocuments") {
+    } else if (
+      name == "aadharCard" ||
+      name == "panCard" ||
+      name == "passportPhoto"
+    ) {
+      console.log(typeof e.target.files[0]);
+      setFiles({ ...files, [e.target.name]: e.target.files[0] });
+    } else if (name == "otherDocuments") {
       setFiles((files) => ({
         ...files,
-        [name]: [...(files[name] || []), e.target.files[0]]
+        [name]: [...(files[name] || []), e.target.files[0]],
       }));
-      setFormData({ ...formData, ["otherDocumentsNames"]: [...(formData["otherDocumentsNames"] || []), e.target.files[0].name] });
-    }
-    else {
+      setFormData({
+        ...formData,
+        ["otherDocumentsNames"]: [
+          ...(formData["otherDocumentsNames"] || []),
+          e.target.files[0].name,
+        ],
+      });
+    } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = (event: { preventDefault: () => void; }) => {
+  const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     const postObject = new FormData();
@@ -111,10 +138,13 @@ const ConsumerOnboarding = (props: any) => {
     for (const [filename, file] of Object.entries(files)) {
       if (filename == "otherDocuments") {
         for (let i = 0; i < file.length; i++) {
-          postObject.append(i.toString(), file[i], formData.otherDocumentsNames[i]);
+          postObject.append(
+            i.toString(),
+            file[i],
+            formData.otherDocumentsNames[i]
+          );
         }
-      }
-      else {
+      } else {
         postObject.append(filename, file);
       }
     }
@@ -123,25 +153,26 @@ const ConsumerOnboarding = (props: any) => {
       postObject.append(key, value);
     }
 
-    axios.post(urls['onboardConsumer'], postObject)
-      .then(response => {
+    axios
+      .post(urls["onboardConsumer"], postObject)
+      .then((response) => {
         console.log(response.data);
         if (response.data["success"] == true) {
-          axios.get(urls['getConsumerURL'], { params: { consumer_id: response.data["consumer_id"] } })
-            .then(response_ => {
-              console.log(response_.data)
+          axios
+            .get(urls["getConsumerURL"], {
+              params: { consumer_id: response.data["consumer_id"] },
+            })
+            .then((response_) => {
+              console.log(response_.data);
               goToConsumer(response_.data);
-            }
-            )
-        }
-        else {
+            });
+        } else {
           alert("Consumer onboarding failed!");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
-
   };
 
   const handleNextPage = () => {
@@ -153,17 +184,25 @@ const ConsumerOnboarding = (props: any) => {
   };
 
   const handleRemoveDocument = (index: string) => {
-    setFormData({ ...formData, ["otherDocumentsNames"]: formData["otherDocumentsNames"].filter((item, i) => i !== parseInt(index)) });
+    setFormData({
+      ...formData,
+      ["otherDocumentsNames"]: formData["otherDocumentsNames"].filter(
+        (item, i) => i !== parseInt(index)
+      ),
+    });
     setFiles((files) => ({
       ...files,
-      ["otherDocuments"]: files["otherDocuments"].filter((item, i) => i !== parseInt(index))
+      ["otherDocuments"]: files["otherDocuments"].filter(
+        (item, i) => i !== parseInt(index)
+      ),
     }));
-  }
+  };
 
+  console.log("agentOptions", agentOptions);
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <div className='table-data'>
+    <Paper sx={{ width: "100%" }}>
+      <div className="table-data">
         {currentPage === 1 && (
           <form onSubmit={handleSubmit}>
             <Table>
@@ -172,9 +211,7 @@ const ConsumerOnboarding = (props: any) => {
                   <TableCell>
                     <InputLabel>Agent or distributor name</InputLabel>
                   </TableCell>
-                  <TableCell>
-                    {formData.agentOrDistributorName}
-                  </TableCell>
+                  <TableCell>{formData.agentOrDistributorName}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
@@ -183,19 +220,33 @@ const ConsumerOnboarding = (props: any) => {
                   <TableCell>
                     <FormControl sx={{ m: 1, minWidth: 220 }}>
                       <InputLabel>Agent Code</InputLabel>
-                      <Select label="Agent Code" name="onboardedByAgentCode" value={formData.onboardedByAgentCode} onChange={(e) => handleChange(e)}>
-                        {agentOptions.map((option) => (
-                          <MenuItem key={option["agent_id"]} value={option["agent_id"]}>
-                            {option["agent_id"]}
-                          </MenuItem>
-                        ))}
+                      <Select
+                        label="Agent Code"
+                        name="onboardedByAgentCode"
+                        value={formData.onboardedByAgentCode}
+                        onChange={(e) => handleChange(e)}
+                      >
+                        {agentOptions !== null || agentOptions !== undefined
+                          ? agentOptions.map((option) => (
+                              <MenuItem
+                                key={option["agent_code"]}
+                                value={option["agent_code"]}
+                              >
+                                {option["agent_code"]}
+                              </MenuItem>
+                            ))
+                          : null}
                       </Select>
                     </FormControl>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell colSpan={2} align='right'>
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell colSpan={2} align="right">
+                    <button
+                      className="btn-next"
+                      type="button"
+                      onClick={handleNextPage}
+                    >
                       Next
                     </button>
                   </TableCell>
@@ -280,15 +331,22 @@ const ConsumerOnboarding = (props: any) => {
                   </TableCell>
                 </TableRow>
 
-
                 <TableRow>
-                  <TableCell align='left'>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left">
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right'>
-                    <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right">
+                    <button
+                      className="btn-next"
+                      type="button"
+                      onClick={handleNextPage}
+                    >
                       Next
                     </button>
                   </TableCell>
@@ -306,14 +364,15 @@ const ConsumerOnboarding = (props: any) => {
                     <InputLabel>aadhar card</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                    >
+                    <Button variant="contained" component="label">
                       Upload aadhar card
-                      <input type="file" name="aadharCard" onChange={handleChange} hidden />
+                      <input
+                        type="file"
+                        name="aadharCard"
+                        onChange={handleChange}
+                        hidden
+                      />
                     </Button>
-
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -336,12 +395,14 @@ const ConsumerOnboarding = (props: any) => {
                     <InputLabel>Pan card</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                    >
+                    <Button variant="contained" component="label">
                       Upload pan card
-                      <input type="file" name="panCard" onChange={handleChange} hidden />
+                      <input
+                        type="file"
+                        name="panCard"
+                        onChange={handleChange}
+                        hidden
+                      />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -364,12 +425,14 @@ const ConsumerOnboarding = (props: any) => {
                     <InputLabel>Passport photo</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                    >
+                    <Button variant="contained" component="label">
                       Upload passport photo
-                      <input type="file" name="passportPhoto" onChange={handleChange} hidden />
+                      <input
+                        type="file"
+                        name="passportPhoto"
+                        onChange={handleChange}
+                        hidden
+                      />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -378,12 +441,14 @@ const ConsumerOnboarding = (props: any) => {
                     <InputLabel>Other documents</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                    >
+                    <Button variant="contained" component="label">
                       Upload other documents
-                      <input type="file" name="otherDocuments" onChange={handleChange} hidden />
+                      <input
+                        type="file"
+                        name="otherDocuments"
+                        onChange={handleChange}
+                        hidden
+                      />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -393,30 +458,40 @@ const ConsumerOnboarding = (props: any) => {
                   </TableCell>
                   <TableCell>
                     <List>
-                      {formData.otherDocumentsNames.map((documentName, index) => (
-                        <ListItem key={index}>
-                          <ListItemText primary={documentName} />
-                          <Button
-                            style={{ backgroundColor: "red", color: "white" }}
-                            variant="contained"
-                            component="label"
-                            onClick={() => handleRemoveDocument(index)}
-                          >
-                            Remove
-                          </Button>
-                        </ListItem>
-                      ))}
+                      {formData.otherDocumentsNames.map(
+                        (documentName, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={documentName} />
+                            <Button
+                              style={{ backgroundColor: "red", color: "white" }}
+                              variant="contained"
+                              component="label"
+                              onClick={() => handleRemoveDocument(index)}
+                            >
+                              Remove
+                            </Button>
+                          </ListItem>
+                        )
+                      )}
                     </List>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left'>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left">
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right'>
-                    <button className='btn-next' type="button" onClick={handleSubmit}>
+                  <TableCell align="right">
+                    <button
+                      className="btn-next"
+                      type="button"
+                      onClick={handleSubmit}
+                    >
                       Submit
                     </button>
                   </TableCell>
