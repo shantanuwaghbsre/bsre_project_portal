@@ -78,6 +78,8 @@ const AddAgent = (props: any) => {
     for (const [filename, file] of Object.entries(files)) {
       postObject.append(filename, file);
     }
+
+    console.log("postObject", postObject);
     // const postObject = {
     //   "agent_name": formData["agentName"],
     //   "agent_mobile_number": formData["agentMobileNumber"],
@@ -129,6 +131,7 @@ const AddAgent = (props: any) => {
   useEffect(() => {
     axios.get(urls["getLocationsURL"]).then((response) => {
       setAgentStateOptions(response.data);
+      console.log("getLocationsURL", response.data);
     });
   }, []);
   useEffect(() => {
@@ -203,7 +206,7 @@ const AddAgent = (props: any) => {
   };
 
   const handleFormChange = (field: any, value: any) => {
-    // console.log(field, value);
+    console.log("handleFormChange", field, value);
 
     setFormData((prevData) => ({
       ...prevData,
@@ -226,6 +229,12 @@ const AddAgent = (props: any) => {
     setErrorMessage([]);
     setIsFormValid(false);
   };
+
+  // console.log("States:-", Object.keys(agentStateOptions));
+  // console.log(
+  //   "branches:-",
+  //   Object.keys(agentStateOptions[formData["agentState"]])
+  // );
 
   return (
     <>
@@ -288,11 +297,11 @@ const AddAgent = (props: any) => {
                               handleFormChange("agentState", e.target.value)
                             }
                           >
-                            {Object.keys(agentStateOptions).map((option) => (
-                              <MenuItem key={option} value={option}>
-                                {option}
-                              </MenuItem>
-                            ))}
+                            {/* {Object.keys(agentStateOptions).map((option) => ( */}
+                            <MenuItem key={"Gujarat"} value={"Gujarat"}>
+                              Gujarat
+                            </MenuItem>
+                            {/* ))} */}
                           </Select>
                         </FormControl>
                       </TableCell>
