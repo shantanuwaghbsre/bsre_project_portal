@@ -1,126 +1,161 @@
-import axios from 'axios';
-import React, { FormEvent, MouseEvent, useEffect, useState } from 'react'
-import { useLocation } from 'react-router';
-import { Table, TableBody, TableRow, TableCell, InputLabel, FormControl, Button, TextField, Paper, MenuItem, Select, TableContainer, TableHead } from '@mui/material';
-import CheckBox from '@mui/material/Checkbox';
-import MultiStepProgressBar from '../MultiStepProgressBar/MultiStepProgressBar';
+import axios from "axios";
+import React, { FormEvent, MouseEvent, useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  InputLabel,
+  FormControl,
+  Button,
+  TextField,
+  Paper,
+  MenuItem,
+  Select,
+  TableContainer,
+  TableHead,
+} from "@mui/material";
+import CheckBox from "@mui/material/Checkbox";
+import MultiStepProgressBar from "../MultiStepProgressBar/MultiStepProgressBar";
 
 const ViewProject = (props: any) => {
-  axios.defaults.headers.common['token'] = props.token
-  const urls = {
-
-  }
+  axios.defaults.headers.common["token"] = props.token;
+  const urls = {};
   const [options, setOptions] = useState([
-    { "label": "Property Tax", "value": 'property_tax' },
-    { "label": "Electricity Bill", "value": 'electricity_bill' },
-    { "label": "Cancelled Cheque", "value": 'cancelled_cheque' },
-  ])
+    { label: "Property Tax", value: "property_tax" },
+    { label: "Electricity Bill", value: "electricity_bill" },
+    { label: "Cancelled Cheque", value: "cancelled_cheque" },
+  ]);
   const phase_2_discom_options = [
-    { "key_": "DGVCL", "label": "Dakshin Gujarat Vij Company Limited" },
-    { "key_": "MGVCL", "label": "Madhya Gujarat Vij Company Limited" },
-    { "key_": "PGVCL", "label": "Paschim Gujarat Vij Company Limited" },
-    { "key_": "UGVCL", "label": "Uttar Gujarat Vij Company Limited" },
-    { "key_": "Torrent_(Surat)", "label": "Torrent Power Limited (Surat)" },
-    { "key_": "Torrent_(Ahmedabad)", "label": "Torrent Power Limited (Ahmedabad)" },
-  ]
+    { key_: "DGVCL", label: "Dakshin Gujarat Vij Company Limited" },
+    { key_: "MGVCL", label: "Madhya Gujarat Vij Company Limited" },
+    { key_: "PGVCL", label: "Paschim Gujarat Vij Company Limited" },
+    { key_: "UGVCL", label: "Uttar Gujarat Vij Company Limited" },
+    { key_: "Torrent_(Surat)", label: "Torrent Power Limited (Surat)" },
+    { key_: "Torrent_(Ahmedabad)", label: "Torrent Power Limited (Ahmedabad)" },
+  ];
   const [phase_8_document_options, setPhase_8_document_options] = useState([
-    { "key_": "agreement_residential", "label": "Residential Agreement" },
-    { "key_": "agreement_industrial", "label": "Industrial Agreement" },
-    { "key_": "vendoragreement_residential", "label": "Vendor Agreement" },
-    { "key_": "certificate_1", "label": "One Page Self Certificate" },
-    { "key_": "certificate_4", "label": "Four Page Self Certificate" },
-  ])
+    { key_: "agreement_residential", label: "Residential Agreement" },
+    { key_: "agreement_industrial", label: "Industrial Agreement" },
+    { key_: "vendoragreement_residential", label: "Vendor Agreement" },
+    { key_: "certificate_1", label: "One Page Self Certificate" },
+    { key_: "certificate_4", label: "Four Page Self Certificate" },
+  ]);
 
   let location = useLocation();
-  const [documentRequired, setDocumentRequired] = useState<string>('');
-  const [project, setProject] = useState<{ [key: string]: { [key: string]: any } }>({
+  const [documentRequired, setDocumentRequired] = useState<string>("");
+  const [project, setProject] = useState<{
+    [key: string]: { [key: string]: any };
+  }>({
     phase_1: {
       property_tax: new Blob(),
       electricity_bill: new Blob(),
       cancelled_cheque: new Blob(),
       other_documents: [],
       other_documents_names: [],
-      meter_number: '',
-      current_sanctioned_load: '',
-      average_consumption_of_unit: '',
-      consumer_number: '',
-      consumer_name: '',
-      other_document: '',
-      project_type: '',
-      project_address: '',
-      latitude: '',
-      longitude: '',
-      total_kilowatts: '',
-      solar_panel_type: '',
-      project_cost: '',
-      deposit_amount: '',
-      remaining_balance: '',
-      deposited_money_in_words: '',
-      payment_type: '',
-      transaction_number: '',
-      bank_details_with_branch: '',
-      national_portal_registration_number: '',
-      current_phase: '',
-      installation_phase: '',
-      location: '',
-      solar_inverter_make: '',
-      solar_module_wattage: '',
-      number_of_panels: '',
+      meter_number: "",
+      current_sanctioned_load: "",
+      average_consumption_of_unit: "",
+      consumer_number: "",
+      consumer_name: "",
+      other_document: "",
+      project_type: "",
+      project_address: "",
+      latitude: "",
+      longitude: "",
+      total_kilowatts: "",
+      solar_panel_type: "",
+      project_cost: "",
+      deposit_amount: "",
+      remaining_balance: "",
+      deposited_money_in_words: "",
+      payment_type: "",
+      transaction_number: "",
+      bank_details_with_branch: "",
+      national_portal_registration_number: "",
+      current_phase: "",
+      installation_phase: "",
+      location: "",
+      solar_inverter_make: "",
+      solar_module_wattage: "",
+      number_of_panels: "",
     },
     phase_2: {
-      consumer_number: '',
-      discom: '',
-      discom_approval: '',
-      notes: '',
+      consumer_number: "",
+      discom: "",
+      discom_approval: "",
+      notes: "",
     },
     phase_3: {
-      consumer_number: '',
-      notes: '',
-      client_approved_cad: '',
+      consumer_number: "",
+      notes: "",
+      client_approved_cad: "",
     },
     phase_4: {
-      consumer_number: '',
-      notes: '',
-      structure_ready: '',
+      consumer_number: "",
+      notes: "",
+      structure_ready: "",
     },
     phase_5: {
-      consumer_number: '',
-      notes: '',
-      ready_to_transport: '',
+      consumer_number: "",
+      notes: "",
+      ready_to_transport: "",
     },
-    phase_6: {
-
-    },
+    phase_6: {},
     phase_7: {
-      consumer_number: '',
-      notes: '',
-      geda_approval: '',
+      consumer_number: "",
+      notes: "",
+      geda_approval: "",
       electrical_diagram: new Blob(),
     },
     phase_8: {
-      consumer_number: '',
+      consumer_number: "",
     },
     phase_9: {
-      consumer_number: '',
+      consumer_number: "",
       meter_report: new Blob(),
       joint_inspection: new Blob(),
     },
     phase_10: {
-      consumer_number: '',
+      consumer_number: "",
       invoice_from_accounts: new Blob(),
-      dcr: '',
-    }
+      dcr: "",
+    },
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [editable, setEditable] = useState([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
+  const [editable, setEditable] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [file, setFile] = useState<File>();
-  const [newNote, setNewNote] = useState('');
-  const [fileChoice, setFileChoice] = useState(['', '']);
-  const [agreementValues, setAgreementValues] = useState<{ [key: string]: any }>({});
-  const [vendorAgreementValues, setVendorAgreementValues] = useState<{ [key: string]: any }>({});
-  const [onePageCertificateValues, setOnePageCertificateValues] = useState<{ [key: string]: any }>({});
-  const [fourPageCertificateValues, setFourPageCertificateValues] = useState<{ [key: string]: any }>({});
+  const [newNote, setNewNote] = useState("");
+  const [fileChoice, setFileChoice] = useState(["", ""]);
+  const [agreementValues, setAgreementValues] = useState<{
+    [key: string]: any;
+  }>({});
+  const [vendorAgreementValues, setVendorAgreementValues] = useState<{
+    [key: string]: any;
+  }>({});
+  const [onePageCertificateValues, setOnePageCertificateValues] = useState<{
+    [key: string]: any;
+  }>({});
+  const [fourPageCertificateValues, setFourPageCertificateValues] = useState<{
+    [key: string]: any;
+  }>({});
   const [dcrValues, setDcrValues] = useState<{ [key: string]: any }>({});
   let newOptions = [];
   const inputOptions = {
@@ -129,7 +164,7 @@ const ViewProject = (props: any) => {
     onePageCertificate: [],
     fourPageCertificate: [],
     dcr: ["", ""],
-  }
+  };
 
   useEffect(() => {
     // console.log(project.phase_1.solar_panel_type)
@@ -138,46 +173,62 @@ const ViewProject = (props: any) => {
         // console.log("location.state - ", location.state)
         setCurrentPage(location.state.project_in_phase);
         try {
-          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?consumer_number=${location.state.consumer_number}`).then(
-            (response) => {
+          axios
+            .get(
+              import.meta.env.VITE_BACKEND_URL +
+                `/getProject?consumer_number=${location.state.consumer_number}`
+            )
+            .then((response) => {
               // console.log(response.data);
               setProject(response.data);
               if (response.data.phase_1.project_type == "Residential") {
                 setPhase_8_document_options([
-                  ...phase_8_document_options.filter((option) => option.key_ != "agreement_industrial"),
-                ])
-              }
-              else {
+                  ...phase_8_document_options.filter(
+                    (option) => option.key_ != "agreement_industrial"
+                  ),
+                ]);
+              } else {
                 setPhase_8_document_options([
-                  ...phase_8_document_options.filter((option) => option.key_ != "agreement_residential" && option.key_ != "vendor_agreement"),
-                ])
+                  ...phase_8_document_options.filter(
+                    (option) =>
+                      option.key_ != "agreement_residential" &&
+                      option.key_ != "vendor_agreement"
+                  ),
+                ]);
               }
               // console.log(response.data);
               setIsLoading(false);
               setCurrentPage(Number(response.data.phase_1.project_in_phase));
-              for (let i = 0; i < response.data.phase_1["other_documents_names"].length; i++) {
+              for (
+                let i = 0;
+                i < response.data.phase_1["other_documents_names"].length;
+                i++
+              ) {
                 // console.log(newOptions);
-                newOptions.push({ label: response.data.phase_1["other_documents_names"][i], value: response.data.phase_1["other_documents_names"][i] });
+                newOptions.push({
+                  label: response.data.phase_1["other_documents_names"][i],
+                  value: response.data.phase_1["other_documents_names"][i],
+                });
               }
               // console.log(newOptions);
               if (options.length == 3) {
                 setOptions(options.concat(newOptions));
               }
-            }
-
-          );
-        }
-        catch (error) {
+            });
+        } catch (error) {
           console.error(error);
         }
-      }
-      else {
+      } else {
         //From ViewAgentPage by Usenavigate
-        console.log("Agent location.state - ", location.state)
+        console.log("Agent location.state - ", location.state);
         setCurrentPage(location.state.project_in_phase);
         try {
-          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?agent_id=${location.state.agent_id}`).then(
-            (response) => {
+          axios
+            .get(
+              import.meta.env.VITE_BACKEND_URL +
+                `/getProject?agent_id=${location.state.agent_id}`
+            )
+            .then((response) => {
               // console.log(response.data);
               // setProject(response.data);
               // if (response.data.phase_1.project_type == "Residential") {
@@ -201,61 +252,59 @@ const ViewProject = (props: any) => {
               // if (options.length == 3) {
               //   setOptions(options.concat(newOptions));
               // }
-            }
-
-          );
-        }
-        catch (error) {
+            });
+        } catch (error) {
           console.error(error);
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   }, []);
 
   useEffect(() => {
     if (project.phase_2) {
-      setVendorAgreementValues(
-        {
-          ...vendorAgreementValues,
-          "discom": project.phase_2.discom || '',
-          "consumer_name": project.phase_1.consumer_name,
-          "consumer_number": project.phase_1.consumer_number,
-          "project_address": project.phase_1.project_address,
-          "total_kilowatts": project.phase_1.total_kilowatts,
-          "solar_module_wattage": project.phase_1.solar_module_wattage,
-          "solar_module_wattage_in_kw": project.phase_1.solar_module_wattage / 1000,
-          "total_cost": project.phase_1.project_cost,
-        });
-      setAgreementValues(
-        {
-          ...agreementValues,
-          "discom": project.phase_2.discom || '',
-          "consumer_name": project.phase_1.consumer_name,
-          "consumer_number": project.phase_1.consumer_number,
-          "project_address": project.phase_1.project_address,
-          "total_kilowatts": project.phase_1.total_kilowatts,
-        });
-      setDcrValues(
-        {
-          ...dcrValues,
-          "consumer_name": project.phase_1.consumer_name,
-          "project_address": project.phase_1.project_address,
-          "total_kilowatts": project.phase_1.total_kilowatts,
-          "registration_number": project.phase_1.national_portal_registration_number,
-          "discom": project.phase_2.discom,
-          "solar_panel_wattage": project.phase_1.solar_panel_wattage,
-          "number_of_panels": project.phase_1.number_of_panels,
-        });
+      setVendorAgreementValues({
+        ...vendorAgreementValues,
+        discom: project.phase_2.discom || "",
+        consumer_name: project.phase_1.consumer_name,
+        consumer_number: project.phase_1.consumer_number,
+        project_address: project.phase_1.project_address,
+        total_kilowatts: project.phase_1.total_kilowatts,
+        solar_module_wattage: project.phase_1.solar_module_wattage,
+        solar_module_wattage_in_kw: project.phase_1.solar_module_wattage / 1000,
+        total_cost: project.phase_1.project_cost,
+      });
+      setAgreementValues({
+        ...agreementValues,
+        discom: project.phase_2.discom || "",
+        consumer_name: project.phase_1.consumer_name,
+        consumer_number: project.phase_1.consumer_number,
+        project_address: project.phase_1.project_address,
+        total_kilowatts: project.phase_1.total_kilowatts,
+      });
+      setDcrValues({
+        ...dcrValues,
+        consumer_name: project.phase_1.consumer_name,
+        project_address: project.phase_1.project_address,
+        total_kilowatts: project.phase_1.total_kilowatts,
+        registration_number:
+          project.phase_1.national_portal_registration_number,
+        discom: project.phase_2.discom,
+        solar_panel_wattage: project.phase_1.solar_panel_wattage,
+        number_of_panels: project.phase_1.number_of_panels,
+      });
     }
-  }, [project.phase_1, project.phase_2])
+  }, [project.phase_1, project.phase_2]);
 
   useEffect(() => {
     if (location.state.for_consumer_id && !project.phase_1.consumer_name) {
-      axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
-        (response_consumer_details) => {
+      axios
+        .get(
+          import.meta.env.VITE_BACKEND_URL +
+            `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`
+        )
+        .then((response_consumer_details) => {
           // console.log("consumer details", response_consumer_details);
           setProject((prevProject) => {
             // Retrieve the dictionary you want to modify
@@ -273,7 +322,7 @@ const ViewProject = (props: any) => {
           // console.log(project.phase_1)
         });
     }
-  }, [location.state.for_consumer_id, project.phase_1.consumer_name])
+  }, [location.state.for_consumer_id, project.phase_1.consumer_name]);
   // if(!project.phase_1.consumer_name.length) {
   //   axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
   //   (response_consumer_details) => {
@@ -303,118 +352,212 @@ const ViewProject = (props: any) => {
   };
 
   function handleSubmit(event: FormEvent<HTMLFormElement>): void {
-    throw new Error('Function not implemented.');
+    throw new Error("Function not implemented.");
   }
 
   const handlePreviousPage = () => {
     setCurrentPage((prevPage) => Number(prevPage) - 1);
-    setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
+    setEditable([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
     // throw new Error('Function not implemented.');
-  }
+  };
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Number(prevPage) + 1);
-    setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
+    setEditable([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
     // throw new Error('Function not implemented.');
-  }
+  };
 
   const promoteToNextPhase = () => {
-    axios.post(import.meta.env.VITE_BACKEND_URL + '/promoteToNextPhase', { consumer_number: project.phase_1.consumer_number, project_in_phase: project.phase_1.project_in_phase }).then(
-      (response) => {
+    axios
+      .post(import.meta.env.VITE_BACKEND_URL + "/promoteToNextPhase", {
+        consumer_number: project.phase_1.consumer_number,
+        project_in_phase: project.phase_1.project_in_phase,
+      })
+      .then((response) => {
         console.log(response.data);
         if (response.data.success) {
           setCurrentPage((prevPage) => Number(prevPage) + 1);
-          setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
-          axios.get(import.meta.env.VITE_BACKEND_URL + `/getProject?consumer_number=${project.phase_1.consumer_number}`).then(
-            (response_project) => {
+          setEditable([
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+          ]);
+          axios
+            .get(
+              import.meta.env.VITE_BACKEND_URL +
+                `/getProject?consumer_number=${project.phase_1.consumer_number}`
+            )
+            .then((response_project) => {
               console.log(response_project);
               setProject(response_project.data);
               setIsLoading(false);
-            }
-          )
+            });
         }
-      }
-    )
-  }
+      });
+  };
 
   function handleInputChange(key: string, value: any): void {
     console.log(key, value, project);
     if (value == undefined) {
-      value = '';
+      value = "";
     }
     if (key == "notes") {
       setProject((prevProject) => ({
         ...prevProject,
         ["phase_" + currentPage]: {
           ...prevProject["phase_" + currentPage],
-          [key]: project["phase_" + currentPage][key] === null ? value : project["phase_" + currentPage][key] + "\n\n" + value
-        }
-      }))
-      setNewNote('');
-    }
-    else {
+          [key]:
+            project["phase_" + currentPage][key] === null
+              ? value
+              : project["phase_" + currentPage][key] + "\n\n" + value,
+        },
+      }));
+      setNewNote("");
+    } else {
       setProject((prevProject) => ({
         ...prevProject,
         ["phase_" + currentPage]: {
           ...prevProject["phase_" + currentPage],
-          [key]: value
-        }
-      }))
+          [key]: value,
+        },
+      }));
       console.log(project);
     }
   }
 
   function handleSave(currentPage: number): void {
     if (currentPage == project.phase_1.project_in_phase) {
-      console.log("handle save reached")
+      console.log("handle save reached");
       const postObject = new FormData();
-      for (const [key, value] of Object.entries(project["phase_" + currentPage])) {
+      for (const [key, value] of Object.entries(
+        project["phase_" + currentPage]
+      )) {
         postObject.append(key, value);
       }
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", project.phase_1.project_in_phase);
 
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/updatePhaseData', postObject).then(
-        response => {
+      axios
+        .post(import.meta.env.VITE_BACKEND_URL + "/updatePhaseData", postObject)
+        .then((response) => {
           console.log(response);
-        }
-      )
-    }
-    else {
+        });
+    } else {
       // check rights and add approval logic
-      console.log("handle save reached for non current phase")
+      console.log("handle save reached for non current phase");
       const postObject = new FormData();
-      for (const [key, value] of Object.entries(project["phase_" + currentPage])) {
+      for (const [key, value] of Object.entries(
+        project["phase_" + currentPage]
+      )) {
         postObject.append(key, value);
       }
       postObject.append("consumer_number", project.phase_1.consumer_number);
       postObject.append("project_in_phase", currentPage.toString());
 
-      axios.post(import.meta.env.VITE_BACKEND_URL + '/updatePhaseData', postObject).then(
-        response => {
+      axios
+        .post(import.meta.env.VITE_BACKEND_URL + "/updatePhaseData", postObject)
+        .then((response) => {
           console.log(response);
-        }
-      )
+        });
     }
 
-    setEditable([false, false, false, false, false, false, false, false, false, false, false, false, false, false]);
+    setEditable([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
   }
 
-
-  function handleDownload(documentRequired_: string, documentType: string): void {
-    console.log("documentRequired ", documentRequired_)
-    let blob = new Blob([])
-    let base64String = '';
+  function handleDownload(
+    documentRequired_: string,
+    documentType: string
+  ): void {
+    console.log("documentRequired ", documentRequired_);
+    let blob = new Blob([]);
+    let base64String = "";
     console.log(project["phase_" + currentPage], documentRequired_);
-    let url = import.meta.env.VITE_BACKEND_URL
-    if (documentRequired_ === "electrical_diagram" || documentRequired_ === 'meter_report' || documentRequired_ === 'joint_inspection' || documentRequired_ === 'property_tax' || documentRequired_ === 'electricity_bill' || documentRequired_ === 'cancelled_cheque') {
-      console.log("in if 1")
-      if ((project["phase_" + currentPage][documentRequired_] != false && typeof (project["phase_" + currentPage][documentRequired_]) == 'string') || (project["phase_" + currentPage][documentRequired_] != null && typeof (project["phase_" + currentPage][documentRequired_]) == 'object')) {
-        console.log("in if 2 because", project["phase_" + currentPage][documentRequired_] != false, project["phase_" + currentPage][documentRequired_] != null)
+    let url = import.meta.env.VITE_BACKEND_URL;
+    if (
+      documentRequired_ === "electrical_diagram" ||
+      documentRequired_ === "meter_report" ||
+      documentRequired_ === "joint_inspection" ||
+      documentRequired_ === "property_tax" ||
+      documentRequired_ === "electricity_bill" ||
+      documentRequired_ === "cancelled_cheque"
+    ) {
+      console.log("in if 1");
+      if (
+        (project["phase_" + currentPage][documentRequired_] != false &&
+          typeof project["phase_" + currentPage][documentRequired_] ==
+            "string") ||
+        (project["phase_" + currentPage][documentRequired_] != null &&
+          typeof project["phase_" + currentPage][documentRequired_] == "object")
+      ) {
+        console.log(
+          "in if 2 because",
+          project["phase_" + currentPage][documentRequired_] != false,
+          project["phase_" + currentPage][documentRequired_] != null
+        );
         base64String = project["phase_" + currentPage][documentRequired_];
-      }
-      else if (project.phase_1.other_documents_names.includes(documentRequired_)) {
-        base64String = project.phase_1.other_documents[project.phase_1.other_documents_names.indexOf(documentRequired_)];
+      } else if (
+        project.phase_1.other_documents_names.includes(documentRequired_)
+      ) {
+        base64String =
+          project.phase_1.other_documents[
+            project.phase_1.other_documents_names.indexOf(documentRequired_)
+          ];
       }
       try {
         // Decode the Base64 string to binary data
@@ -428,95 +571,84 @@ const ViewProject = (props: any) => {
 
         // Create a Blob from the Uint8Array
         blob = new Blob([uint8Array]);
-        console.log("blob was made in the right place")
+        console.log("blob was made in the right place");
+      } catch (error) {
+        console.error("Error decoding base64 string:", error);
       }
-      catch (error) {
-        console.error('Error decoding base64 string:', error);
-      }
-    }
-    else {
-      url += `downloadFile?document_required=${documentRequired_}&document_type=${documentType}`
-      if (documentRequired_ === 'agreement') {
+    } else {
+      url += `downloadFile?document_required=${documentRequired_}&document_type=${documentType}`;
+      if (documentRequired_ === "agreement") {
         for (let i in agreementValues) {
-          url += `&${i}=${agreementValues[i]}`
+          url += `&${i}=${agreementValues[i]}`;
         }
-      }
-      else if (documentRequired_ === 'certificate') {
-        if (documentType === '1') {
+      } else if (documentRequired_ === "certificate") {
+        if (documentType === "1") {
           for (let i in onePageCertificateValues) {
-            url += `&${i}=${onePageCertificateValues[i]}`
+            url += `&${i}=${onePageCertificateValues[i]}`;
           }
-        }
-        else if (documentType === '4') {
+        } else if (documentType === "4") {
           for (let i in fourPageCertificateValues) {
-            url += `&${i}=${fourPageCertificateValues[i]}`
+            url += `&${i}=${fourPageCertificateValues[i]}`;
           }
         }
-      }
-      else if (documentRequired_ === 'dcr') {
+      } else if (documentRequired_ === "dcr") {
         for (let i in dcrValues) {
-          url += `&${i}=${dcrValues[i]}`
+          url += `&${i}=${dcrValues[i]}`;
         }
-      }
-      else if (documentRequired_ === 'vendoragreement') {
+      } else if (documentRequired_ === "vendoragreement") {
         for (let i in vendorAgreementValues) {
-          url += `&${i}=${vendorAgreementValues[i]}`
+          url += `&${i}=${vendorAgreementValues[i]}`;
         }
       }
     }
     console.log(url);
     if (url.match(/\&/g) != null) {
-      axios.get(url).then(
-        (response_project) => {
-          try {
-            // Decode the Base64 string to binary data
-            const binaryString = atob(response_project.data);
+      axios.get(url).then((response_project) => {
+        try {
+          // Decode the Base64 string to binary data
+          const binaryString = atob(response_project.data);
 
-            setProject((prevProject) => ({
-              ...prevProject,
-              [`phase_${currentPage}`]: {
-                ...prevProject[`phase_${currentPage}`],
-                [documentRequired_]: response_project.data
-              }
-            }))
+          setProject((prevProject) => ({
+            ...prevProject,
+            [`phase_${currentPage}`]: {
+              ...prevProject[`phase_${currentPage}`],
+              [documentRequired_]: response_project.data,
+            },
+          }));
 
-            // Convert the binary string to a Uint8Array
-            const uint8Array = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-              uint8Array[i] = binaryString.charCodeAt(i);
-            }
-
-            // Create a Blob from the Uint8Array
-            blob = new Blob([uint8Array]);
-
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', `${documentRequired_}.pdf`);
-            link.target = '_blank';
-
-            // Append the link to the document and trigger the click event
-            document.body.appendChild(link);
-            link.click();
-
-            // Remove the link from the document
-            document.body.removeChild(link);
-          }
-          catch (error) {
-            console.error('Error decoding base64 string:', error);
+          // Convert the binary string to a Uint8Array
+          const uint8Array = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
           }
 
-          // console.log("response data type - ", typeof(response_project.data))
-          // console.log(response_project.data)
-          // blob = new Blob(response_project.data);
+          // Create a Blob from the Uint8Array
+          blob = new Blob([uint8Array]);
 
+          const link = document.createElement("a");
+          link.href = window.URL.createObjectURL(blob);
+          link.setAttribute("download", `${documentRequired_}.pdf`);
+          link.target = "_blank";
+
+          // Append the link to the document and trigger the click event
+          document.body.appendChild(link);
+          link.click();
+
+          // Remove the link from the document
+          document.body.removeChild(link);
+        } catch (error) {
+          console.error("Error decoding base64 string:", error);
         }
-      )
-    }
-    else {
-      const link = document.createElement('a');
+
+        // console.log("response data type - ", typeof(response_project.data))
+        // console.log(response_project.data)
+        // blob = new Blob(response_project.data);
+      });
+    } else {
+      const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.setAttribute('download', `${documentRequired_}.pdf`);
-      link.target = '_blank';
+      link.setAttribute("download", `${documentRequired_}.pdf`);
+      link.target = "_blank";
 
       // Append the link to the document and trigger the click event
       document.body.appendChild(link);
@@ -527,9 +659,17 @@ const ViewProject = (props: any) => {
     }
   }
   return (
-    <Paper sx={{ width: '100%' }}>
-      <div className='table-data' style={{ width: '1000px', height: '100%', marginTop: '10px' }}>
-        <MultiStepProgressBar page={currentPage} key={currentPage} onPageNumberClick={setCurrentPage} project_in_phase={project.phase_1.project_in_phase} />
+    <Paper sx={{ width: "100%" }}>
+      <div
+        className="table-data"
+        style={{ width: "1000px", height: "100%", marginTop: "10px" }}
+      >
+        <MultiStepProgressBar
+          page={currentPage}
+          key={currentPage}
+          onPageNumberClick={setCurrentPage}
+          project_in_phase={project.phase_1.project_in_phase}
+        />
         <h1>{project.phase_1.consumer_name}</h1>
         {/* <Table>
         <TableBody>
@@ -548,9 +688,14 @@ const ViewProject = (props: any) => {
           </TableRow>
         </TableBody>
       </Table> */}
-        <span style={{ fontSize: '30px' }}>Phase {currentPage}</span>
-        {currentPage != 8 && (!editable[currentPage - 1] ? <Button onClick={() => handleEditable(currentPage)}>Edit</Button> : <Button onClick={() => handleSave(currentPage)}>Save</Button>)}
-        {currentPage == 1 && !isLoading &&
+        <span style={{ fontSize: "30px" }}>Phase {currentPage}</span>
+        {currentPage != 8 &&
+          (!editable[currentPage - 1] ? (
+            <Button onClick={() => handleEditable(currentPage)}>Edit</Button>
+          ) : (
+            <Button onClick={() => handleSave(currentPage)}>Save</Button>
+          ))}
+        {currentPage == 1 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -559,7 +704,17 @@ const ViewProject = (props: any) => {
                     <InputLabel>Meter Number</InputLabel>
                   </TableCell>
                   <TableCell>
-                    {editable[currentPage - 1] ? <TextField onChange={(event) => handleInputChange('meter_number', event.target.value)} value={project.phase_1.meter_number} disabled={!editable[currentPage - 1]} /> : project.phase_1.meter_number}
+                    {editable[currentPage - 1] ? (
+                      <TextField
+                        onChange={(event) =>
+                          handleInputChange("meter_number", event.target.value)
+                        }
+                        value={project.phase_1.meter_number}
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    ) : (
+                      project.phase_1.meter_number
+                    )}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -570,7 +725,10 @@ const ViewProject = (props: any) => {
                     {editable[currentPage - 1] ? (
                       <TextField
                         onChange={(event) =>
-                          handleInputChange('current_sanctioned_load', event.target.value)
+                          handleInputChange(
+                            "current_sanctioned_load",
+                            event.target.value
+                          )
                         }
                         value={project.phase_1.current_sanctioned_load}
                         disabled={!editable[currentPage - 1]}
@@ -589,7 +747,7 @@ const ViewProject = (props: any) => {
                     {editable[currentPage - 1] ? (
                       <TextField
                         onChange={(event) =>
-                          handleInputChange('current_phase', event.target.value)
+                          handleInputChange("current_phase", event.target.value)
                         }
                         value={project.phase_1.current_phase}
                         disabled={!editable[currentPage - 1]}
@@ -608,7 +766,10 @@ const ViewProject = (props: any) => {
                     {editable[currentPage - 1] ? (
                       <TextField
                         onChange={(event) =>
-                          handleInputChange('installation_phase', event.target.value)
+                          handleInputChange(
+                            "installation_phase",
+                            event.target.value
+                          )
                         }
                         value={project.phase_1.installation_phase}
                         disabled={!editable[currentPage - 1]}
@@ -626,7 +787,10 @@ const ViewProject = (props: any) => {
                     {editable[currentPage - 1] ? (
                       <TextField
                         onChange={(event) =>
-                          handleInputChange('average_consumption_of_unit', event.target.value)
+                          handleInputChange(
+                            "average_consumption_of_unit",
+                            event.target.value
+                          )
                         }
                         value={project.phase_1.average_consumption_of_unit}
                         disabled={!editable[currentPage - 1]}
@@ -644,7 +808,10 @@ const ViewProject = (props: any) => {
                     {editable[currentPage - 1] ? (
                       <TextField
                         onChange={(event) =>
-                          handleInputChange('consumer_number', event.target.value)
+                          handleInputChange(
+                            "consumer_number",
+                            event.target.value
+                          )
                         }
                         value={project.phase_1.consumer_number}
                         disabled={!editable[currentPage - 1]}
@@ -655,7 +822,6 @@ const ViewProject = (props: any) => {
                   </TableCell>
                 </TableRow>
 
-
                 <TableRow>
                   <TableCell>
                     <InputLabel>Project Type</InputLabel>
@@ -663,7 +829,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('project_type', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("project_type", event.target.value)
+                        }
                         value={project.phase_1.project_type}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -680,7 +848,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('project_address', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "project_address",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.project_address}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -697,7 +870,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('latitude', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("latitude", event.target.value)
+                        }
                         value={project.phase_1.latitude}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -714,7 +889,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('longitude', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("longitude", event.target.value)
+                        }
                         value={project.phase_1.longitude}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -731,7 +908,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('total_kilowatts', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "total_kilowatts",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.total_kilowatts}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -748,7 +930,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('solar_panel_type', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "solar_panel_type",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.solar_panel_type}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -765,7 +952,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('solar_inverter_make', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "solar_inverter_make",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.solar_inverter_make}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -782,7 +974,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('project_cost', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("project_cost", event.target.value)
+                        }
                         value={project.phase_1.project_cost}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -799,7 +993,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('deposit_amount', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "deposit_amount",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.deposit_amount}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -809,7 +1008,6 @@ const ViewProject = (props: any) => {
                   </TableCell>
                 </TableRow>
 
-
                 <TableRow>
                   <TableCell>
                     <InputLabel>Remaining Balance</InputLabel>
@@ -817,7 +1015,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('remaining_balance', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "remaining_balance",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.remaining_balance}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -834,7 +1037,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('deposited_money_in_words', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "deposited_money_in_words",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.deposited_money_in_words}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -851,7 +1059,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('payment_type', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("payment_type", event.target.value)
+                        }
                         value={project.phase_1.payment_type}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -868,7 +1078,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('transaction_number', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "transaction_number",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.transaction_number}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -885,7 +1100,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('bank_details_with_branch', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "bank_details_with_branch",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.bank_details_with_branch}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -902,8 +1122,15 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('national_portal_registration_number', event.target.value)}
-                        value={project.phase_1.national_portal_registration_number}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "national_portal_registration_number",
+                            event.target.value
+                          )
+                        }
+                        value={
+                          project.phase_1.national_portal_registration_number
+                        }
                         disabled={!editable[currentPage - 1]}
                       />
                     ) : (
@@ -919,7 +1146,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('from_quotation', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "from_quotation",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.from_quotation}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -936,7 +1168,9 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('project_email', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange("project_email", event.target.value)
+                        }
                         value={project.phase_1.project_email}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -953,7 +1187,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('project_in_phase', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "project_in_phase",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_1.project_in_phase}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -964,12 +1203,14 @@ const ViewProject = (props: any) => {
                 </TableRow>
                 <TableRow>
                   <TableCell>
-                    <Select label="Document Required"
+                    <Select
+                      label="Document Required"
                       value={documentRequired}
                       onChange={(e) => {
                         setDocumentRequired(e.target.value);
-                      }}>
-                      {(options.concat(newOptions)).map((option) => (
+                      }}
+                    >
+                      {options.concat(newOptions).map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           {option.label}
                         </MenuItem>
@@ -977,26 +1218,43 @@ const ViewProject = (props: any) => {
                     </Select>
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleDownload(documentRequired, '')}>Download</Button>
+                    <Button
+                      onClick={() => handleDownload(documentRequired, "")}
+                    >
+                      Download
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='right' colSpan={2} style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell
+                    align="right"
+                    colSpan={2}
+                    style={{ border: "none" }}
+                  >
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_2 && currentPage === 2 && !isLoading &&
+        )}
+        {project.phase_2 && currentPage === 2 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1007,7 +1265,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "consumer_number",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_2.consumer_number}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -1021,23 +1284,20 @@ const ViewProject = (props: any) => {
                     <InputLabel>Discom Name</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Select label="Discom Name"
-                      value={project.phase_2.discom || ''}
+                    <Select
+                      label="Discom Name"
+                      value={project.phase_2.discom || ""}
                       onChange={(e) => {
-                        handleInputChange('discom', e.target.value);
-                      }
-                      }
+                        handleInputChange("discom", e.target.value);
+                      }}
                       disabled={!editable[currentPage - 1]}
                     >
-                      {
-                        phase_2_discom_options
-                          .map((option) => (
-                            <MenuItem key={option.key_} value={option.key_}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
+                      {phase_2_discom_options.map((option) => (
+                        <MenuItem key={option.key_} value={option.key_}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
                     </Select>
-
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -1045,7 +1305,16 @@ const ViewProject = (props: any) => {
                     <InputLabel>Discom Approval</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <CheckBox checked={project.phase_2.discom_approval} onClick={() => handleInputChange('discom_approval', !project.phase_2.discom_approval)} disabled={!editable[currentPage - 1]} />
+                    <CheckBox
+                      checked={project.phase_2.discom_approval}
+                      onClick={() =>
+                        handleInputChange(
+                          "discom_approval",
+                          !project.phase_2.discom_approval
+                        )
+                      }
+                      disabled={!editable[currentPage - 1]}
+                    />
                     {project.phase_2.discom_approval}
                   </TableCell>
                 </TableRow>
@@ -1055,38 +1324,67 @@ const ViewProject = (props: any) => {
                     <InputLabel>Notes</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_2.notes} disabled />
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={project.phase_2.notes}
+                      disabled
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell />
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} onChange={(e) => setNewNote(e.target.value)} disabled={!editable[currentPage - 1]} />
-                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                      disabled={!editable[currentPage - 1]}
+                    />
+                    <Button
+                      onClick={() => handleInputChange("notes", newNote)}
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Add Note
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_3 && currentPage === 3 && !isLoading &&
+        )}
+        {project.phase_3 && currentPage === 3 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1097,7 +1395,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "consumer_number",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_3.consumer_number}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -1111,7 +1414,16 @@ const ViewProject = (props: any) => {
                     <InputLabel>Client CAD Approval</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <CheckBox checked={project.phase_3.project_manager_approval} onClick={() => handleInputChange('project_manager_approval', !project.phase_3.project_manager_approval)} disabled={!editable[currentPage - 1]} />
+                    <CheckBox
+                      checked={project.phase_3.project_manager_approval}
+                      onClick={() =>
+                        handleInputChange(
+                          "project_manager_approval",
+                          !project.phase_3.project_manager_approval
+                        )
+                      }
+                      disabled={!editable[currentPage - 1]}
+                    />
                     {project.phase_3.project_manager_approval}
                   </TableCell>
                 </TableRow>
@@ -1120,38 +1432,67 @@ const ViewProject = (props: any) => {
                     <InputLabel>Notes</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_3.notes} disabled />
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={project.phase_3.notes}
+                      disabled
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell />
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={newNote}
+                      disabled={!editable[currentPage - 1]}
+                      onChange={(e) => setNewNote(e.target.value)}
+                    />
+                    <Button
+                      onClick={() => handleInputChange("notes", newNote)}
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Add Note
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_4 && currentPage === 4 && !isLoading &&
+        )}
+        {project.phase_4 && currentPage === 4 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1162,7 +1503,12 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     {editable[currentPage - 1] ? (
                       <TextField
-                        onChange={(event) => handleInputChange('consumer_number', event.target.value)}
+                        onChange={(event) =>
+                          handleInputChange(
+                            "consumer_number",
+                            event.target.value
+                          )
+                        }
                         value={project.phase_4.consumer_number}
                         disabled={!editable[currentPage - 1]}
                       />
@@ -1176,7 +1522,16 @@ const ViewProject = (props: any) => {
                     <InputLabel>Structure Ready</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <CheckBox checked={project.phase_4.structure_ready} onClick={() => handleInputChange('structure_ready', !project.phase_4.structure_ready)} disabled={!editable[currentPage - 1]} />
+                    <CheckBox
+                      checked={project.phase_4.structure_ready}
+                      onClick={() =>
+                        handleInputChange(
+                          "structure_ready",
+                          !project.phase_4.structure_ready
+                        )
+                      }
+                      disabled={!editable[currentPage - 1]}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -1184,38 +1539,67 @@ const ViewProject = (props: any) => {
                     <InputLabel>Notes</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_4.notes} disabled />
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={project.phase_4.notes}
+                      disabled
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell />
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={newNote}
+                      disabled={!editable[currentPage - 1]}
+                      onChange={(e) => setNewNote(e.target.value)}
+                    />
+                    <Button
+                      onClick={() => handleInputChange("notes", newNote)}
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Add Note
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_5 && currentPage === 5 && !isLoading &&
+        )}
+        {project.phase_5 && currentPage === 5 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1223,16 +1607,23 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     <InputLabel>Consumer Number</InputLabel>
                   </TableCell>
-                  <TableCell>
-                    {project.phase_5.consumer_number}
-                  </TableCell>
+                  <TableCell>{project.phase_5.consumer_number}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
                     <InputLabel>Ready to Transport</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <CheckBox checked={project.phase_5.ready_to_transport} onClick={() => handleInputChange('ready_to_transport', !project.phase_5.ready_to_transport)} disabled={!editable[currentPage - 1]} />
+                    <CheckBox
+                      checked={project.phase_5.ready_to_transport}
+                      onClick={() =>
+                        handleInputChange(
+                          "ready_to_transport",
+                          !project.phase_5.ready_to_transport
+                        )
+                      }
+                      disabled={!editable[currentPage - 1]}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -1240,38 +1631,67 @@ const ViewProject = (props: any) => {
                     <InputLabel>Notes</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_5.notes} disabled={!editable[currentPage - 1]} />
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={project.phase_5.notes}
+                      disabled={!editable[currentPage - 1]}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell />
                   <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
+                    <TextField
+                      style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                      multiline
+                      value={newNote}
+                      disabled={!editable[currentPage - 1]}
+                      onChange={(e) => setNewNote(e.target.value)}
+                    />
+                    <Button
+                      onClick={() => handleInputChange("notes", newNote)}
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Add Note
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_6 && currentPage === 6 && !isLoading &&
+        )}
+        {project.phase_6 && currentPage === 6 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1281,125 +1701,212 @@ const ViewProject = (props: any) => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                      Previous
-                    </button>
-                  </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
-                        Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                        Promote
-                      </button>}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </form>
-        }
-        {
-          project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type != "Residential" &&
-          <form>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Consumer Number</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    {project.phase_7.consumer_number}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>GEDA Approval for electric diagram</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    <CheckBox checked={project.phase_7.geda_approval} onClick={() => handleInputChange('geda_approval', !project.phase_7.geda_approval)} disabled={!editable[currentPage - 1]} />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Electrical Diagram</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      disabled={!editable[currentPage - 1]}
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
                     >
-                      Upload Electrical Diagram
-                      <input type="file" name="electrical_diagram" onChange={(e) => handleInputChange('electrical_diagram', e.target.files[0])} hidden />
-                    </Button>
-                    <Button onClick={() => handleDownload("electrical_diagram", "")}>Download</Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Notes</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={project.phase_7.notes} disabled />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell />
-                  <TableCell>
-                    <TextField style={{ maxHeight: 150, width: 650, overflow: 'auto' }} multiline value={newNote} disabled={!editable[currentPage - 1]} onChange={(e) => setNewNote(e.target.value)} />
-                    <Button onClick={() => handleInputChange("notes", newNote)} disabled={!editable[currentPage - 1]}>Add Note</Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_7 && currentPage === 7 && !isLoading && project.phase_1.project_type == "Residential" &&
-          <>
-            <span style={{fontSize:'30px'}}>Phase 7 not applicable for Residential Projects. Move to phase 8.</span>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                      Previous
-                    </button>
-                  </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
-                        Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                        Promote
-                      </button>}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </>
-        }
-        {
-          project.phase_8 && currentPage === 8 && !isLoading &&
+        )}
+        {project.phase_7 &&
+          currentPage === 7 &&
+          !isLoading &&
+          project.phase_1.project_type != "Residential" && (
+            <form>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Consumer Number</InputLabel>
+                    </TableCell>
+                    <TableCell>{project.phase_7.consumer_number}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>
+                        GEDA Approval for electric diagram
+                      </InputLabel>
+                    </TableCell>
+                    <TableCell>
+                      <CheckBox
+                        checked={project.phase_7.geda_approval}
+                        onClick={() =>
+                          handleInputChange(
+                            "geda_approval",
+                            !project.phase_7.geda_approval
+                          )
+                        }
+                        disabled={!editable[currentPage - 1]}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Electrical Diagram</InputLabel>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        component="label"
+                        disabled={!editable[currentPage - 1]}
+                      >
+                        Upload Electrical Diagram
+                        <input
+                          type="file"
+                          name="electrical_diagram"
+                          onChange={(e) =>
+                            handleInputChange(
+                              "electrical_diagram",
+                              e.target.files[0]
+                            )
+                          }
+                          hidden
+                        />
+                      </Button>
+                      <Button
+                        onClick={() => handleDownload("electrical_diagram", "")}
+                      >
+                        Download
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Notes</InputLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                        multiline
+                        value={project.phase_7.notes}
+                        disabled
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell>
+                      <TextField
+                        style={{ maxHeight: 150, width: 650, overflow: "auto" }}
+                        multiline
+                        value={newNote}
+                        disabled={!editable[currentPage - 1]}
+                        onChange={(e) => setNewNote(e.target.value)}
+                      />
+                      <Button
+                        onClick={() => handleInputChange("notes", newNote)}
+                        disabled={!editable[currentPage - 1]}
+                      >
+                        Add Note
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left" style={{ border: "none" }}>
+                      <button
+                        className="btn-prev"
+                        type="button"
+                        onClick={handlePreviousPage}
+                      >
+                        Previous
+                      </button>
+                    </TableCell>
+                    <TableCell align="right" style={{ border: "none" }}>
+                      {currentPage < project.phase_1.project_in_phase ? (
+                        <button
+                          className="btn-next"
+                          type="button"
+                          onClick={handleNextPage}
+                        >
+                          Next
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-promote"
+                          type="button"
+                          onClick={promoteToNextPhase}
+                        >
+                          Promote
+                        </button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </form>
+          )}
+        {project.phase_7 &&
+          currentPage === 7 &&
+          !isLoading &&
+          project.phase_1.project_type == "Residential" && (
+            <>
+              <span style={{ fontSize: "30px" }}>
+                Phase 7 not applicable for Residential Projects. Move to phase
+                8.
+              </span>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left" style={{ border: "none" }}>
+                      <button
+                        className="btn-prev"
+                        type="button"
+                        onClick={handlePreviousPage}
+                      >
+                        Previous
+                      </button>
+                    </TableCell>
+                    <TableCell align="right" style={{ border: "none" }}>
+                      {currentPage < project.phase_1.project_in_phase ? (
+                        <button
+                          className="btn-next"
+                          type="button"
+                          onClick={handleNextPage}
+                        >
+                          Next
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-promote"
+                          type="button"
+                          onClick={promoteToNextPhase}
+                        >
+                          Promote
+                        </button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </>
+          )}
+        {project.phase_8 && currentPage === 8 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1409,18 +1916,16 @@ const ViewProject = (props: any) => {
                     onChange={(e) => {
                       setFileChoice(e.target.value.split("_"));
                     }}
-                    sx={{ minWidth: 320 }}>
-                    {
-                      phase_8_document_options
-                        .map((option) => (
-                          <MenuItem key={option.key_} value={option.key_}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
+                    sx={{ minWidth: 320 }}
+                  >
+                    {phase_8_document_options.map((option) => (
+                      <MenuItem key={option.key_} value={option.key_}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </TableRow>
-                {
-                  fileChoice[0] == "agreement" &&
+                {fileChoice[0] == "agreement" && (
                   <TableRow>
                     <TableContainer component={Paper}>
                       <Table>
@@ -1431,46 +1936,225 @@ const ViewProject = (props: any) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {Object.entries(inputOptions.agreement).map((field) => (
-                            <TableRow key={field[0]}>
-                              <TableCell>{field[1].replace(/_/g, ' ')}</TableCell>
-                              <TableCell>
-                                <TextField onChange={(e) => setAgreementValues({ ...agreementValues, [field[1]]: e.target.value })}></TextField>
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                          {Object.entries(inputOptions.agreement).map(
+                            (field) => (
+                              <TableRow key={field[0]}>
+                                <TableCell>
+                                  {field[1].replace(/_/g, " ")}
+                                </TableCell>
+                                <TableCell>
+                                  <TextField
+                                    onChange={(e) =>
+                                      setAgreementValues({
+                                        ...agreementValues,
+                                        [field[1]]: e.target.value,
+                                      })
+                                    }
+                                  ></TextField>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </TableRow>
-                }
+                )}
                 <TableRow>
                   <TableCell>
-                    <Button onClick={() => handleDownload(fileChoice[0], fileChoice[1])}>Download</Button>
+                    <Button
+                      onClick={() =>
+                        handleDownload(fileChoice[0], fileChoice[1])
+                      }
+                    >
+                      Download
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
+                  <TableCell align="right" style={{ border: "none" }}>
+                    {currentPage < project.phase_1.project_in_phase ? (
+                      <button
+                        className="btn-next"
+                        type="button"
+                        onClick={handleNextPage}
+                      >
                         Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-promote"
+                        type="button"
+                        onClick={promoteToNextPhase}
+                      >
                         Promote
-                      </button>}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </form>
-        }
-        {
-          project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type == "Residential" &&
+        )}
+        {project.phase_9 &&
+          currentPage === 9 &&
+          !isLoading &&
+          project.phase_1.project_type == "Residential" && (
+            <form>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Consumer Number</InputLabel>
+                    </TableCell>
+                    <TableCell>{project.phase_9.consumer_number}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Meter Report</InputLabel>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        component="label"
+                        disabled={!editable[currentPage - 1]}
+                      >
+                        Upload Meter Report
+                        <input
+                          type="file"
+                          name="meter_report"
+                          onChange={(e) =>
+                            handleInputChange("meter_report", e.target.files[0])
+                          }
+                          hidden
+                        />
+                      </Button>
+                      <Button
+                        onClick={() => handleDownload("meter_report", "")}
+                      >
+                        Download
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <InputLabel>Joint Inspection</InputLabel>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        component="label"
+                        disabled={!editable[currentPage - 1]}
+                      >
+                        Upload Joint Inspection
+                        <input
+                          type="file"
+                          name="joint_inspection"
+                          onChange={(e) =>
+                            handleInputChange(
+                              "joint_inspection",
+                              e.target.files[0]
+                            )
+                          }
+                          hidden
+                        />
+                      </Button>
+                      <Button
+                        onClick={() => handleDownload("joint_inspection", "")}
+                      >
+                        Download
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left" style={{ border: "none" }}>
+                      <button
+                        className="btn-prev"
+                        type="button"
+                        onClick={handlePreviousPage}
+                      >
+                        Previous
+                      </button>
+                    </TableCell>
+                    <TableCell align="right" style={{ border: "none" }}>
+                      {currentPage < project.phase_1.project_in_phase ? (
+                        <button
+                          className="btn-next"
+                          type="button"
+                          onClick={handleNextPage}
+                        >
+                          Next
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-promote"
+                          type="button"
+                          onClick={promoteToNextPhase}
+                        >
+                          Promote
+                        </button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </form>
+          )}
+        {project.phase_9 &&
+          currentPage === 9 &&
+          !isLoading &&
+          project.phase_1.project_type != "Residential" && (
+            <>
+              <span style={{ fontSize: "30px" }}>
+                Phase 9 not applicable for Residential Projects. Move to phase
+                10.
+              </span>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left" style={{ border: "none" }}>
+                      <button
+                        className="btn-prev"
+                        type="button"
+                        onClick={handlePreviousPage}
+                      >
+                        Previous
+                      </button>
+                    </TableCell>
+                    <TableCell align="right" style={{ border: "none" }}>
+                      {currentPage < project.phase_1.project_in_phase ? (
+                        <button
+                          className="btn-next"
+                          type="button"
+                          onClick={handleNextPage}
+                        >
+                          Next
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-promote"
+                          type="button"
+                          onClick={promoteToNextPhase}
+                        >
+                          Promote
+                        </button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </>
+          )}
+        {project.phase_10 && currentPage === 10 && !isLoading && (
           <form>
             <Table>
               <TableBody>
@@ -1478,101 +2162,7 @@ const ViewProject = (props: any) => {
                   <TableCell>
                     <InputLabel>Consumer Number</InputLabel>
                   </TableCell>
-                  <TableCell>
-                    {project.phase_9.consumer_number}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Meter Report</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      disabled={!editable[currentPage - 1]}
-                    >
-                      Upload Meter Report
-                      <input type="file" name="meter_report" onChange={(e) => handleInputChange('meter_report', e.target.files[0])} hidden />
-                    </Button>
-                    <Button onClick={() => handleDownload("meter_report", "")}>Download</Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Joint Inspection</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      disabled={!editable[currentPage - 1]}
-                    >
-                      Upload Joint Inspection
-                      <input type="file" name="joint_inspection" onChange={(e) => handleInputChange('joint_inspection', e.target.files[0])} hidden />
-                    </Button>
-                    <Button onClick={() => handleDownload("joint_inspection", "")}>Download</Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                      Previous
-                    </button>
-                  </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
-                        Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                        Promote
-                      </button>}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </form>
-        }
-        {
-          project.phase_9 && currentPage === 9 && !isLoading && project.phase_1.project_type != "Residential" &&
-          <>
-            <span style={{fontSize:'30px'}}>Phase 9 not applicable for Residential Projects. Move to phase 10.</span>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
-                      Previous
-                    </button>
-                  </TableCell>
-                  <TableCell align='right' style={{ border: 'none' }}>
-                    {currentPage < project.phase_1.project_in_phase ?
-                      <button className='btn-next' type="button" onClick={handleNextPage}>
-                        Next
-                      </button> :
-                      <button className='btn-promote' type="button" onClick={promoteToNextPhase}>
-                        Promote
-                      </button>}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </>
-
-        }
-        {
-          project.phase_10 && currentPage === 10 && !isLoading &&
-          <form>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <InputLabel>Consumer Number</InputLabel>
-                  </TableCell>
-                  <TableCell>
-                    {project.phase_10.consumer_number}
-                  </TableCell>
+                  <TableCell>{project.phase_10.consumer_number}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
@@ -1585,9 +2175,25 @@ const ViewProject = (props: any) => {
                       disabled={!editable[currentPage - 1]}
                     >
                       Upload Invoice
-                      <input type="file" name="invoice_from_accounts" onChange={(e) => handleInputChange('invoice_from_accounts', e.target.files[0])} hidden />
+                      <input
+                        type="file"
+                        name="invoice_from_accounts"
+                        onChange={(e) =>
+                          handleInputChange(
+                            "invoice_from_accounts",
+                            e.target.files[0]
+                          )
+                        }
+                        hidden
+                      />
                     </Button>
-                    <Button onClick={() => handleDownload("invoice_from_accounts", "")}>Download</Button>
+                    <Button
+                      onClick={() =>
+                        handleDownload("invoice_from_accounts", "")
+                      }
+                    >
+                      Download
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -1595,12 +2201,18 @@ const ViewProject = (props: any) => {
                     <InputLabel>DCR</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleDownload("dcr", "")}>Download</Button>
+                    <Button onClick={() => handleDownload("dcr", "")}>
+                      Download
+                    </Button>
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align='left' style={{ border: 'none' }}>
-                    <button className='btn-prev' type="button" onClick={handlePreviousPage}>
+                  <TableCell align="left" style={{ border: "none" }}>
+                    <button
+                      className="btn-prev"
+                      type="button"
+                      onClick={handlePreviousPage}
+                    >
                       Previous
                     </button>
                   </TableCell>
@@ -1608,10 +2220,10 @@ const ViewProject = (props: any) => {
               </TableBody>
             </Table>
           </form>
-        }
+        )}
       </div>
     </Paper>
-  )
-}
+  );
+};
 
-export default ViewProject
+export default ViewProject;
