@@ -110,6 +110,8 @@ const ResidentialQuotation = (props: any) => {
     discomOrTorrentCharges: "",
   });
 
+  console.log("formData", formData);
+
   const handleFormChange = (field: any, value: any) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -411,7 +413,7 @@ const ResidentialQuotation = (props: any) => {
   function handleAgentSelect(e: SelectChangeEvent<string>): void {
     handleFormChange("agentID", e.target.value);
     for (let i = 0; i < agentOptions.length; i++) {
-      if (agentOptions[i]["agent_id"] === e.target.value) {
+      if (agentOptions[i]["agent_code"] == e.target.value) {
         handleFormChange("agentName", agentOptions[i]["agent_name"]);
       }
     }
