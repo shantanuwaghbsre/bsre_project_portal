@@ -26,6 +26,7 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 const urls = {
   submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
   getLocationsURL: import.meta.env.VITE_BACKEND_URL + "/getLocations",
+  getAgentBranches: import.meta.env.VITE_BACKEND_URL + "/getAgentBranches",
 };
 const AddAgent = (props: any) => {
   const blankFormData = {
@@ -129,9 +130,9 @@ const AddAgent = (props: any) => {
       });
   };
   useEffect(() => {
-    axios.get(urls["getLocationsURL"]).then((response) => {
+    axios.get(urls["getAgentBranches"]).then((response) => {
       setAgentStateOptions(response.data);
-      console.log("getLocationsURL", response.data);
+      console.log("getAgentBranches", response.data);
     });
   }, []);
   useEffect(() => {
@@ -230,7 +231,7 @@ const AddAgent = (props: any) => {
     setIsFormValid(false);
   };
 
-  // console.log("States:-", Object.keys(agentStateOptions));
+  console.log("States:-", agentStateOptions[formData["agentState"]]);
   // console.log(
   //   "branches:-",
   //   Object.keys(agentStateOptions[formData["agentState"]])
@@ -297,15 +298,16 @@ const AddAgent = (props: any) => {
                               handleFormChange("agentState", e.target.value)
                             }
                           >
-                            {/* {Object.keys(agentStateOptions).map((option) => ( */}
-                            <MenuItem key={"Gujarat"} value={"Gujarat"}>
-                              Gujarat
-                            </MenuItem>
-                            {/* ))} */}
+                            {Object.keys(agentStateOptions).map((option) => (
+                              <MenuItem key={option} value={option}>
+                                {option}
+                              </MenuItem>
+                            ))}
                           </Select>
                         </FormControl>
                       </TableCell>
                     </TableRow>
+                    ` `
                     <TableRow>
                       <TableCell>Agent Branch *</TableCell>
                       <TableCell>
@@ -320,10 +322,8 @@ const AddAgent = (props: any) => {
                             }
                             disabled={formData["agentState"] == ""}
                           >
-                            {Object.keys(
-                              agentStateOptions[formData["agentState"]]
-                                ? agentStateOptions[formData["agentState"]]
-                                : []
+                            {(
+                              agentStateOptions[formData["agentState"]] || []
                             ).map((option) => (
                               <MenuItem key={option} value={option}>
                                 {option}
