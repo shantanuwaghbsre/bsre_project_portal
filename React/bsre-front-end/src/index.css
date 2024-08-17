@@ -47,8 +47,8 @@ a:hover {
 
 /* //////////////////////////////SELECT/dropdown CSS////////////////////////////////////////////// */
 .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-  width: 100px !important;
-  font-size: 10px !important;
+  width: 100% !important;
+  font-size: 14px !important;
   font-weight: 700 !important;
   color: var(--bs-black-color) !important;
 }
