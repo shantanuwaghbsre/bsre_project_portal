@@ -184,6 +184,10 @@ const App = () => {
                 path="/login"
                 element={<Login />}
               />
+                <Route
+                  path="/"
+                  element={<Login />}
+                />
               <Route path="/*" element={<ErrorPage />} />
             </Routes>
             </div>
