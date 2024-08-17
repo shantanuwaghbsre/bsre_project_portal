@@ -25,6 +25,7 @@ import { Stack } from "@mui/material";
 import Kusum from "./pages/Kusum/Kusum";
 import Ppa from "./pages/Ppa/Ppa";
 import SolarPark from "./pages/SolarPark/SolarPark";
+import Login from "./pages/Login/Login";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -34,8 +35,8 @@ let initOptions = {
 
 const App = () => {
   const [kc, setKc] = useState({ token: "1234" });
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const CustomHistoryWrapper = () => {
     const location = useLocation();
@@ -91,7 +92,7 @@ const App = () => {
           zIndex: "2",
         }}
       />
-      {isAuthenticated && kc.token.length > 0 && (
+      {isAuthenticated && kc.token.length > 0  ? (
         <BrowserRouter>
           {/* <CustomHistoryWrapper/> */}
           <Navbar kc={kc} />
@@ -166,17 +167,29 @@ const App = () => {
                     path="/ViewProject"
                     element={<ViewProject token={kc.token} />}
                   />
-                  <Route
-                    path="/login"
-                    element={<ViewProject token={kc.token} />}
-                  />
+
                   <Route path="/*" element={<ErrorPage token={kc.token} />} />
                 </Routes>
               </Typography>
             </Box>
           </Box>
         </BrowserRouter>
-      )}
+      )
+        :
+        (
+          <BrowserRouter>
+          <div style={{ color:"#000",display: "flex", justifyContent: "center" }}>
+            <Routes>
+              <Route
+                path="/login"
+                element={<Login />}
+              />
+              <Route path="/*" element={<ErrorPage />} />
+            </Routes>
+            </div>
+          </BrowserRouter>
+        )
+      }
     </>
   );
 };
