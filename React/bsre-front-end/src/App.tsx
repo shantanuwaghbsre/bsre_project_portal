@@ -166,6 +166,10 @@ const App = () => {
                     path="/ViewProject"
                     element={<ViewProject token={kc.token} />}
                   />
+                  <Route
+                    path="/login"
+                    element={<ViewProject token={kc.token} />}
+                  />
                   <Route path="/*" element={<ErrorPage token={kc.token} />} />
                 </Routes>
               </Typography>
