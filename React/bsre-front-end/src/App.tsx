@@ -35,8 +35,8 @@ let initOptions = {
 
 const App = () => {
   const [kc, setKc] = useState({ token: "1234" });
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const CustomHistoryWrapper = () => {
     const location = useLocation();
