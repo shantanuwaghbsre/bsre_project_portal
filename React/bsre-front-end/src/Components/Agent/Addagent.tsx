@@ -198,11 +198,13 @@ const AddAgent = (props: any) => {
     if (!files["cancelled_cheque"]) {
       errorMessage_.push("PleaseChar upload cancelled cheque");
     }
-    if (!errorMessage_.length) {
-      isFormValid_ = true;
-    } else {
+    if (errorMessage_.length > 0) {
+      isFormValid_ = false;
       setErrorMessage(errorMessage_);
+    } else {
+      setErrorMessage([]); // Clear errors if validation passes
     }
+
     setIsFormValid(isFormValid_);
   };
 
