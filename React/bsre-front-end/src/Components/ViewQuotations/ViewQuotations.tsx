@@ -114,7 +114,7 @@ const ViewQuotations = (props: any) => {
                         <TableRow key={index}>
                           {Object.keys(row).map((key) => (
                             ["Consumer name", "Agent name", "Total kilowatts", "Structure", "Solar panel type", "Quotation type",].includes(key as string) ?
-                              <TableCell key={key}>{row[key].toString().length ? String(row[key]) : ""}</TableCell>
+                              <TableCell key={key}>{row[key]?.toString()?.length ? String(row[key]) : ""}</TableCell>
                               : null
                           ))}
                           <TableCell>
