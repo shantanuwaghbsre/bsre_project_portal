@@ -36,10 +36,11 @@ const Login = () => {
         branch: '',
     };
     const [formData, setFormData] = useState(blankFormData);
-
-
-
     const [selectedBranch, setSelectedBranch] = useState('');
+
+    useEffect(() => {
+        setFormData({...formData,username:username, password:password, branch:selectedBranch});
+    },[username, password, selectedBranch]);
     //clear  data from form
     const resetForm = () => {
         setFormData({
@@ -51,11 +52,11 @@ const Login = () => {
     // POST DATAObject
     function submitdata() {
 
-        if(username=='' || password=='' || selectedBranch==''){
+        if (username == '' || password == '' || selectedBranch == '') {
             toast.error("All fields are required");
             return;
         }
-        else{
+        else {
             setLoading(true);
             const postObject = new FormData();
 
@@ -101,8 +102,8 @@ const Login = () => {
         console.log('Selected Branch:', selectedBranch);
         submitdata();
     };
-   
-   
+
+
 
 
     return (

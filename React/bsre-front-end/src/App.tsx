@@ -14,18 +14,18 @@ import ViewConsumer from "./Components/ViewConsumer/ViewConsumer";
 import StartProject from "./Components/StartProject/StartProject";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import ViewProject from "./Components/ViewProject/ViewProject";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import Keycloak from "keycloak-js";
 import { ToastContainer } from "react-toastify";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Drawerwidth from "./Components/Navbar/Navbar";
 import { ErrorPage } from "./Components/ErrorPage/ErrorPage";
-import { Stack } from "@mui/material";
 import Kusum from "./pages/Kusum/Kusum";
 import Ppa from "./pages/Ppa/Ppa";
 import SolarPark from "./pages/SolarPark/SolarPark";
 import Login from "./pages/Login/Login";
+import Signup from "./pages/SignUp/SignUp";
+import ChangePwd from "./pages/ChangePwd/ChangePwd";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -92,7 +92,7 @@ const App = () => {
           zIndex: "2",
         }}
       />
-      {isAuthenticated && kc.token.length > 0  ? (
+      {isAuthenticated && kc.token.length > 0 ? (
         <BrowserRouter>
           {/* <CustomHistoryWrapper/> */}
           <Navbar kc={kc} />
@@ -167,7 +167,10 @@ const App = () => {
                     path="/ViewProject"
                     element={<ViewProject token={kc.token} />}
                   />
-
+                  <Route
+                    path="/change-password"
+                    element={<ChangePwd token={kc.token} />}
+                  />
                   <Route path="/*" element={<ErrorPage token={kc.token} />} />
                 </Routes>
               </Typography>
@@ -178,18 +181,20 @@ const App = () => {
         :
         (
           <BrowserRouter>
-          <div style={{ color:"#000",display: "flex", justifyContent: "center" }}>
-            <Routes>
-              <Route
-                path="/login"
-                element={<Login />}
-              />
+            <div style={{ color: "#000", display: "flex", justifyContent: "center" }}>
+              <Routes>
+                <Route
+                  path="/login"
+                  element={<Login />}
+                />
                 <Route
                   path="/"
                   element={<Login />}
                 />
-              <Route path="/*" element={<ErrorPage />} />
-            </Routes>
+
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/*" element={<ErrorPage />} />
+              </Routes>
             </div>
           </BrowserRouter>
         )

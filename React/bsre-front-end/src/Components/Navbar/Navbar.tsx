@@ -29,6 +29,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { deepOrange } from "@mui/material/colors";
 
+
 const drawerWidth = 245;
 
 interface Props {
@@ -95,6 +96,10 @@ export default function Navbar(props: any) {
     window.location.replace(import.meta.env.VITE_KEYCLOAK_URL);
     setAnchorEl(null);
   };
+  const handleChangePwd =()=>{
+    setAnchorEl(null);
+    Navigate("/change-password");
+  }
 
   const drawer = (
     <div>
@@ -356,7 +361,8 @@ export default function Navbar(props: any) {
                 <Avatar
                   sx={{ width: 32, height: 32, bgcolor: deepOrange[500] }}
                 >
-                  {stringAvatar("Adarsh ")}
+                  {/* {stringAvatar("Person ")} */}
+                  <PersonIcon />
                 </Avatar>
               </IconButton>
             </Tooltip>
@@ -395,18 +401,18 @@ export default function Navbar(props: any) {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={handleClose} disabled>
                 <Avatar /> Profile
               </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <Avatar /> My account
+              <MenuItem onClick={handleClose} disabled>
+                <Avatar /> My Account
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={handleChangePwd} >
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>
-                Settings
+                Password
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
