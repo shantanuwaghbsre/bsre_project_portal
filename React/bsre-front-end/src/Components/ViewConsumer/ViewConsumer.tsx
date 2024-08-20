@@ -19,22 +19,22 @@ const ViewConsumer = (props: any) => {
   useEffect(() => {
     try {
       console.log("location", location);
-      if (location.state) {
-        setConsumer(location.state.consumer);
-        if (location.state.consumer["other_documents_names"].length) {  
-          console.log("Length==>",location.state.consumer["other_documents_names"].length);       
+      if (location?.state) {
+        setConsumer(location?.state?.consumer);
+        if (location?.state?.consumer["other_documents_names"]?.length) {
+          console.log("Length==>", location.state.consumer["other_documents_names"]?.length);
           console.log("reached here might be an issue")
           newOptions = [];
-          for (let i = 0; i < location.state.consumer["other_documents_names"].length; i++) {
+          for (let i = 0; i < location?.state?.consumer["other_documents_names"]?.length; i++) {
             console.log(newOptions);
-            newOptions.push({ label: location.state.consumer["other_documents_names"][i], value: location.state.consumer["other_documents_names"][i] });
+            newOptions.push({ label: location.state.consumer["other_documents_names"][i], value: location?.state?.consumer["other_documents_names"][i] });
           }
-          if (options.length == 3) {
+          if (options?.length == 3) {
             setOptions(options.concat(newOptions));
           }
         }
-        else{
-          console.log("ELSELength==>",location.state.consumer["other_documents_names"].length);
+        else {
+          console.log("ELSELength==>", location.state.consumer["other_documents_names"]?.length);
         }
       }
       setLoading(false);
@@ -42,7 +42,7 @@ const ViewConsumer = (props: any) => {
     catch (error) {
       console.log(error);
       setLoading(true);
-     }
+    }
   }, [location])
 
   // useEffect(() => {
@@ -69,8 +69,8 @@ const ViewConsumer = (props: any) => {
       }
     }
     else {
-      if ((typeof (consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)])) == 'string') {
-        base64String = consumer["other_documents"][consumer["other_documents_names"].indexOf(documentRequired)];
+      if ((typeof (consumer["other_documents"][consumer["other_documents_names"]?.indexOf(documentRequired)])) == 'string') {
+        base64String = consumer["other_documents"][consumer["other_documents_names"]?.indexOf(documentRequired)];
         mode = 'base64';
       }
       else {
@@ -85,9 +85,9 @@ const ViewConsumer = (props: any) => {
         const binaryString = atob(base64String);
 
         // Convert the binary string to a Uint8Array
-        const uint8Array = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          uint8Array[i] = binaryString.charCodeAt(i);
+        const uint8Array = new Uint8Array(binaryString?.length);
+        for (let i = 0; i < binaryString?.length; i++) {
+          uint8Array[i] = binaryString?.charCodeAt(i);
         }
 
         // Create a Blob from the Uint8Array
