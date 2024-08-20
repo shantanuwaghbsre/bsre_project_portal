@@ -193,7 +193,7 @@ const StartProject = (props: any) => {
         <div className='table-data' style={{ paddingTop: 64 }}>
             {currentPage === 1 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             <TableRow>
                                 <TableCell>
@@ -220,7 +220,7 @@ const StartProject = (props: any) => {
             {
                 currentPage === 2 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             <TableRow>
                                 <TableCell>
@@ -391,7 +391,7 @@ const StartProject = (props: any) => {
             {
                 currentPage === 3 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             <TableRow>
                                 <TableCell>
@@ -456,7 +456,7 @@ const StartProject = (props: any) => {
             {
                 currentPage === 4 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             <TableRow>
                                 <TableCell>
@@ -521,7 +521,7 @@ const StartProject = (props: any) => {
             {
                 currentPage === 5 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             <TableRow>
                                 <TableCell>
@@ -631,7 +631,7 @@ const StartProject = (props: any) => {
             {
                 currentPage === 6 &&
                 <form onSubmit={handleSubmit}>
-                    <Table>
+                    <Table sx={{ bgcolor: 'white' }}>
                         <TableBody>
                             `<TableRow>
                                 <TableCell>
