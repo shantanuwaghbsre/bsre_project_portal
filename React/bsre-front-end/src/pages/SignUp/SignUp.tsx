@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import Loading from "../../components/Loading/Loading";
+import Loading from "../../Components/Loading/Loading";
 
 const urls = {
     submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
