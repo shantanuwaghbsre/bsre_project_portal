@@ -14,7 +14,7 @@ import ViewConsumer from "./Components/ViewConsumer/ViewConsumer";
 import StartProject from "./Components/StartProject/StartProject";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import ViewProject from "./Components/ViewProject/ViewProject";
-import {useState } from "react";
+import { useState } from "react";
 import Keycloak from "keycloak-js";
 import { ToastContainer } from "react-toastify";
 import Box from "@mui/material/Box";
@@ -26,6 +26,7 @@ import SolarPark from "./pages/SolarPark/SolarPark";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/SignUp/SignUp";
 import ChangePwd from "./pages/ChangePwd/ChangePwd";
+import { useRole } from "./Contexts/RoleContext";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -35,8 +36,9 @@ let initOptions = {
 
 const App = () => {
   const [kc, setKc] = useState({ token: "1234" });
+  const { isLoggedIn } = useRole();
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const CustomHistoryWrapper = () => {
     const location = useLocation();
@@ -75,12 +77,7 @@ const App = () => {
   //   initializeKeycloak();
   // }, []);
 
-  const handleLogout = () => {
-    // if (kc) {
-    //   kc.logout();
-    // }
-    console.log("logout");
-  };
+
 
   return (
     <>
@@ -92,7 +89,7 @@ const App = () => {
           zIndex: "2",
         }}
       />
-      {isAuthenticated && kc.token.length > 0 ? (
+      {isLoggedIn && kc.token.length > 0 ? (
         <BrowserRouter>
           {/* <CustomHistoryWrapper/> */}
           <Navbar kc={kc} />
