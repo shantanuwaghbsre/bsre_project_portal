@@ -59,7 +59,7 @@ const ConsumerOnboarding = (props: any) => {
       .get(urls["getAgentsURL"])
       .then(function (response) {
         setAgentOptions(response.data);
-        console.log("sdknfasendn");
+        console.log("sdknfasendn", response);
       })
       .catch(function (error) {
         console.log(error);
@@ -82,7 +82,7 @@ const ConsumerOnboarding = (props: any) => {
       } else {
         setFormData(blankFormData);
       }
-    } catch (error) {}
+    } catch (error) { }
   }, [location.state]);
 
   const [files, setFiles] = useState({
@@ -228,13 +228,13 @@ const ConsumerOnboarding = (props: any) => {
                       >
                         {agentOptions !== null || agentOptions !== undefined
                           ? agentOptions.map((option) => (
-                              <MenuItem
-                                key={option["agent_code"]}
-                                value={option["agent_code"]}
-                              >
-                                {option["agent_code"]}
-                              </MenuItem>
-                            ))
+                            <MenuItem
+                              key={option["agent_code"]}
+                              value={option["agent_code"]}
+                            >
+                              {option["agent_code"]}
+                            </MenuItem>
+                          ))
                           : null}
                       </Select>
                     </FormControl>
