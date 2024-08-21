@@ -28,6 +28,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { deepOrange } from "@mui/material/colors";
+import { useRole } from "../../Contexts/RoleContext";
 
 
 const drawerWidth = 245;
@@ -48,6 +49,7 @@ export default function Navbar(props: any) {
   const [isCollapseAgent, setIsCollapseAgent] = useState(false);
   const [isCollapseConsumer, setIsCollapseConsumer] = useState(false);
   const [isCollapseHome, setIsCollapseHome] = useState(false);
+  const { logout, username } = useRole();
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -91,12 +93,13 @@ export default function Navbar(props: any) {
     setIsCollapseConsumer(false);
   };
   const handleLogout = () => {
-    props.logout();
-    localStorage.removeItem("token");
+    // props.logout();
+    logout()
+    // localStorage.removeItem("token");
     window.location.replace(import.meta.env.VITE_KEYCLOAK_URL);
     setAnchorEl(null);
   };
-  const handleChangePwd =()=>{
+  const handleChangePwd = () => {
     setAnchorEl(null);
     Navigate("/change-password");
   }
@@ -402,11 +405,9 @@ export default function Navbar(props: any) {
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <MenuItem onClick={handleClose} disabled>
-                <Avatar /> Profile
+                <Avatar /> {username}
               </MenuItem>
-              <MenuItem onClick={handleClose} disabled>
-                <Avatar /> My Account
-              </MenuItem>
+
               <Divider />
               <MenuItem onClick={handleChangePwd} >
                 <ListItemIcon>
