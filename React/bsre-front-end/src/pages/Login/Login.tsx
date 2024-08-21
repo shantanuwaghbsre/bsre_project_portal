@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 import axios from 'axios';
 import Loading from '../../Components/Loading/Loading';
+import { useRole } from '../../Contexts/RoleContext';
 
 // Example logo URL, replace with your actual logo
 const logoUrl = '/Images/BS-LOGO.jpg';
@@ -37,10 +38,11 @@ const Login = () => {
     };
     const [formData, setFormData] = useState(blankFormData);
     const [selectedBranch, setSelectedBranch] = useState('');
+    const { login } = useRole();
 
     useEffect(() => {
-        setFormData({...formData,username:username, password:password, branch:selectedBranch});
-    },[username, password, selectedBranch]);
+        setFormData({ ...formData, username: username, password: password, branch: selectedBranch });
+    }, [username, password, selectedBranch]);
     //clear  data from form
     const resetForm = () => {
         setFormData({
@@ -70,8 +72,13 @@ const Login = () => {
             axios.post(urls["submitURL"], postObject)
                 .then(function (response) {
                     setLoading(false);
+                    if (response.data.success === true) {
+                        // Save username to localStorage
+
+                        // Use the role from the response to login
+                        login(response.data.role, username);
+                    }
                     if (response.data.completed) {
-                        // console.log(response.data);
                         resetForm();
                         toast.success(
                             "Successfully Login ! Please wait redirecting...",
