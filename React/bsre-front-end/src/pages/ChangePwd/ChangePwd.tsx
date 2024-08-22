@@ -3,6 +3,8 @@ import { Stack, TextField, Button, Typography, Box, Container } from '@mui/mater
 import { toast, ToastContainer } from "react-toastify";
 import axios from 'axios';
 import Loading from '../../Components/Loading/Loading';
+import { useRole } from "../../Contexts/RoleContext";
+
 
 
 const urls = {
@@ -14,7 +16,7 @@ const ChangePwd = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
+const {username} = useRole();
     const resetForm = () => {
         setCurrentPassword('');
         setNewPassword('');
@@ -35,10 +37,12 @@ const ChangePwd = () => {
         setLoading(true);
 
         const postObject = {
-            username: 'AMR0001',
+            username: username,
             current_password: currentPassword,
             new_password: newPassword,
         };
+        console.log(postObject);
+        
 
         axios.post(urls.changePwdURL, postObject)
             .then(response => {
