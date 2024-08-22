@@ -25,6 +25,7 @@ import axios from "axios";
 import Loading from "../Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRole } from "../../Contexts/RoleContext";
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
 
@@ -123,6 +124,7 @@ const ResidentialQuotation = (props: any) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState<Boolean>(false);
   const [loading, setLoading] = useState(false);
+  const { role, username } = useRole()
 
   const resetForm = () => {
     setFormData({
@@ -304,7 +306,9 @@ const ResidentialQuotation = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-        setAgentOptions(response.data);
+        if (role !== "Agent") {
+          setAgentOptions(response.data);
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -413,7 +417,7 @@ const ResidentialQuotation = (props: any) => {
 
   function handleAgentSelect(e: SelectChangeEvent<string>): void {
     handleFormChange("agentID", e.target.value);
-    for (let i = 0; i < agentOptions.length; i++) {
+    for (let i = 0; i < agentOptions?.length; i++) {
       if (agentOptions[i]["agent_code"] == e.target.value) {
         handleFormChange("agentName", agentOptions[i]["agent_name"]);
       }
@@ -482,21 +486,39 @@ const ResidentialQuotation = (props: any) => {
                     </TableRow>
                     <TableRow>
                       <TableCell>Agent ID</TableCell>
-                      <TableCell>
-                        <Select
-                          value={formData["agentID"]}
-                          onChange={(e) => handleAgentSelect(e)}
-                        >
-                          {agentOptions.map((option) => (
+                      {
+                        role !== "Agent" ? <TableCell>
+                          <Select
+                            value={formData["agentID"]}
+                            onChange={(e) => handleAgentSelect(e)}
+                          >
+                            {agentOptions?.map((option) => (
+                              <MenuItem
+                                key={option["agent_code"]}
+                                value={option["agent_code"]}
+                              >
+                                {option["agent_code"]}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </TableCell> : <TableCell>
+                          <Select
+                            value={formData["agentID"]}
+                            onChange={(e) => handleAgentSelect(e)}
+                          >
+
                             <MenuItem
-                              key={option["agent_code"]}
-                              value={option["agent_code"]}
+                              key={username}
+                              value={username}
                             >
-                              {option["agent_code"]}
+                              {username}
                             </MenuItem>
-                          ))}
-                        </Select>
-                      </TableCell>
+
+                          </Select>
+                        </TableCell>
+                      }
+
+
                     </TableRow>
                     <TableRow>
                       <TableCell>Agent Name</TableCell>
