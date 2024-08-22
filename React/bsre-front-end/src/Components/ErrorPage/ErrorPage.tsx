@@ -7,7 +7,7 @@ export const ErrorPage = () => {
                 <SentimentVeryDissatisfiedIcon sx={{ fontSize: 200 }} />
                 <span style={{ fontSize: 30 }}>404 - Page Not Found</span>
                 <p>Sorry, the page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
-                {/* <p>Return to <Link style={{ color: "blue" }} to={"/"}>Home</Link></p> */}
+                <p>Return to <Link style={{ color: "blue" }} to={"/"}>Back</Link></p>
             </div>
         </>
     )
