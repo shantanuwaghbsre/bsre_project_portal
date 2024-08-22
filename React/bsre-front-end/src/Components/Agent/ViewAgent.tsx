@@ -10,12 +10,6 @@ import Loading from "../Loading/Loading";
 import { toast } from 'react-toastify';
 
 
-const urls = {
-    "DummyAgentAPI": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
-    "AgentSalesDetail": import.meta.env.VITE_BACKEND_URL + "/getAgentSales",
-    "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations",
-    "getAgentDetails": import.meta.env.VITE_BACKEND_URL + "/getAgentDetails"
-}
 
 const ViewAgent = (props: any) => {
     // console.log(props)
@@ -33,8 +27,15 @@ const ViewAgent = (props: any) => {
         { label: 'Cancelled Cheque', value: 'cancelled_cheque' },
     ]);
     let newOptions = [];
+
     const [documentRequired, setDocumentRequired] = useState('');
 
+    const urls = {
+        "DummyAgentAPI": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
+        "AgentSalesDetail": import.meta.env.VITE_BACKEND_URL + "/getAgentSales",
+        "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations",
+        "getAgentDetails": import.meta.env.VITE_BACKEND_URL + "/getAgentDetails"
+    }
     //for download aadharCard,panCard and etc.
     async function handleDownload() {
         let blob = new Blob([]);
@@ -85,19 +86,19 @@ const ViewAgent = (props: any) => {
                     console.log("AgentDetails=>", response.data);
                     setAgentDetails(response.data);
                     setLoading(false);
-                    if(response.data["aadhar_card"]==null && response.data["pan_card"]==null && response.data["cancelled_cheque"]==null){
+                    if (response.data["aadhar_card"] == null && response.data["pan_card"] == null && response.data["cancelled_cheque"] == null) {
                         setIsAgentDownloadDisabled(true)
                     }
-                    else{
+                    else {
                         setIsAgentDownloadDisabled(false)
                     }
                 })
-        } 
+        }
         catch (error) {
             console.error('Error fetching data:', error);
             setLoading(true);
         }
-        
+
     }, [])
 
     //for now we are using dummy data for graph
@@ -195,7 +196,7 @@ const ViewAgent = (props: any) => {
                                                 onChange={(e) => {
                                                     setDocumentRequired(e.target.value);
                                                 }}
-                                            disabled={isAgentDownloadDisabled}
+                                                disabled={isAgentDownloadDisabled}
                                             >
                                                 {(options.concat(newOptions)).map((option) => (
                                                     <MenuItem key={option.value} value={option.value}>
@@ -206,7 +207,7 @@ const ViewAgent = (props: any) => {
                                             &nbsp;&nbsp;
                                             <button className='btn-download' disabled={isAgentDownloadDisabled} onClick={handleDownload}>
                                                 <Tooltip title="Download" >
-                                                    <FileDownloadOutlinedIcon  />
+                                                    <FileDownloadOutlinedIcon />
                                                 </Tooltip>
                                             </button>
                                         </TableCell>
