@@ -22,6 +22,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import ViewAllConsumers from "../ViewAllConsumers/ViewAllConsumers";
 import { useRole } from "../../Contexts/RoleContext";
+import { toast } from "react-toastify";
 
 
 
@@ -66,6 +67,7 @@ const ConsumerOnboarding = (props: any) => {
         console.log("sdknfasendn", response);
       })
       .catch(function (error) {
+        toast.error(error.message);
         console.log(error);
       });
   }, []);
@@ -86,7 +88,10 @@ const ConsumerOnboarding = (props: any) => {
       } else {
         setFormData(blankFormData);
       }
-    } catch (error) { }
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
   }, [location.state]);
 
   const [files, setFiles] = useState({
@@ -171,10 +176,12 @@ const ConsumerOnboarding = (props: any) => {
               goToConsumer(response_.data);
             });
         } else {
-          alert("Consumer onboarding failed!");
+          alert();
+          toast.error("Consumer onboarding failed!")
         }
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error(error);
       });
   };
@@ -202,7 +209,6 @@ const ConsumerOnboarding = (props: any) => {
     }));
   };
 
-  console.log("agentOptions", agentOptions);
 
   return (
     <Paper sx={{ width: "100%" }}>
