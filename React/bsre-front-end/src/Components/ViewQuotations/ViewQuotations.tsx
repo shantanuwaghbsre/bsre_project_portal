@@ -5,6 +5,7 @@ import axios from 'axios';
 import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
+import { useRole } from '../../Contexts/RoleContext';
 
 const ViewQuotations = (props: any) => {
   //for showing columns in table record
@@ -22,15 +23,18 @@ const ViewQuotations = (props: any) => {
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
+  const { branchName, role, username } = useRole()
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
-      if (response.data['quotations'].length == 0) {
-        setQuotations([{ "Consumer name": "", "Agent name": "", "Total kilowatts": "", "Structure": "", "Solar panel type": "", "Quotation type": "" }]);
-      }
-      else {
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?role=${role}&branch=${branchName}&page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}
+`);
+      if (response.data['quotations'].length > 0) {
+
         setQuotations(response.data['quotations']);
       }
+      // else {
+      //   setQuotations([{ "Consumer name": "", "Agent name": "", "Total kilowatts": "", "Structure": "", "Solar panel type": "", "Quotation type": "" }]);
+      // }
       setCount(response.data['count'] || 0);
       setIsDisabled(false);
       console.log("data of search===>", response.data);
@@ -72,6 +76,7 @@ const ViewQuotations = (props: any) => {
     setPage(0);
     setLoading(true);
   };
+  console.log(quotations)
 
   return (
     <>
@@ -126,7 +131,7 @@ const ViewQuotations = (props: any) => {
                       <TableRow>
                         <TableCell colSpan={8} className="Records_Not_Found">
                           <span>
-                            {norecords ? norecords : "Records Not Found"}
+                            {"Records Not Found"}
                           </span>
                         </TableCell>
                       </TableRow>}
