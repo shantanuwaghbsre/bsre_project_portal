@@ -27,6 +27,8 @@ import Login from "./pages/Login/Login";
 import Signup from "./pages/SignUp/SignUp";
 import ChangePwd from "./pages/ChangePwd/ChangePwd";
 import { useRole } from "./Contexts/RoleContext";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import NotAuthorized from "./Components/NotAuthorized/NotAuthorized";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -35,7 +37,7 @@ let initOptions = {
 };
 
 const App = () => {
-  const [kc, setKc] = useState({ token: "1234" });
+  // const [kc, setKc] = useState({ token: "1234" });
   const { isLoggedIn } = useRole();
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
   // const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -89,11 +91,9 @@ const App = () => {
           zIndex: "2",
         }}
       />
-      {isLoggedIn && kc.token.length > 0 ? (
+      {isLoggedIn ? (
         <BrowserRouter>
-          {/* <CustomHistoryWrapper/> */}
-          <Navbar kc={kc} />
-          {/* logout={handleLogout} */}
+          <Navbar />
           <Box
             sx={{
               display: "flex",
@@ -112,63 +112,122 @@ const App = () => {
                 <Routes>
                   <Route
                     path="/ResidentialQuotation"
-                    element={<ResidentialQuotation token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ResidentialQuotation />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ViewQuotations"
-                    element={<ViewQuotations token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ViewQuotations />
+                      </PrivateRoute>}
                   />
                   <Route
                     path="/ConsumerOnboarding"
-                    element={<ConsumerOnboarding token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ConsumerOnboarding />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/AddAgent"
-                    element={<AddAgent token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <AddAgent />
+                      </PrivateRoute>
+                    }
                   />
-                  <Route path="/kusum" element={<Kusum />} />
-                  <Route path="/ppa" element={<Ppa />} />
-                  <Route path="/solarpark" element={<SolarPark />} />
+                  <Route path="/kusum" element={
+                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                      <Kusum />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/ppa" element={
+                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                      <Ppa />
+                    </PrivateRoute>
+                  } />
+                  <Route path="/solarpark" element={
+                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                      <SolarPark />
+                    </PrivateRoute>
+                  } />
                   <Route
                     path="/ViewAllConsumers"
-                    element={<ViewAllConsumers token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ViewAllConsumers />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ViewConsumer"
-                    element={<ViewConsumer token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ViewConsumer />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ViewAllAgents"
-                    element={<ViewAllAgents token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
+                        <ViewAllAgents />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ViewAgent"
-                    element={<ViewAgent token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
+                        <ViewAgent />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/CommercialOrIndustrialQuotation"
                     element={
-                      <CommercialOrIndustrialQuotation token={kc.token} />
+                      <CommercialOrIndustrialQuotation />
                     }
                   />
                   <Route
                     path="/StartProject"
-                    element={<StartProject token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <StartProject />
+                      </PrivateRoute>
+                    }
                   />
-                  <Route path="/" element={<Dashboard token={kc.token} />} />
+                  <Route path="/" element={<Dashboard />} />
                   <Route
                     path="/Dashboard"
-                    element={<Dashboard token={kc.token} />}
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <Dashboard />
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ViewProject"
-                    element={<ViewProject token={kc.token} />}
+                    element={<PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+
+                      <ViewProject />
+                    </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/change-password"
-                    element={<ChangePwd token={kc.token} />}
+                    element={<ChangePwd />}
                   />
-                  <Route path="/*" element={<ErrorPage token={kc.token} />} />
+                  <Route
+                    path="/not-authorized"
+                    element={<NotAuthorized />}
+                  />
+                  <Route path="/*" element={<ErrorPage />} />
                 </Routes>
               </Typography>
             </Box>
