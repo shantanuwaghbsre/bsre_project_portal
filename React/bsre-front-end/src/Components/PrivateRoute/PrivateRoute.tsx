@@ -9,13 +9,11 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowedRoles }) => {
     const { role, isLoggedIn } = useRole();
-    console.log(allowedRoles, "allowedRoles")
     if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
 
     if (!allowedRoles.includes(role)) {
-        console.log("roleNotFound")
         return <Navigate to="/not-authorized" replace />;
     }
 
