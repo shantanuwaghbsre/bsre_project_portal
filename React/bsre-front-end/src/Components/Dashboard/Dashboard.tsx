@@ -17,6 +17,7 @@ import Loading from "../Loading/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
 import { useRole } from "../../Contexts/RoleContext";
+import { toast, ToastContainer } from "react-toastify";
 
 const Dashboard = (props: any) => {
   //for showing columns in table record
@@ -58,6 +59,7 @@ const Dashboard = (props: any) => {
       setIsDisabled(false);
       console.log("data of search===>", response.data);
     } catch (error) {
+      toast.error(error.message)
       console.error("Error fetching data:", error);
       setLoading(false);
     }
@@ -100,6 +102,7 @@ const Dashboard = (props: any) => {
 
   return (
     <>
+      <ToastContainer />
       {loading ? (
         <div className="loadinginComponent">
           <Loading />
