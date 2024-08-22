@@ -123,9 +123,8 @@ const CommercialOrIndustrialQuotation = (props: any) => {
   ];
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const date = new Date();
-  let currentDate = `${date.getDate()}-${
-    date.getMonth() + 1
-  }-${date.getFullYear()}`;
+  let currentDate = `${date.getDate()}-${date.getMonth() + 1
+    }-${date.getFullYear()}`;
 
   const [formData, setFormData] = useState({
     solarModule: "",
@@ -406,6 +405,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
         setAgentOptions(response.data);
       })
       .catch(function (error) {
+        toast.error(error.message);
         console.log(error);
       });
     axios.get(urls["getLocationsURL"]).then(function (response) {
@@ -508,7 +508,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
           resetForm();
           toast.success(
             "Successfully created Quotation number - " +
-              response.data.quotation_number,
+            response.data.quotation_number,
             {
               position: "top-center",
               theme: "colored",
@@ -524,6 +524,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
         }
       })
       .catch(function (error) {
+        toast.error(error.message);
         console.log(error);
       });
   };
@@ -1118,16 +1119,16 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                             (calculationData["ratePerWatt"] +
                               calculationData["gstPerWatt"] +
                               Number.EPSILON) *
-                              100
+                            100
                           ) / 100
                         )
                           ? 0
                           : Math.round(
-                              (calculationData["ratePerWatt"] +
-                                calculationData["gstPerWatt"] +
-                                Number.EPSILON) *
-                                100
-                            ) / 100
+                            (calculationData["ratePerWatt"] +
+                              calculationData["gstPerWatt"] +
+                              Number.EPSILON) *
+                            100
+                          ) / 100
                         ).toLocaleString("en-IN")}
                       </TableCell>
                     </TableRow>
@@ -1215,23 +1216,23 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                   (1 +
                                     (calculationData["interestRateOnLoan"] *
                                       calculationData["loanTerm"]) /
-                                      1200)) /
+                                    1200)) /
                                   12 +
                                   Number.EPSILON) *
-                                  100
+                                100
                               ) / 100
                             )
                               ? 0
                               : Math.round(
-                                  ((calculationData["loanAmountOnProject"] *
-                                    (1 +
-                                      (calculationData["interestRateOnLoan"] *
-                                        calculationData["loanTerm"]) /
-                                        1200)) /
-                                    12 +
-                                    Number.EPSILON) *
-                                    100
-                                ) / 100
+                                ((calculationData["loanAmountOnProject"] *
+                                  (1 +
+                                    (calculationData["interestRateOnLoan"] *
+                                      calculationData["loanTerm"]) /
+                                    1200)) /
+                                  12 +
+                                  Number.EPSILON) *
+                                100
+                              ) / 100
                             ).toLocaleString("en-IN")}
                           </TableCell>
                         </TableRow>
@@ -1246,17 +1247,17 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                               1000 *
                               formData["totalKiloWatts"] +
                               Number.EPSILON) *
-                              100
+                            100
                           ) / 100
                         )
                           ? 0
                           : Math.round(
-                              (calculationData["gstPerWatt"] *
-                                1000 *
-                                formData["totalKiloWatts"] +
-                                Number.EPSILON) *
-                                100
-                            ) / 100
+                            (calculationData["gstPerWatt"] *
+                              1000 *
+                              formData["totalKiloWatts"] +
+                              Number.EPSILON) *
+                            100
+                          ) / 100
                         ).toLocaleString("en-IN")}
                       </TableCell>
                       <TableCell>Reinvestment Rate</TableCell>
@@ -1297,16 +1298,16 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                             (calculationData["anyExtraCostOnAddOnWork"] +
                               calculationData["gstOnAddOnWork"] +
                               Number.EPSILON) *
-                              100
+                            100
                           ) / 100
                         )
                           ? 0
                           : Math.round(
-                              (calculationData["anyExtraCostOnAddOnWork"] +
-                                calculationData["gstOnAddOnWork"] +
-                                Number.EPSILON) *
-                                100
-                            ) / 100
+                            (calculationData["anyExtraCostOnAddOnWork"] +
+                              calculationData["gstOnAddOnWork"] +
+                              Number.EPSILON) *
+                            100
+                          ) / 100
                         ).toLocaleString("en-IN")}
                       </TableCell>
                     </TableRow>
@@ -1325,20 +1326,20 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                   15340 +
                                   660 +
                                   15543) *
-                                  100
+                                100
                               ) / 100
                             )
                               ? 0
                               : Math.round(
-                                  (calculationData["ratePerWatt"] *
-                                    1000 *
-                                    formData["totalKiloWatts"] +
-                                    Number.EPSILON +
-                                    15340 +
-                                    660 +
-                                    15543) *
-                                    100
-                                ) / 100
+                                (calculationData["ratePerWatt"] *
+                                  1000 *
+                                  formData["totalKiloWatts"] +
+                                  Number.EPSILON +
+                                  15340 +
+                                  660 +
+                                  15543) *
+                                100
+                              ) / 100
                             ).toLocaleString("en-IN")}
                           </>
                         ) : (
@@ -1352,19 +1353,19 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                   Number.EPSILON +
                                   15340 +
                                   660) *
-                                  100
+                                100
                               ) / 100
                             )
                               ? 0
                               : Math.round(
-                                  (calculationData["ratePerWatt"] *
-                                    1000 *
-                                    formData["totalKiloWatts"] +
-                                    Number.EPSILON +
-                                    15340 +
-                                    660) *
-                                    100
-                                ) / 100
+                                (calculationData["ratePerWatt"] *
+                                  1000 *
+                                  formData["totalKiloWatts"] +
+                                  Number.EPSILON +
+                                  15340 +
+                                  660) *
+                                100
+                              ) / 100
                             ).toLocaleString("en-IN")}
                           </>
                         )}
@@ -1381,18 +1382,18 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                               1000 *
                               formData["totalKiloWatts"] +
                               Number.EPSILON) *
-                              100
+                            100
                           ) / 100
                         )
                           ? 0
                           : Math.round(
-                              ((calculationData["ratePerWatt"] +
-                                calculationData["gstPerWatt"]) *
-                                1000 *
-                                formData["totalKiloWatts"] +
-                                Number.EPSILON) *
-                                100
-                            ) / 100
+                            ((calculationData["ratePerWatt"] +
+                              calculationData["gstPerWatt"]) *
+                              1000 *
+                              formData["totalKiloWatts"] +
+                              Number.EPSILON) *
+                            100
+                          ) / 100
                         ).toLocaleString("en-IN")}
                       </TableCell>
                     </TableRow>
@@ -1413,20 +1414,20 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                 (calculationData["anyExtraCostOnAddOnWork"] +
                                   calculationData["gstOnAddOnWork"]) +
                                 Number.EPSILON) *
-                                100
+                              100
                             ) / 100
                           )
                             ? 0
                             : Math.round(
-                                ((calculationData["ratePerWatt"] +
-                                  calculationData["gstPerWatt"]) *
-                                  1000 *
-                                  formData["totalKiloWatts"] +
-                                  (calculationData["anyExtraCostOnAddOnWork"] +
-                                    calculationData["gstOnAddOnWork"]) +
-                                  Number.EPSILON) *
-                                  100
-                              ) / 100
+                              ((calculationData["ratePerWatt"] +
+                                calculationData["gstPerWatt"]) *
+                                1000 *
+                                formData["totalKiloWatts"] +
+                                (calculationData["anyExtraCostOnAddOnWork"] +
+                                  calculationData["gstOnAddOnWork"]) +
+                                Number.EPSILON) *
+                              100
+                            ) / 100
                           ).toLocaleString("en-IN")}
                         </b>
                       </TableCell>
@@ -1478,17 +1479,17 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                     1000 *
                                     formData["totalKiloWatts"] +
                                     Number.EPSILON) *
-                                    100
+                                  100
                                 ) / 100
                               )
                                 ? 0
                                 : Math.round(
-                                    (calculationData["subsidyPerWatt"] *
-                                      1000 *
-                                      formData["totalKiloWatts"] +
-                                      Number.EPSILON) *
-                                      100
-                                  ) / 100
+                                  (calculationData["subsidyPerWatt"] *
+                                    1000 *
+                                    formData["totalKiloWatts"] +
+                                    Number.EPSILON) *
+                                  100
+                                ) / 100
                               ).toLocaleString("en-IN")}
                             </TableCell>
                           </TableRow>
@@ -1504,32 +1505,32 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                                     1000 *
                                     formData["totalKiloWatts"] -
                                     calculationData["subsidyPerWatt"] *
-                                      1000 *
-                                      formData["totalKiloWatts"] +
+                                    1000 *
+                                    formData["totalKiloWatts"] +
                                     (calculationData[
                                       "anyExtraCostOnAddOnWork"
                                     ] +
                                       calculationData["gstOnAddOnWork"]) +
                                     Number.EPSILON) *
-                                    100
+                                  100
                                 ) / 100
                               )
                                 ? 0
                                 : Math.round(
-                                    ((calculationData["ratePerWatt"] +
-                                      calculationData["gstPerWatt"]) *
-                                      1000 *
-                                      formData["totalKiloWatts"] -
-                                      calculationData["subsidyPerWatt"] *
-                                        1000 *
-                                        formData["totalKiloWatts"] +
-                                      (calculationData[
-                                        "anyExtraCostOnAddOnWork"
-                                      ] +
-                                        calculationData["gstOnAddOnWork"]) +
-                                      Number.EPSILON) *
-                                      100
-                                  ) / 100
+                                  ((calculationData["ratePerWatt"] +
+                                    calculationData["gstPerWatt"]) *
+                                    1000 *
+                                    formData["totalKiloWatts"] -
+                                    calculationData["subsidyPerWatt"] *
+                                    1000 *
+                                    formData["totalKiloWatts"] +
+                                    (calculationData[
+                                      "anyExtraCostOnAddOnWork"
+                                    ] +
+                                      calculationData["gstOnAddOnWork"]) +
+                                    Number.EPSILON) *
+                                  100
+                                ) / 100
                               ).toLocaleString("en-IN")}
                             </TableCell>
                           </TableRow>
