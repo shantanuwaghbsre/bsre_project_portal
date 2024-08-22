@@ -124,7 +124,7 @@ const ResidentialQuotation = (props: any) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState<Boolean>(false);
   const [loading, setLoading] = useState(false);
-  const { role, username } = useRole()
+  const { role, username, branchName } = useRole()
 
   const resetForm = () => {
     setFormData({
@@ -306,9 +306,9 @@ const ResidentialQuotation = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-        if (role !== "Agent") {
-          setAgentOptions(response.data);
-        }
+
+        setAgentOptions(response.data);
+
       })
       .catch(function (error) {
         console.log(error);
@@ -356,7 +356,7 @@ const ResidentialQuotation = (props: any) => {
   const urls = {
     calculateURL: import.meta.env.VITE_BACKEND_URL + "/calculate",
     submitURL: import.meta.env.VITE_BACKEND_URL + "/submitResidentialQuotation",
-    getAgentsURL: import.meta.env.VITE_BACKEND_URL + "/getAgents",
+    getAgentsURL: import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
   };
 
   const handleSubmit = () => {
@@ -416,6 +416,7 @@ const ResidentialQuotation = (props: any) => {
   };
 
   function handleAgentSelect(e: SelectChangeEvent<string>): void {
+    console.log(e.target.value, "handleAgentSelect")
     handleFormChange("agentID", e.target.value);
     for (let i = 0; i < agentOptions?.length; i++) {
       if (agentOptions[i]["agent_code"] == e.target.value) {
