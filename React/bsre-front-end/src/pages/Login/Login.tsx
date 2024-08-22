@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Stack, TextField, MenuItem, Button, Typography, Box, Container } from '@mui/material';
 import { useState } from 'react';
 import { toast, ToastContainer } from "react-toastify";
@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from 'axios';
 import Loading from '../../Components/Loading/Loading';
 import { useRole } from '../../Contexts/RoleContext';
+import { useNavigate } from 'react-router';
 
 // Example logo URL, replace with your actual logo
 const logoUrl = '/Images/BS-LOGO.jpg';
@@ -39,6 +40,7 @@ const Login = () => {
     const [formData, setFormData] = useState(blankFormData);
     const [selectedBranch, setSelectedBranch] = useState('');
     const { login } = useRole();
+    const navigate = useNavigate()
 
     useEffect(() => {
         setFormData({ ...formData, username: username, password: password, branch: selectedBranch });
@@ -77,9 +79,6 @@ const Login = () => {
 
                         // Use the role from the response to login
                         login(response.data.role, username, selectedBranch);
-                    }
-                    if (response.data.completed) {
-                        resetForm();
                         toast.success(
                             "Successfully Login ! Please wait redirecting...",
                             {
@@ -89,8 +88,7 @@ const Login = () => {
                                 hideProgressBar: true,
                             }
                         );
-                    } else {
-                        console.log("goes in else", response.data);
+                        navigate("/")
                     }
                 })
                 .catch(function (error) {
@@ -100,7 +98,7 @@ const Login = () => {
         }
         setLoading(true);
 
-    };
+    }
     //handle submit
     const handleLogin = () => {
         // Handle login logic here
@@ -115,6 +113,7 @@ const Login = () => {
 
     return (
         <>
+            <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
             {loading ? (
                 <div
                     style={{
@@ -128,7 +127,7 @@ const Login = () => {
                 </div>
             ) : (
                 <>
-                    <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
+
                     <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', }}>
                         <Box
                             sx={{
