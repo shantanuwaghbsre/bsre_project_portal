@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
+import { useRole } from '../../Contexts/RoleContext';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ViewAllConsumers = (props: any) => {
   //for showing columns in table record
@@ -22,17 +24,19 @@ const ViewAllConsumers = (props: any) => {
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
+  const { role, username, branchName } = useRole()
 
 
   const fetchData = async (page: number, limit: number) => {
     try {
-      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllConsumers?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
+      const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllConsumers?role=${role}&branch=${branchName}&page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}`);
       console.log(response.data);
       setConsumers(response.data['consumers']);
       setTotalPages(response.data['totalPages']);
       setIsDisabled(false);
       setLoading(false);
     } catch (error) {
+      toast.error(error.message)
       console.error('Error fetching data:', error);
       setLoading(false);
     }
@@ -71,6 +75,7 @@ const ViewAllConsumers = (props: any) => {
 
   return (
     <>
+      <ToastContainer />
       {loading ?
         <div className='loadinginComponent'>
           <Loading />
@@ -122,7 +127,7 @@ const ViewAllConsumers = (props: any) => {
                     {!consumers.length ?
                       <TableRow>
                         <TableCell colSpan={8} className="Records_Not_Found">
-                          <span>Error 500:Internal Server Error</span>
+                          <span>No Data</span>
                         </TableCell>
                       </TableRow>
                       : null
