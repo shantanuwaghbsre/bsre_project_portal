@@ -78,9 +78,8 @@ const ResidentialQuotation = (props: any) => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const date = new Date();
-  let currentDate = `${date.getDate()}-${
-    date.getMonth() + 1
-  }-${date.getFullYear()}`;
+  let currentDate = `${date.getDate()}-${date.getMonth() + 1
+    }-${date.getFullYear()}`;
 
   const [formData, setFormData] = useState({
     solarModule: "",
@@ -279,6 +278,7 @@ const ResidentialQuotation = (props: any) => {
           }
         })
         .catch(function (error) {
+          toast.error(error.message);
           console.log(error);
         });
       console.log("form is valid");
@@ -396,7 +396,7 @@ const ResidentialQuotation = (props: any) => {
           resetForm();
           setSuccessMessage(
             "Successfully created Quotation number - " +
-              response.data.quotation_number
+            response.data.quotation_number
           );
         } else {
           setErrorMessage((prevErrorMessage) => [
@@ -406,6 +406,7 @@ const ResidentialQuotation = (props: any) => {
         }
       })
       .catch(function (error) {
+        toast.error(error.message);
         console.log(error);
       });
   };
@@ -421,6 +422,7 @@ const ResidentialQuotation = (props: any) => {
 
   return (
     <>
+      <ToastContainer />
       {loading ? (
         <div
           style={{
