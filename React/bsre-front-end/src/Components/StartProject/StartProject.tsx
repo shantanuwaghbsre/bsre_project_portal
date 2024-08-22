@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 const StartProject = (props: any) => {
@@ -83,6 +84,7 @@ const StartProject = (props: any) => {
                     // setQuotationSearchResults(response.data);
                 })
                 .catch(error => {
+                    toast.error(error.message);
                     console.error('Error fetching search results:', error);
                 });
         }
@@ -97,6 +99,7 @@ const StartProject = (props: any) => {
                     setQuotationSearchResults(response.data);
                 })
                 .catch(error => {
+                    toast.error(error.message);
                     console.error('Error fetching search results:', error);
                 });
         } else {
@@ -156,6 +159,7 @@ const StartProject = (props: any) => {
             }
             )
             .catch(error => {
+                toast.error(error.message);
                 console.error(error);
             });
     };
@@ -190,481 +194,485 @@ const StartProject = (props: any) => {
     }
 
     return (
-        <div className='table-data' style={{ paddingTop: 64 }}>
-            {currentPage === 1 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Generate project from which quotation</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                        <SelectListWithText searchResults={quotationSearchResults} value={project.from_quotation} change={handleInputChange} label="Select Quotation" />
-                                    </FormControl>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell colSpan={2} align='right'>
-                                    <button className="btn-next " type="button" onClick={handleNextPage}>
-                                        Next
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
 
-            }
-            {
-                currentPage === 2 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Property Tax</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                    >
-                                        Upload Property Tax
-                                        <input type="file" name="property_tax" onChange={handleFileChange} hidden />
-                                    </Button>
+        <>
+            <ToastContainer />
+            <div className='table-data' style={{ paddingTop: 64 }}>
+                {currentPage === 1 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Generate project from which quotation</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <FormControl sx={{ m: 1, minWidth: 220 }}>
+                                            <SelectListWithText searchResults={quotationSearchResults} value={project.from_quotation} change={handleInputChange} label="Select Quotation" />
+                                        </FormControl>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={2} align='right'>
+                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                            Next
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
 
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Electricity Bill</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                    >
-                                        Upload Electricity Bill
-                                        <input type="file" name="electricity_bill" onChange={handleFileChange} hidden />
-                                    </Button>
+                }
+                {
+                    currentPage === 2 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Property Tax</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                        >
+                                            Upload Property Tax
+                                            <input type="file" name="property_tax" onChange={handleFileChange} hidden />
+                                        </Button>
 
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Meter Number</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Meter Number"
-                                        type="text"
-                                        name="meter_number"
-                                        value={project.meter_number}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Current Phase</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Current Phase"
-                                        type="text"
-                                        name="current_phase"
-                                        value={project.current_phase}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Current Sanctioned Load</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Current Sanctioned Load"
-                                        type="text"
-                                        name="current_sanctioned_load"
-                                        value={project.current_sanctioned_load}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Average Consumption of Unit</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Average Consumption of Unit"
-                                        type="text"
-                                        name="average_consumption_of_unit"
-                                        value={project.average_consumption_of_unit}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Consumer Number</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Consumer Number"
-                                        type="text"
-                                        name="consumer_number"
-                                        value={project.consumer_number}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Cancelled Cheque</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                    >
-                                        Upload Cancelled Cheque
-                                        <input type="file" name="cancelled_cheque" onChange={handleFileChange} hidden />
-                                    </Button>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Electricity Bill</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                        >
+                                            Upload Electricity Bill
+                                            <input type="file" name="electricity_bill" onChange={handleFileChange} hidden />
+                                        </Button>
 
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Other documents</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                    >
-                                        Upload other documents
-                                        <input type="file" name="other_documents" onChange={handleFileChange} hidden />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Uploaded Documents</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <List>
-                                        {project["other_documents_names"].map((documentName, index) => (
-                                            <ListItem key={index}>
-                                                <ListItemText primary={documentName} />
-                                                <Button
-                                                    variant="contained"
-                                                    component="label"
-                                                    onClick={() => handleRemoveDocument(index)}
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align='left'>
-                                    <button className="btn-prev" type="button" onClick={handlePreviousPage}>
-                                        Previous
-                                    </button>
-                                </TableCell>
-                                <TableCell align='right'>
-                                    <button className="btn-next " type="button" onClick={handleNextPage}>
-                                        Next
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
-            }
-            {
-                currentPage === 3 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Project Address</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Project Address"
-                                        type="text"
-                                        name="project_address"
-                                        value={project.project_address}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Meter Number</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Meter Number"
+                                            type="text"
+                                            name="meter_number"
+                                            value={project.meter_number}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Current Phase</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Current Phase"
+                                            type="text"
+                                            name="current_phase"
+                                            value={project.current_phase}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Current Sanctioned Load</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Current Sanctioned Load"
+                                            type="text"
+                                            name="current_sanctioned_load"
+                                            value={project.current_sanctioned_load}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Average Consumption of Unit</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Average Consumption of Unit"
+                                            type="text"
+                                            name="average_consumption_of_unit"
+                                            value={project.average_consumption_of_unit}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Consumer Number</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Consumer Number"
+                                            type="text"
+                                            name="consumer_number"
+                                            value={project.consumer_number}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Cancelled Cheque</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                        >
+                                            Upload Cancelled Cheque
+                                            <input type="file" name="cancelled_cheque" onChange={handleFileChange} hidden />
+                                        </Button>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Latitude</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Latitude"
-                                        type="text"
-                                        name="latitude"
-                                        value={project.latitude}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Other documents</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                        >
+                                            Upload other documents
+                                            <input type="file" name="other_documents" onChange={handleFileChange} hidden />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Uploaded Documents</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <List>
+                                            {project["other_documents_names"].map((documentName, index) => (
+                                                <ListItem key={index}>
+                                                    <ListItemText primary={documentName} />
+                                                    <Button
+                                                        variant="contained"
+                                                        component="label"
+                                                        onClick={() => handleRemoveDocument(index)}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align='left'>
+                                        <button className="btn-prev" type="button" onClick={handlePreviousPage}>
+                                            Previous
+                                        </button>
+                                    </TableCell>
+                                    <TableCell align='right'>
+                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                            Next
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
+                }
+                {
+                    currentPage === 3 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Project Address</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Project Address"
+                                            type="text"
+                                            name="project_address"
+                                            value={project.project_address}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Longitude</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Longitude"
-                                        type="text"
-                                        name="longitude"
-                                        value={project.longitude}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align='left'>
-                                    <button className="btn-prev" type="button" onClick={handlePreviousPage}>
-                                        Previous
-                                    </button>
-                                </TableCell>
-                                <TableCell align='right'>
-                                    <button className="btn-next " type="button" onClick={handleNextPage}>
-                                        Next
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
-            }
-            {
-                currentPage === 4 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Total Kilowatts</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Total Kilowatts"
-                                        type="text"
-                                        name="total_kilowatts"
-                                        value={project.total_kilowatts}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Latitude</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Latitude"
+                                            type="text"
+                                            name="latitude"
+                                            value={project.latitude}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Solar Panel Type</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Solar Panel Type"
-                                        type="text"
-                                        name="solar_panel_type"
-                                        value={project.solar_panel_type}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Longitude</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Longitude"
+                                            type="text"
+                                            name="longitude"
+                                            value={project.longitude}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align='left'>
+                                        <button className="btn-prev" type="button" onClick={handlePreviousPage}>
+                                            Previous
+                                        </button>
+                                    </TableCell>
+                                    <TableCell align='right'>
+                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                            Next
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
+                }
+                {
+                    currentPage === 4 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Total Kilowatts</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Total Kilowatts"
+                                            type="text"
+                                            name="total_kilowatts"
+                                            value={project.total_kilowatts}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Project Cost</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Project Cost"
-                                        type="text"
-                                        name="project_cost"
-                                        value={project.project_cost}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align='left'>
-                                    <button className="btn-prev" type="button" onClick={handlePreviousPage}>
-                                        Previous
-                                    </button>
-                                </TableCell>
-                                <TableCell align='right'>
-                                    <button className="btn-next " type="button" onClick={handleNextPage}>
-                                        Next
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
-            }
-            {
-                currentPage === 5 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Deposit Amount</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Deposit Amount"
-                                        type="text"
-                                        name="deposit_amount"
-                                        value={project.deposit_amount}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Solar Panel Type</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Solar Panel Type"
+                                            type="text"
+                                            name="solar_panel_type"
+                                            value={project.solar_panel_type}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Remaining Balance</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Remaining Balance"
-                                        type="text"
-                                        name="remaining_balance"
-                                        value={project.remaining_balance}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Project Cost</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Project Cost"
+                                            type="text"
+                                            name="project_cost"
+                                            value={project.project_cost}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align='left'>
+                                        <button className="btn-prev" type="button" onClick={handlePreviousPage}>
+                                            Previous
+                                        </button>
+                                    </TableCell>
+                                    <TableCell align='right'>
+                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                            Next
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
+                }
+                {
+                    currentPage === 5 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Deposit Amount</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Deposit Amount"
+                                            type="text"
+                                            name="deposit_amount"
+                                            value={project.deposit_amount}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Deposited Money in Words</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Deposited Money in Words"
-                                        type="text"
-                                        name="deposited_money_in_words"
-                                        value={project.deposited_money_in_words}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Remaining Balance</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Remaining Balance"
+                                            type="text"
+                                            name="remaining_balance"
+                                            value={project.remaining_balance}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Payment Type</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Payment Type"
-                                        type="text"
-                                        name="payment_type"
-                                        value={project.payment_type}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Deposited Money in Words</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Deposited Money in Words"
+                                            type="text"
+                                            name="deposited_money_in_words"
+                                            value={project.deposited_money_in_words}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Transaction Number</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Transaction Number"
-                                        type="text"
-                                        name="transaction_number"
-                                        value={project.transaction_number}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Payment Type</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Payment Type"
+                                            type="text"
+                                            name="payment_type"
+                                            value={project.payment_type}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell>
-                                    <InputLabel>Bank Details with Branch</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Bank Details with Branch"
-                                        type="text"
-                                        name="bank_details_with_branch"
-                                        value={project.bank_details_with_branch}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell align='left'>
-                                    <button className="btn-prev" type="button" onClick={handlePreviousPage}>
-                                        Previous
-                                    </button>
-                                </TableCell>
-                                <TableCell align='right'>
-                                    <button className="btn-next " type="button" onClick={handleNextPage}>
-                                        Next
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
-            }
-            {
-                currentPage === 6 &&
-                <form onSubmit={handleSubmit}>
-                    <Table sx={{ bgcolor: 'white' }}>
-                        <TableBody>
-                            `<TableRow>
-                                <TableCell>
-                                    <InputLabel>Registration Number</InputLabel>
-                                </TableCell>
-                                <TableCell>
-                                    <TextField
-                                        label="Registration Number"
-                                        type="text"
-                                        name="national_portal_registration_number"
-                                        value={project.national_portal_registration_number}
-                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                    />
-                                </TableCell>
-                            </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Transaction Number</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Transaction Number"
+                                            type="text"
+                                            name="transaction_number"
+                                            value={project.transaction_number}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
 
-                            <TableRow>
-                                <TableCell align='left'>
-                                    <button className="btn-prev" type="button" onClick={handlePreviousPage}>
-                                        Previous
-                                    </button>
-                                </TableCell>
-                                <TableCell align='right'>
-                                    <button className="btn-next " type="button" onClick={(e) => handleSubmit(e)}>
-                                        Submit
-                                    </button>
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </form>
-            }
-        </div>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Bank Details with Branch</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Bank Details with Branch"
+                                            type="text"
+                                            name="bank_details_with_branch"
+                                            value={project.bank_details_with_branch}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align='left'>
+                                        <button className="btn-prev" type="button" onClick={handlePreviousPage}>
+                                            Previous
+                                        </button>
+                                    </TableCell>
+                                    <TableCell align='right'>
+                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                            Next
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
+                }
+                {
+                    currentPage === 6 &&
+                    <form onSubmit={handleSubmit}>
+                        <Table sx={{ bgcolor: 'white' }}>
+                            <TableBody>
+                                `<TableRow>
+                                    <TableCell>
+                                        <InputLabel>Registration Number</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Registration Number"
+                                            type="text"
+                                            name="national_portal_registration_number"
+                                            value={project.national_portal_registration_number}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+
+                                <TableRow>
+                                    <TableCell align='left'>
+                                        <button className="btn-prev" type="button" onClick={handlePreviousPage}>
+                                            Previous
+                                        </button>
+                                    </TableCell>
+                                    <TableCell align='right'>
+                                        <button className="btn-next " type="button" onClick={(e) => handleSubmit(e)}>
+                                            Submit
+                                        </button>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </form>
+                }
+            </div>
+        </>
     )
 }
 export default StartProject
