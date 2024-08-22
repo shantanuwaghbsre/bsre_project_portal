@@ -17,7 +17,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import HomeIcon from "@mui/icons-material/Home";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Collapse from "@mui/material/Collapse";
 import { useState } from "react";
@@ -50,6 +50,7 @@ export default function Navbar(props: any) {
   const [isCollapseConsumer, setIsCollapseConsumer] = useState(false);
   const [isCollapseHome, setIsCollapseHome] = useState(false);
   const { logout, username } = useRole();
+  const naviate = useNavigate()
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -95,6 +96,7 @@ export default function Navbar(props: any) {
   const handleLogout = () => {
     // props.logout();
     logout()
+    naviate('/login')
     // localStorage.removeItem("token");
     window.location.replace(import.meta.env.VITE_KEYCLOAK_URL);
     setAnchorEl(null);
