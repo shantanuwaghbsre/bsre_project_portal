@@ -21,16 +21,13 @@ import {
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import ViewAllConsumers from "../ViewAllConsumers/ViewAllConsumers";
+import { useRole } from "../../Contexts/RoleContext";
 
-const urls = {
-  calculateURL: import.meta.env.VITE_BACKEND_URL + "/calculate",
-  onboardConsumer: import.meta.env.VITE_BACKEND_URL + "/onboardConsumer",
-  getAgentsURL: import.meta.env.VITE_BACKEND_URL + "/getAgents",
-  getLocationsURL: import.meta.env.VITE_BACKEND_URL + "/getLocations",
-  getConsumerURL: import.meta.env.VITE_BACKEND_URL + "/getConsumer",
-};
+
+
 
 const ConsumerOnboarding = (props: any) => {
+  const { branchName, role, username } = useRole()
   axios.defaults.headers.common["token"] = props.token;
   const blankFormData = {
     consumerName: "",
@@ -43,6 +40,13 @@ const ConsumerOnboarding = (props: any) => {
     onboardedByAgentCode: "",
     agentOrDistributorName: "",
     otherDocumentsNames: [],
+  };
+  const urls = {
+    calculateURL: import.meta.env.VITE_BACKEND_URL + `/calculate`,
+    onboardConsumer: import.meta.env.VITE_BACKEND_URL + `/onboardConsumer`,
+    getAgentsURL: import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
+    getLocationsURL: import.meta.env.VITE_BACKEND_URL + `/getLocations`,
+    getConsumerURL: import.meta.env.VITE_BACKEND_URL + `/getConsumer`,
   };
 
   const [agentOptions, setAgentOptions] = useState([]);
