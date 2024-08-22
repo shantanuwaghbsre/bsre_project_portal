@@ -6,6 +6,7 @@ import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import { useRole } from '../../Contexts/RoleContext';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ViewQuotations = (props: any) => {
   //for showing columns in table record
@@ -28,18 +29,19 @@ const ViewQuotations = (props: any) => {
     try {
       const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAllQuotations?role=${role}&branch=${branchName}&page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}
 `);
-      if (response.data['quotations'].length > 0) {
 
-        setQuotations(response.data['quotations']);
-      }
       // else {
       //   setQuotations([{ "Consumer name": "", "Agent name": "", "Total kilowatts": "", "Structure": "", "Solar panel type": "", "Quotation type": "" }]);
       // }
       setCount(response.data['count'] || 0);
       setIsDisabled(false);
+
+      setQuotations(response.data['quotations']);
+
       console.log("data of search===>", response.data);
       setLoading(false);
     } catch (error) {
+      toast.error(error.message)
       console.error('Error fetching data:', error);
       setLoading(false);
       setNorecords("Error 500:Internal Server Error");
@@ -80,6 +82,7 @@ const ViewQuotations = (props: any) => {
 
   return (
     <>
+      <ToastContainer />
       {loading ?
         <div className='loadinginComponent'>
           <Loading />
