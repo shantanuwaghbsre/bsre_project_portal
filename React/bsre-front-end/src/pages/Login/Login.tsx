@@ -76,7 +76,7 @@ const Login = () => {
                         // Save username to localStorage
 
                         // Use the role from the response to login
-                        login(response.data.role, username);
+                        login(response.data.role, username, selectedBranch);
                     }
                     if (response.data.completed) {
                         resetForm();
