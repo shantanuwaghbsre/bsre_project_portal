@@ -14,7 +14,7 @@ const urls = {
 }
 
 const branches = [
-    'Admin',
+    'Vadodara',
     'Bharuch',
     'Borsad',
     'Dholka',
