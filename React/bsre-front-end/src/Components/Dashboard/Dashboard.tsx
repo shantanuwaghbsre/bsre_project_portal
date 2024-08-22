@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
+import { useRole } from "../../Contexts/RoleContext";
 
 const Dashboard = (props: any) => {
   //for showing columns in table record
@@ -41,14 +42,14 @@ const Dashboard = (props: any) => {
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
+  const { role, branchName, username } = useRole()
 
   const fetchData = async (page: number, limit: number) => {
     try {
       const response = await axios.get(
         import.meta.env.VITE_BACKEND_URL +
-          `/getAllProjects?page=${
-            page + 1
-          }&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`
+        `/getAllProjects?role=${role}&branch=${branchName}&page=${page + 1
+        }&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}`
       );
       setProjects(response.data["projects"]);
       setCount(response.data["count"] || 0);
@@ -147,8 +148,8 @@ const Dashboard = (props: any) => {
                           {key === "for_consumer_id"
                             ? "Consumer Id"
                             : key === "project_email"
-                            ? "Email Address"
-                            : key.replace(/_/g, " ")[0].toUpperCase() +
+                              ? "Email Address"
+                              : key.replace(/_/g, " ")[0].toUpperCase() +
                               key.replace(/_/g, " ").slice(1)}
                         </TableCell>
                       ))}
@@ -156,7 +157,7 @@ const Dashboard = (props: any) => {
                     {!projects.length && (
                       <TableRow>
                         <TableCell colSpan={8} className="Records_Not_Found">
-                          <span>Error 500:Internal Server Error</span>
+                          <span>No Data</span>
                         </TableCell>
                       </TableRow>
                     )}
@@ -195,16 +196,16 @@ const Dashboard = (props: any) => {
                         <TableRow />
                       )
                     ) : Object.values(projects).filter((index) => {
-                        if (searchTerm === "") {
-                          return index;
-                        } else if (
-                          index[searchDropdown]
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                        ) {
-                          return index;
-                        }
-                      }).length ? (
+                      if (searchTerm === "") {
+                        return index;
+                      } else if (
+                        index[searchDropdown]
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ) {
+                        return index;
+                      }
+                    }).length ? (
                       Object.values(projects)
                         .filter((index) => {
                           if (searchTerm === "") {
