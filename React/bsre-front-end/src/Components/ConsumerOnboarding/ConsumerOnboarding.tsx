@@ -64,7 +64,6 @@ const ConsumerOnboarding = (props: any) => {
       .get(urls["getAgentsURL"])
       .then(function (response) {
         setAgentOptions(response.data);
-        console.log("sdknfasendn", response);
       })
       .catch(function (error) {
         toast.error(error.message);
@@ -236,16 +235,20 @@ const ConsumerOnboarding = (props: any) => {
                         value={formData.onboardedByAgentCode}
                         onChange={(e) => handleChange(e)}
                       >
-                        {agentOptions !== null || agentOptions !== undefined
-                          ? agentOptions.map((option) => (
-                            <MenuItem
-                              key={option["agent_code"]}
-                              value={option["agent_code"]}
-                            >
-                              {option["agent_code"]}
-                            </MenuItem>
-                          ))
-                          : null}
+                        {role !== "Agent" ? agentOptions?.map((option) => (
+                          <MenuItem
+                            key={option["agent_code"]}
+                            value={option["agent_code"]}
+                          >
+                            {option["agent_code"]}
+                          </MenuItem>
+                        ))
+                          : <MenuItem
+                            key={username}
+                            value={username}
+                          >
+                            {username}
+                          </MenuItem>}
                       </Select>
                     </FormControl>
                   </TableCell>
