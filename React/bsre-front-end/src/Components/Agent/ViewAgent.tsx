@@ -22,6 +22,7 @@ const ViewAgent = (props: any) => {
     const [salesData, setSalesData] = useState({});
     const [agentsProjects, setAgentsProjects] = useState([]);
     const [isAgentDownloadDisabled, setIsAgentDownloadDisabled] = useState(true);
+    const [projectsLength, setProjectsLength] = useState([]);
     const [options, setOptions] = useState([
         { label: 'Aadhar card', value: 'aadhar_card' },
         { label: 'Pan card', value: 'pan_card' },
@@ -111,8 +112,11 @@ const ViewAgent = (props: any) => {
                 const xAxis = Object.keys(response?.data["sales"]);
                 const sales = Object.values(response?.data["sales"]);
                 const projects = Object.values(response?.data["projects"]);
-                console.log("Graph Data=>", xAxis, sales, projects);
+                const projectsLength = Object.values(response?.data["projects2"]);
+
+                console.log("Graph Data=>", xAxis, sales, projects, projectsLength);
                 setAgentsProjects(projects);
+                setProjectsLength(projectsLength);
                 setSalesData({
                     options: {
                         xaxis: {
@@ -255,31 +259,35 @@ const ViewAgent = (props: any) => {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                agentsProjects.length !== 0 &&
-                                                agentsProjects.map((project: any, index) => {
-                                                    if (project.length === 0) {
-                                                        return (
-                                                            <TableRow key={index}>
-                                                                <TableCell colSpan={4} align="center">No Data Available</TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    }
-
-                                                    return (
+                                                projectsLength.length > 0 ? (
+                                                    agentsProjects.map((project: any, index) => (
                                                         <TableRow key={index}>
                                                             <TableCell>{index + 1}</TableCell>
                                                             <TableCell>{project[0][0]}</TableCell>
                                                             <TableCell>{project[0][1]}</TableCell>
                                                             <TableCell>
-                                                                <Button variant="contained" startIcon={<InfoIcon />} component={Link} to="/ViewProject" state={{ "agent_id": project[0]?.agent_code }}>
+                                                                <Button
+                                                                    variant="contained"
+                                                                    startIcon={<InfoIcon />}
+                                                                    component={Link}
+                                                                    to="/ViewProject"
+                                                                    state={{ "agent_id": project[0]?.agent_code }}
+                                                                >
                                                                     Info
                                                                 </Button>
                                                             </TableCell>
                                                         </TableRow>
-                                                    )
-                                                })
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={4} align="center">
+                                                            No Data Available
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
                                             }
                                         </TableBody>
+
 
                                     </Table>
                                 </TableContainer>
