@@ -136,7 +136,7 @@ const App = () => {
                   <Route
                     path="/AddAgent"
                     element={
-                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
                         <AddAgent />
                       </PrivateRoute>
                     }
