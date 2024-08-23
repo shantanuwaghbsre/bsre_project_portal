@@ -106,28 +106,37 @@ const ViewAgent = (props: any) => {
     //for now we are using dummy data for graph
     useEffect(() => {
         try {
-            setAgent(location.state.agent)
-            //we can use also dummyapi for temporary data AgentSalesDetail==>DummyAgentAPI
+            setAgent(location.state.agent);
             axios.get(urls["DummyAgentAPI"] + "?agent_code=" + location.state.agent["agent_code"]).then(response => {
-                // console.log("Agent Id IS==>", location.state.agent["agent_code"]);
                 const xAxis = Object.keys(response?.data["sales"]);
                 const sales = Object.values(response?.data["sales"]);
                 const projects = Object.values(response?.data["projects"]);
-                console.log("Graph Data=>", xAxis, sales, projects)
+                console.log("Graph Data=>", xAxis, sales, projects);
                 setAgentsProjects(projects);
                 setSalesData({
                     options: {
                         xaxis: {
-                            categories: xAxis
+                            categories: xAxis,
+                            title: {
+                                text: 'Months'
+                            }
+                        },
+                        chart: {
+                            id: 'sales-bar'
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                            }
                         }
                     },
                     series: [
                         {
-                            name: 'kw',
+                            name: 'Sales (kW)',
                             data: sales
                         }
                     ]
-                })
+                });
             });
             setLoading(false);
         } catch (error) {
@@ -135,6 +144,7 @@ const ViewAgent = (props: any) => {
             setLoading(true);
         }
     }, []);
+
     // useEffect(() => {
     //     try {
     //         if (location.state) {
@@ -220,7 +230,7 @@ const ViewAgent = (props: any) => {
                             <span style={{ display: 'block', textAlign: 'center', fontSize: '30px', fontWeight: 'bold' }}>SALES</span>
                             <div className="Charts">
                                 {
-                                    Object.keys(salesData).length != 0 &&
+                                    Object?.keys(salesData).length !== 0 &&
                                     <Chart
                                         options={salesData['options']}
                                         series={salesData['series']}
