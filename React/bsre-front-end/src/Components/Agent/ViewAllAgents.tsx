@@ -6,6 +6,7 @@ import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 
 import InfoIcon from '@mui/icons-material/Info';
+import { useRole } from '../../Contexts/RoleContext';
 
 const ViewAllAgents = (props: any) => {
     //for showing columns in table record
@@ -23,11 +24,12 @@ const ViewAllAgents = (props: any) => {
     // this will be use for disable input field while searching
     const [isDisabled, setIsDisabled] = useState(true);
     const [count, setCount] = useState(0);
+    const { branchName, role, username } = useRole();
 
 
     const fetchData = async (page: number, limit: number) => {
         try {
-            const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAgents?page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}`);
+            const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}agent_code=${username}`);
             console.log(response.data);
             setAgents(response.data);
             setTotalPages(response.data['totalPages']);
