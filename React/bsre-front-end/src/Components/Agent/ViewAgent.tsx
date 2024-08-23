@@ -259,9 +259,7 @@ const ViewAgent = (props: any) => {
                                                 agentsProjects.map((project: any, index) => {
                                                     if (project.length === 0) {
                                                         return (
-                                                            <TableRow key={index}>
-                                                                <TableCell colSpan={4} align="center">No Data Available</TableCell>
-                                                            </TableRow>
+                                                            <></>
                                                         );
                                                     }
 
