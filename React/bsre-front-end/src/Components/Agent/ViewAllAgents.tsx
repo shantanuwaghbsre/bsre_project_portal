@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import InfoIcon from '@mui/icons-material/Info';
 import { useRole } from '../../Contexts/RoleContext';
+import { Agent } from 'http';
 
 const ViewAllAgents = (props: any) => {
     //for showing columns in table record
@@ -30,7 +31,7 @@ const ViewAllAgents = (props: any) => {
     const fetchData = async (page: number, limit: number) => {
         try {
             const response = await axios.get(import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&page=${page + 1}&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}agent_code=${username}`);
-            console.log(response.data);
+            console.log(response.data,"fetchData");
             setAgents(response.data);
             setTotalPages(response.data['totalPages']);
             setIsDisabled(false);
@@ -123,55 +124,68 @@ const ViewAllAgents = (props: any) => {
                                         }
                                     </TableHead>
                                     <TableBody>
-                                        {!isSearching ?
+    {!isSearching ?
+        Agents.length ? Agents.map((row, index) => (
+            <TableRow key={index}>
+                {columns.map((key) => (
+                    <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                ))}
+                <TableCell>
+                    <Button
+                        variant="contained"
+                        startIcon={<InfoIcon />}
+                        component={Link}
+                        to={{ pathname: '/ViewAgent' }}
+                        state={{ "agent": row }} // Pass the current row's data
+                    >
+                        View
+                    </Button>
+                </TableCell>
+            </TableRow>
+        )) : <TableRow />
+        :
+        Object.values(Agents).filter((index) => {
+            if (searchTerm === "") {
+                return index;
+            }
+            else if (index[searchDropdown]?.toLowerCase().includes(searchTerm.toLowerCase())) {
+                return index;
+            }
+        }).length ?
+            Object.values(Agents).filter((index) => {
+                if (searchTerm === "") {
+                    return index;
+                }
+                else if (index[searchDropdown]?.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    return index;
+                }
+            }).map((row, index) => (
+                <TableRow key={index}>
+                    {columns.map((key) => (
+                        <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
+                    ))}
+                    <TableCell>
+                        <Button
+                            variant="contained"
+                            startIcon={<InfoIcon />}
+                            component={Link}
+                            to={{ pathname: '/ViewAgent' }}
+                            state={{ "agent": row }} // Pass the current row's data
+                        >
+                            View
+                        </Button>
+                    </TableCell>
+                </TableRow>
+            ))
+            :
+            <TableRow>
+                <TableCell colSpan={5} className="Records_Not_Found">
+                    <span>Records Not Found</span>
+                </TableCell>
+            </TableRow>
+    }
+</TableBody>
 
-                                            Agents.length ? Agents.map((row, index) => (
-                                                <TableRow key={index}>
-                                                    {columns.map((key) => (
-                                                        <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
-                                                    ))}
-                                                    <TableCell>
-                                                        <Button variant="contained" startIcon={<InfoIcon />} component={Link} to={{ pathname: '/ViewAgent' }} state={{ "agent": Agents[index] }}>View</Button>
-                                                    </TableCell>
-                                                </TableRow>
-
-                                            )) : <TableRow />
-                                            :
-                                            Object.values(Agents).filter((index) => {
-                                                if (searchTerm == "") {
-                                                    return index;
-                                                }
-                                                else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
-                                                    return index;
-                                                }
-                                            }).length ?
-                                                Object.values(Agents).filter((index) => {
-                                                    if (searchTerm == "") {
-                                                        return index;
-                                                    }
-                                                    else if (index[searchDropdown].toLowerCase().includes(searchTerm.toLowerCase())) {
-                                                        return index;
-                                                    }
-                                                }).map((row, index) => {
-                                                    return (
-                                                        <TableRow key={index}>
-                                                            {columns.map((key) => (
-                                                                <TableCell key={key}>{row[key] ? String(row[key]) : ""}</TableCell>
-                                                            ))}
-                                                            <TableCell>
-                                                                <Button variant="contained" startIcon={<InfoIcon />} component={Link} to={{ pathname: '/ViewAgent' }} state={{ "agent": Agents[index] }}>View</Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })
-                                                :
-                                                <TableRow>
-                                                    <TableCell colSpan={5} className="Records_Not_Found">
-                                                        <span>Records Not Found</span>
-                                                    </TableCell>
-                                                </TableRow>
-                                        }
-                                    </TableBody>
                                 </Table>
                             </TableContainer>
                             <TablePagination
