@@ -25,6 +25,7 @@ import axios from "axios";
 import Loading from "../Loading/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRole } from "../../Contexts/RoleContext";
 
 const CommercialOrIndustrialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
@@ -205,6 +206,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState<Boolean>(false);
   const [loading, setLoading] = useState(false);
+  const { branchName, role, username } = useRole()
 
   const resetForm = () => {
     setFormData({
@@ -422,7 +424,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
     // "dummyURL": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
     submitURL:
       import.meta.env.VITE_BACKEND_URL + "/submitIndustrialCommercialQuotation",
-    getAgentsURL: import.meta.env.VITE_BACKEND_URL + "/getAgents",
+    getAgentsURL: import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
     getLocationsURL: import.meta.env.VITE_BACKEND_URL + "/getLocations",
   };
 
