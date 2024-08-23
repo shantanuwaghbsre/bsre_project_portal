@@ -8,6 +8,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import Loading from "../Loading/Loading";
 import { toast } from 'react-toastify';
+import { useRole } from '../../Contexts/RoleContext';
 
 
 
@@ -29,9 +30,10 @@ const ViewAgent = (props: any) => {
     let newOptions = [];
 
     const [documentRequired, setDocumentRequired] = useState('');
+    const { username } = useRole()
 
     const urls = {
-        "DummyAgentAPI": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
+        "DummyAgentAPI": import.meta.env.VITE_BACKEND_URL + "/getAgentSales",
         "AgentSalesDetail": import.meta.env.VITE_BACKEND_URL + "/getAgentSales",
         "getLocationsURL": import.meta.env.VITE_BACKEND_URL + "/getLocations",
         "getAgentDetails": import.meta.env.VITE_BACKEND_URL + "/getAgentDetails"
@@ -108,9 +110,9 @@ const ViewAgent = (props: any) => {
             //we can use also dummyapi for temporary data AgentSalesDetail==>DummyAgentAPI
             axios.get(urls["DummyAgentAPI"] + "?agent_code=" + location.state.agent["agent_code"]).then(response => {
                 // console.log("Agent Id IS==>", location.state.agent["agent_code"]);
-                const xAxis = Object.keys(response.data["sales"]);
-                const sales = Object.values(response.data["sales"]);
-                const projects = Object.values(response.data["projects"]);
+                const xAxis = Object.keys(response?.data["sales"]);
+                const sales = Object.values(response?.data["sales"]);
+                const projects = Object.values(response?.data["projects"]);
                 console.log("Graph Data=>", xAxis, sales, projects)
                 setAgentsProjects(projects);
                 setSalesData({
@@ -243,21 +245,32 @@ const ViewAgent = (props: any) => {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                Object.keys(agentsProjects).length != 0 &&
+                                                agentsProjects.length !== 0 &&
                                                 agentsProjects.map((project: any, index) => {
+                                                    if (project.length === 0) {
+                                                        return (
+                                                            <TableRow key={index}>
+                                                                <TableCell colSpan={4} align="center">No Data Available</TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    }
+
                                                     return (
-                                                        <TableRow key={project}>
+                                                        <TableRow key={index}>
                                                             <TableCell>{index + 1}</TableCell>
                                                             <TableCell>{project[0][0]}</TableCell>
                                                             <TableCell>{project[0][1]}</TableCell>
                                                             <TableCell>
-                                                                <Button variant="contained" startIcon={<InfoIcon />} component={Link} to="/ViewProject" state={{ "agent_id": project[0].agent_code }} >Info</Button>
+                                                                <Button variant="contained" startIcon={<InfoIcon />} component={Link} to="/ViewProject" state={{ "agent_id": project[0]?.agent_code }}>
+                                                                    Info
+                                                                </Button>
                                                             </TableCell>
                                                         </TableRow>
                                                     )
                                                 })
                                             }
                                         </TableBody>
+
                                     </Table>
                                 </TableContainer>
                                 {/* <TablePagination
