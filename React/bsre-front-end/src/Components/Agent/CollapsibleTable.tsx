@@ -13,6 +13,9 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useEffect, useState } from 'react';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 
 function createData(
@@ -28,7 +31,13 @@ function createData(
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-  console.log("row=>",row);
+  const navigate = useNavigate()
+  console.log("row=>", row);
+  console.log(row.detail?.map((data: any) => data.consumer_number));
+
+  const handleViewProject = (consumerNumber: number) => {
+    navigate({ pathname: '/ViewProject', search: `?consumer_number=${consumerNumber}` })
+  }
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -53,15 +62,28 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Customer Number</TableCell>
-                    <TableCell align="right">Kilowatts</TableCell>
+                    <TableCell >Kilowatts</TableCell>
+                    <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.detail.map((detailRow, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={index} >
                       {Object.keys(detailRow).map((key, index2) => (
                         <TableCell key={index2}>{detailRow[key]}</TableCell>
                       ))}
+                      <Button variant="contained"
+                        component={Link}
+                        to={{ pathname: "/ViewProject" }}
+                        state={{
+                          consumer_number:
+                            detailRow.consumer_number,
+                          // project_in_phase:
+                          //   detailRow.project_in_phase,
+                          // for_consumer_id:
+                          //   detailRow.for_consumer_id,
+                        }}
+                      >view</Button>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -76,29 +98,30 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 
 
 export default function CollapsibleTable(props: any) {
-    console.log("props=>",props);
+  console.log("props=>", props);
 
-    const rows = []
-    Object.keys(props.tableData).forEach(heading => {
-    console.log("heading=>",heading);
+  const rows = []
+  Object.keys(props.tableData).forEach(heading => {
+    console.log("heading=>", heading);
     rows.push(createData(heading, props.tableData[heading]));
-});
-console.log("rows after foreach=>",rows);
+  });
+  console.log("rows after foreach=>", rows);
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>{props.tableTitle}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <Row key={index} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Typography variant='h4' sx={{ fontWeight: 700, textAlign: 'center' }}>{props.tableTitle}</Typography>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <Row key={index} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer></>
   );
 }
