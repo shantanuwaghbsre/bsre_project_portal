@@ -68,25 +68,26 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                 </TableHead>
                 <TableBody>
                   {row.detail.map((detailRow, index) => (
-                    <TableRow key={index} >
+                    <TableRow key={index} sx={{ '& > *': { padding: '8px 16px' } }}>
                       {Object.keys(detailRow).map((key, index2) => (
                         <TableCell key={index2}>{detailRow[key]}</TableCell>
                       ))}
-                      <Button variant="contained"
-                        component={Link}
-                        to={{ pathname: "/ViewProject" }}
-                        state={{
-                          consumer_number:
-                            detailRow.consumer_number,
-                          // project_in_phase:
-                          //   detailRow.project_in_phase,
-                          // for_consumer_id:
-                          //   detailRow.for_consumer_id,
-                        }}
-                      >view</Button>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          component={Link}
+                          to="/ViewProject"
+                          state={{
+                            consumer_number: detailRow.consumer_number,
+                          }}
+                        >
+                          View
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
+
               </Table>
             </Box>
           </Collapse>
