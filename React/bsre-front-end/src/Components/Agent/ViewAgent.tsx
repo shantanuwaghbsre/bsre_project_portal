@@ -9,7 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import Loading from "../Loading/Loading";
 import { toast } from 'react-toastify';
 import { useRole } from '../../Contexts/RoleContext';
-
+import CollapsibleTable from "./CollapsibleTable";
 
 
 const ViewAgent = (props: any) => {
@@ -110,7 +110,7 @@ const ViewAgent = (props: any) => {
             axios.get(urls["DummyAgentAPI"] + "?agent_code=" + location.state.agent["agent_code"]).then(response => {
                 const xAxis = Object.keys(response?.data["sales"]);
                 const sales = Object.values(response?.data["sales"]);
-                const projects = Object.values(response?.data["projects"]);
+                const projects = response.data.projects
                 console.log("Graph Data=>", xAxis, sales, projects);
                 setAgentsProjects(projects);
                 setSalesData({
@@ -240,57 +240,7 @@ const ViewAgent = (props: any) => {
                                     />
                                 }
                             </div>
-                            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                <span style={{ display: 'block', textAlign: 'center', fontSize: '30px', fontStyle: 'italic', fontWeight: 'bold' }}>PROJECTS</span>
-                                <br />
-                                <TableContainer sx={{ maxHeight: 440 }}>
-                                    <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell><b>Sr.No</b></TableCell>
-                                                <TableCell><b>Project Name</b></TableCell>
-                                                <TableCell><b>K/w</b></TableCell>
-                                                <TableCell><b>Action</b></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {
-                                                agentsProjects.length !== 0 &&
-                                                agentsProjects.map((project: any, index) => {
-                                                    if (project.length === 0) {
-                                                        return (
-                                                            <></>
-                                                        );
-                                                    }
-
-                                                    return (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{index + 1}</TableCell>
-                                                            <TableCell>{project[0][0]}</TableCell>
-                                                            <TableCell>{project[0][1]}</TableCell>
-                                                            <TableCell>
-                                                                <Button variant="contained" startIcon={<InfoIcon />} component={Link} to="/ViewProject" state={{ "agent_id": project[0]?.agent_code }}>
-                                                                    Info
-                                                                </Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })
-                                            }
-                                        </TableBody>
-
-                                    </Table>
-                                </TableContainer>
-                                {/* <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
-                            </Paper>
+                            <CollapsibleTable tableData={agentsProjects} tableTitle="Projects" />
                         </div>
                     </Paper>
                 </>
