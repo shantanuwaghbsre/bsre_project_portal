@@ -41,7 +41,7 @@ const ViewQuotations = (props: any) => {
       console.log("data of search===>", response.data);
       setLoading(false);
     } catch (error) {
-      toast.error(error.message)
+      // toast.error(error.message)
       console.error('Error fetching data:', error);
       setLoading(false);
       setNorecords("Error 500:Internal Server Error");

@@ -36,7 +36,7 @@ const ViewAllConsumers = (props: any) => {
       setIsDisabled(false);
       setLoading(false);
     } catch (error) {
-      toast.error(error.message)
+      // toast.error(error.message)
       console.error('Error fetching data:', error);
       setLoading(false);
     }

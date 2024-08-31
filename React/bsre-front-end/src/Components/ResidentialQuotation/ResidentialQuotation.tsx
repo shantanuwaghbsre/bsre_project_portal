@@ -280,7 +280,7 @@ const ResidentialQuotation = (props: any) => {
           }
         })
         .catch(function (error) {
-          toast.error(error.message);
+          // toast.error(error.message);
           console.log(error);
         });
       console.log("form is valid");
@@ -410,7 +410,7 @@ const ResidentialQuotation = (props: any) => {
         }
       })
       .catch(function (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log(error);
       });
   };

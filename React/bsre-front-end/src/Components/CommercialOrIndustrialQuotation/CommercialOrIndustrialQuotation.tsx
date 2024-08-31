@@ -407,7 +407,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
         setAgentOptions(response.data);
       })
       .catch(function (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log(error);
       });
     axios.get(urls["getLocationsURL"]).then(function (response) {
@@ -526,7 +526,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
         }
       })
       .catch(function (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log(error);
       });
   };

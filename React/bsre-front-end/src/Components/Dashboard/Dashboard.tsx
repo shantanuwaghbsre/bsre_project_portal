@@ -59,7 +59,7 @@ const Dashboard = (props: any) => {
       setIsDisabled(false);
       console.log("data of search===>", response.data);
     } catch (error) {
-      toast.error(error.message)
+      // toast.error(error.message)
       console.error("Error fetching data:", error);
       setLoading(false);
     }

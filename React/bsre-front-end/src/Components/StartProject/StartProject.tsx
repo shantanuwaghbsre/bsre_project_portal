@@ -87,7 +87,7 @@ const StartProject = (props: any) => {
                     // setQuotationSearchResults(response.data);
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    // toast.error(error.message);
                     console.error('Error fetching search results:', error);
                 });
         }
@@ -102,7 +102,7 @@ const StartProject = (props: any) => {
                     setQuotationSearchResults(response.data);
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    // toast.error(error.message);
                     console.error('Error fetching search results:', error);
                 });
         } else {
@@ -165,7 +165,7 @@ const StartProject = (props: any) => {
             }
             )
             .catch(error => {
-                toast.error(error.message);
+                // toast.error(error.message);
                 console.error(error);
             });
     };

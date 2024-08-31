@@ -66,7 +66,7 @@ const ConsumerOnboarding = (props: any) => {
         setAgentOptions(response.data);
       })
       .catch(function (error) {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log(error);
       });
   }, []);
@@ -88,7 +88,7 @@ const ConsumerOnboarding = (props: any) => {
         setFormData(blankFormData);
       }
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.message);
       console.log(error);
     }
   }, [location.state]);
@@ -180,7 +180,7 @@ const ConsumerOnboarding = (props: any) => {
         }
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error(error);
       });
   };

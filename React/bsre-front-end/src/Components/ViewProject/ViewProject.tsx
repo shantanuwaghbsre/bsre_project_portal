@@ -670,7 +670,7 @@ const ViewProject = (props: any) => {
           onPageNumberClick={setCurrentPage}
           project_in_phase={project.phase_1.project_in_phase}
         />
-        <h1>{project.phase_1.consumer_name}</h1>
+        <h3 style={{marginTop:"50px"}}>Consumer Name:{project.phase_1.consumer_name}</h3>
         {/* <Table>
         <TableBody>
           <TableRow>
