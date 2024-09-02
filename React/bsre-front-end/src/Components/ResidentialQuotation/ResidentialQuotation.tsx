@@ -23,7 +23,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Loading from "../Loading/Loading";
-import "react-toastify/dist/ReactToastify.css";
 import { useRole } from "../../Contexts/RoleContext";
 import toast from "react-hot-toast";
 const ResidentialQuotation = (props: any) => {
@@ -261,7 +260,8 @@ const ResidentialQuotation = (props: any) => {
       axios
         .post(urls["calculateURL"], postObject)
         .then(function (response) {
-          toast.success("GUVNL Amount Calculated Successfully");
+          console.log(response.data, "calculateURL")
+          toast.success(`GUVNL Amount Calculated Successfully !`);
           if (response.data["guvnl_amount"] == null) {
             setErrorMessage([
               "Error calculating GUVNL Amount. Please check your inputs.",
@@ -399,7 +399,11 @@ const ResidentialQuotation = (props: any) => {
         setLoading(false);
         if (response.data.completed) {
           resetForm();
-          toast.success("Successfully created Quotation");
+          toast.success(`Successfully created Quotation ${response.data.quotation_number}`,
+            {
+              duration: 10000,
+            }
+          );
           setSuccessMessage(
             "Successfully created Quotation number - " +
             response.data.quotation_number
