@@ -16,7 +16,6 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import ViewProject from "./Components/ViewProject/ViewProject";
 import { useState } from "react";
 import Keycloak from "keycloak-js";
-import { ToastContainer } from "react-toastify";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { ErrorPage } from "./Components/ErrorPage/ErrorPage";
@@ -84,14 +83,7 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer
-        style={{
-          width: "400px",
-          marginTop: "60px",
-          padding: "0 !important",
-          zIndex: "2",
-        }}
-      />
+
       <Toaster
         position="top-center"
         reverseOrder={false}
