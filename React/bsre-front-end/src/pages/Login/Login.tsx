@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Stack, TextField, MenuItem, Button, Typography, Box, Container } from '@mui/material';
 import { useState } from 'react';
-import { toast, ToastContainer } from "react-toastify";
 
 import axios from 'axios';
 import Loading from '../../Components/Loading/Loading';
 import { useRole } from '../../Contexts/RoleContext';
 import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
 
 // Example logo URL, replace with your actual logo
 const logoUrl = '/Images/BS-LOGO.jpg';
@@ -79,20 +79,13 @@ const Login = () => {
 
                         // Use the role from the response to login
                         login(response.data.role, username, selectedBranch);
-                        toast.success(
-                            "Successfully Login ! Please wait redirecting...",
-                            {
-                                position: "top-center",
-                                theme: "colored",
-                                autoClose: 2000,
-                                hideProgressBar: true,
-                            }
-                        );
+                        toast.success(`Login successful ${username}`,);
                         navigate("/")
                     }
                 })
                 .catch(function (error) {
                     setLoading(false);
+                    toast.error("Login failed");
                     console.log(error);
                 });
         }
@@ -113,7 +106,6 @@ const Login = () => {
 
     return (
         <>
-            <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
             {loading ? (
                 <div
                     style={{
