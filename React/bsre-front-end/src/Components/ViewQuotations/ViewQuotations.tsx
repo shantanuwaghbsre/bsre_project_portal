@@ -6,7 +6,7 @@ import Loading from "../Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import { useRole } from '../../Contexts/RoleContext';
-import { toast, ToastContainer } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 const ViewQuotations = (props: any) => {
   //for showing columns in table record
@@ -78,11 +78,9 @@ const ViewQuotations = (props: any) => {
     setPage(0);
     setLoading(true);
   };
-  console.log(quotations)
 
   return (
     <>
-      <ToastContainer />
       {loading ?
         <div className='loadinginComponent'>
           <Loading />
