@@ -23,9 +23,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Loading from "../Loading/Loading";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRole } from "../../Contexts/RoleContext";
+import toast from "react-hot-toast";
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
 
@@ -248,6 +248,7 @@ const ResidentialQuotation = (props: any) => {
       setIsFormValid(false);
     } else {
       setIsFormValid(true);
+      setErrorMessage([]);
       const postObject = {
         totalKiloWatts: formData["totalKiloWatts"],
         numberOfPanels: formData["numberOfPanels"],
@@ -260,6 +261,7 @@ const ResidentialQuotation = (props: any) => {
       axios
         .post(urls["calculateURL"], postObject)
         .then(function (response) {
+          toast.success("GUVNL Amount Calculated Successfully");
           if (response.data["guvnl_amount"] == null) {
             setErrorMessage([
               "Error calculating GUVNL Amount. Please check your inputs.",
@@ -280,10 +282,9 @@ const ResidentialQuotation = (props: any) => {
           }
         })
         .catch(function (error) {
-          // toast.error(error.message);
+          toast.error("Error calculating GUVNL Amount. Please check your inputs.");
           console.log(error);
         });
-      console.log("form is valid");
     }
   };
 
@@ -398,6 +399,7 @@ const ResidentialQuotation = (props: any) => {
         setLoading(false);
         if (response.data.completed) {
           resetForm();
+          toast.success("Successfully created Quotation");
           setSuccessMessage(
             "Successfully created Quotation number - " +
             response.data.quotation_number
@@ -410,7 +412,7 @@ const ResidentialQuotation = (props: any) => {
         }
       })
       .catch(function (error) {
-        // toast.error(error.message);
+        toast.error("Error while creating Quotation");
         console.log(error);
       });
   };
@@ -427,7 +429,6 @@ const ResidentialQuotation = (props: any) => {
 
   return (
     <>
-      <ToastContainer />
       {loading ? (
         <div
           style={{
@@ -452,7 +453,6 @@ const ResidentialQuotation = (props: any) => {
           >
             <div className="table-data">
               <label className="search-label">Residential Quotation</label>
-              <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
               <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                   <TableBody>
