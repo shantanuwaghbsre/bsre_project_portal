@@ -22,7 +22,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import ViewAllConsumers from "../ViewAllConsumers/ViewAllConsumers";
 import { useRole } from "../../Contexts/RoleContext";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 
 
@@ -166,21 +166,22 @@ const ConsumerOnboarding = (props: any) => {
       .then((response) => {
         console.log(response.data);
         if (response.data["success"] == true) {
+          toast.success("Consumer onboarding successful!")
           axios
             .get(urls["getConsumerURL"], {
               params: { consumer_id: response.data["consumer_id"] },
             })
+
             .then((response_) => {
               console.log(response_.data);
               goToConsumer(response_.data);
             });
         } else {
-          alert();
           toast.error("Consumer onboarding failed!")
         }
       })
       .catch((error) => {
-        // toast.error(error.message);
+        toast.error("Consumer onboarding failed!")
         console.error(error);
       });
   };
