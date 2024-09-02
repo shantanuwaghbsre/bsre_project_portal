@@ -19,9 +19,9 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import Loading from "../Loading/Loading";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import toast from "react-hot-toast";
 
 const urls = {
   submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
@@ -257,7 +257,6 @@ const AddAgent = (props: any) => {
           <Paper sx={{ width: "100%" }}>
             <div className="table-data">
               <label className="search-label">Add Agents</label>
-              <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
               <div
                 style={{
                   display: "flex",
