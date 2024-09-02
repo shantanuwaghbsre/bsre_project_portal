@@ -13,8 +13,8 @@ import {
     Link
 } from "@mui/material";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import Loading from "../../Components/Loading/Loading";
+import toast from "react-hot-toast";
 
 const urls = {
     submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
