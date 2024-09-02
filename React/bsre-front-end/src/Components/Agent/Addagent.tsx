@@ -202,7 +202,7 @@ const AddAgent = (props: any) => {
       isFormValid_ = false;
       setErrorMessage(errorMessage_);
     } else {
-      setErrorMessage([]); // Clear errors if validation passes
+      setErrorMessage([]);
     }
 
     setIsFormValid(isFormValid_);
