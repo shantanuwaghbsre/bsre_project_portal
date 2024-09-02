@@ -3,8 +3,9 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { useRole } from '../../Contexts/RoleContext';
+import toast from 'react-hot-toast';
 
 
 const StartProject = (props: any) => {
@@ -161,6 +162,7 @@ const StartProject = (props: any) => {
         console.log(postObject.toString(), "postObj")
         axios.post(urls['createProjectURL'], postObject)
             .then(response => {
+                toast.success('Project created successfully')
                 if (response.data["success"] == true) {
                     goToProject(project);
                 }
@@ -170,7 +172,7 @@ const StartProject = (props: any) => {
             }
             )
             .catch(error => {
-                // toast.error(error.message);
+                toast.error("Project creation failed");
                 console.error(error);
             });
     };
