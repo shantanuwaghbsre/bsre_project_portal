@@ -303,20 +303,45 @@ const StartProject = (props: any) => {
                                         />
                                     </TableCell>
                                 </TableRow>
-                                {/* <TableRow>
+
+                                <TableRow>
                                     <TableCell>
                                         <InputLabel>Current Phase</InputLabel>
                                     </TableCell>
                                     <TableCell>
                                         <TextField
-                                            label="Current Phase"
-                                            type="text"
-                                            name="current_phase"
+                                            select
+                                            label="current phase"
+                                            name='current_phase'
                                             value={project.current_phase}
                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                        />
+                                            fullWidth
+                                            margin="normal"
+                                        >
+                                            <MenuItem value={"  "}>1</MenuItem>
+                                            <MenuItem value={" "}>3</MenuItem>
+                                        </TextField>
                                     </TableCell>
-                                </TableRow> */}
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell>
+                                        <InputLabel>Installation Phase</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            select
+                                            label="installation phase"
+                                            name='installation_phase'
+                                            value={project.installation_phase}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                            fullWidth
+                                            margin="normal"
+                                        >
+                                            <MenuItem value={"  "}>1</MenuItem>
+                                            <MenuItem value={" "}>3</MenuItem>
+                                        </TextField>
+                                    </TableCell>
+                                </TableRow>
                                 <TableRow>
                                     <TableCell>
                                         <InputLabel>Current Sanctioned Load</InputLabel>
