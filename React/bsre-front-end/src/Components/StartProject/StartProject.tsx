@@ -1,6 +1,6 @@
-import { FormControl, InputLabel, Select, Input, MenuItem, TextField, Menu, ListSubheader, InputAdornment, Autocomplete, Table, TableBody, TableCell, TableRow, Button, List, ListItem, ListItemText } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, TextField, Table, TableBody, TableCell, TableRow, Button, List, ListItem, ListItemText } from '@mui/material'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
 import { useRole } from '../../Contexts/RoleContext';
@@ -64,7 +64,7 @@ const StartProject = (props: any) => {
         "searchSpecificQuotationURL": import.meta.env.VITE_BACKEND_URL + "/searchSpecificQuotation"
     }
 
-    let _location = useLocation();
+    const _location = useLocation();
 
     useEffect(() => {
         try {
