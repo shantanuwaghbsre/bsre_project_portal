@@ -9,15 +9,13 @@ import { useRole } from '../../Contexts/RoleContext';
 
 const StartProject = (props: any) => {
     const userdata = useRole();
-    console.log("   uhuhihu", userdata)
     axios.defaults.headers.common['token'] = props.token
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const goToProject = (project) => navigate('/ViewProject', { state: { "consumer_number": project.consumer_number, "project_in_phase": project.project_in_phase, "for_consumer_id": project.for_consumer_id } });
     const [currentPage, setCurrentPage] = useState(1);
+
     const [project, setProject] = useState({
         meter_number: "",
-        current_phase: "",
-        installation_phase: "",
         current_sanctioned_load: "",
         average_consumption_of_unit: "",
         consumer_number: "",
@@ -37,13 +35,19 @@ const StartProject = (props: any) => {
         national_portal_registration_number: "",
         from_quotation: "",
         project_email: "",
-        project_in_phase: 1,
         for_consumer_id: "",
+        current_phase: "",
+        installation_phase: "",
+        branch: "",
         solar_inverter_make: "",
         solar_panel_wattage: "",
         number_of_panels: "",
-        other_documents_names: [],
-    })
+        cancelled_cheque: "",
+        electricity_bill: "",
+        property_tax: "",
+        other_documents: "",
+        other_documents_names: []
+    });
     const [files, setFiles] = useState({
         property_tax: new Blob(),
         electricity_bill: new Blob(),
@@ -52,6 +56,7 @@ const StartProject = (props: any) => {
     })
 
     const [quotationSearchResults, setQuotationSearchResults] = useState<string[]>([]);
+    const [errors, setErrors] = useState({});
 
     const urls = {
         "searchQuotationURL": import.meta.env.VITE_BACKEND_URL + "/searchQuotations",
@@ -153,7 +158,7 @@ const StartProject = (props: any) => {
             postObject.append(key, value);
 
         }
-
+        console.log(postObject.toString(), "postObj")
         axios.post(urls['createProjectURL'], postObject)
             .then(response => {
                 if (response.data["success"] == true) {
@@ -170,8 +175,11 @@ const StartProject = (props: any) => {
             });
     };
 
+
     const handleNextPage = () => {
-        setCurrentPage(currentPage + 1);
+
+        setCurrentPage((prevPage) => prevPage + 1);
+
     };
 
     const handlePreviousPage = () => {
@@ -198,6 +206,8 @@ const StartProject = (props: any) => {
         }
 
     }
+
+    console.log(project, "projectObj")
 
     return (
 
@@ -281,6 +291,20 @@ const StartProject = (props: any) => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell>
+                                        <InputLabel>Project Email</InputLabel>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
+                                            label="Project Email"
+                                            type="text"
+                                            name="project_email"
+                                            value={project.project_email}
+                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                {/* <TableRow>
+                                    <TableCell>
                                         <InputLabel>Current Phase</InputLabel>
                                     </TableCell>
                                     <TableCell>
@@ -292,7 +316,7 @@ const StartProject = (props: any) => {
                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                         />
                                     </TableCell>
-                                </TableRow>
+                                </TableRow> */}
                                 <TableRow>
                                     <TableCell>
                                         <InputLabel>Current Sanctioned Load</InputLabel>
