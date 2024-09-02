@@ -3,7 +3,6 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import SelectListWithText from '../SelectListWithText/SelectListWithText';
-import { ToastContainer } from 'react-toastify';
 import { useRole } from '../../Contexts/RoleContext';
 import toast from 'react-hot-toast';
 
@@ -214,7 +213,6 @@ const StartProject = (props: any) => {
     return (
 
         <>
-            <ToastContainer />
             <div className='table-data' style={{ paddingTop: 64 }}>
                 {currentPage === 1 &&
                     <form onSubmit={handleSubmit}>
