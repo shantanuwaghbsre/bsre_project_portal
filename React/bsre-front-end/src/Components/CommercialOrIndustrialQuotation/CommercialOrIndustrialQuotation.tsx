@@ -14,18 +14,15 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Snackbar,
-  Alert,
   SelectChangeEvent,
   InputLabel,
   FormControl,
-  FormLabel,
 } from "@mui/material";
 import axios from "axios";
 import Loading from "../Loading/Loading";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import { useRole } from "../../Contexts/RoleContext";
+import toast from "react-hot-toast";
 
 const CommercialOrIndustrialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
@@ -204,7 +201,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
   const [agentOptions, setAgentOptions] = useState([]);
   const [errorMessage, setErrorMessage] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
-  const [isFormValid, setIsFormValid] = useState<Boolean>(false);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const { branchName, role, username } = useRole()
 
@@ -284,17 +281,9 @@ const CommercialOrIndustrialQuotation = (props: any) => {
             <li style={{ textAlign: "left" }}>{error}</li>
           ))}
           <br />
-        </div>,
-        {
-          position: "top-right",
-          autoClose: false,
-          theme: "colored",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        }
+        </div>, {
+        position: 'top-right'
+      }
       );
     }
   }, [errorMessage]);
@@ -302,7 +291,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
   const validateAndCalculate = () => {
     let isFormValid_ = false;
     isFormValid_ = true;
-    let errorMessage_ = [];
+    const errorMessage_ = [];
     if (!formData["agentID"]) {
       errorMessage_.push("Agent ID number required");
     }
@@ -374,12 +363,15 @@ const CommercialOrIndustrialQuotation = (props: any) => {
     if (isNaN(calculationData["gstOnAddOnWork"])) {
       errorMessage_.push("GST On Add On Work must be a number.");
     }
-    if (!errorMessage_.length) {
-      isFormValid_ = true;
-    } else {
+    if (errorMessage_.length > 0) {
+      isFormValid_ = false;
       setErrorMessage(errorMessage_);
+    } else {
+      setErrorMessage([]);
     }
     setIsFormValid(isFormValid_);
+
+
   };
 
   const handleClose = () => {
@@ -420,7 +412,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
   }, [formData, calculationData]);
 
   const urls = {
-    // "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
+    "calculateURL": import.meta.env.VITE_BACKEND_URL + "/calculate",
     // "dummyURL": import.meta.env.VITE_BACKEND_URL + "/dummyAPI",
     submitURL:
       import.meta.env.VITE_BACKEND_URL + "/submitIndustrialCommercialQuotation",
@@ -432,39 +424,39 @@ const CommercialOrIndustrialQuotation = (props: any) => {
     setLoading(true);
     setOpacity_value(0.3);
     const postObject = {
-       "location": formData.location,
-       "city": formData.city,
-       "quotation_type": formData.quotationType,
-       "agent_code": formData.agentID,
-       "agent_name": formData.agentName,
-       "consumer_name": formData.customerName,
-       "consumer_address": formData.customerAddress,
-       "consumer_mobile_number": formData.customerPhoneNumber,
-       "consumer_email": formData.customerEmail,
-       "solar_module_name": formData.solarModule,
-       "solar_panel_type": formData.solarModuleType,
-       "number_of_panels": formData.numberOfPanels,
-       "solar_module_wattage": formData.solarModuleWattage,
-       "solar_structure": formData.solarStructure,
-       "total_kilowatts": formData.totalKiloWatts,
-       "solar_inverter_make": formData.solarInverter,
-       "inverter_capacity": formData.inverterCapacity,
-       "solar_cable": formData.solarCableSelect,
-       "switch_and_gear_protection_make": formData.switchGearAndProtection,
-       "sprinkler_installation": formData.sprinklerInstallation,
-       "rate_per_watt": calculationData.ratePerWatt,
-       "gst_per_watt": calculationData.gstPerWatt,
-       "electricity_unit_rate": calculationData.electricityUnitRate,
-       "inflation_in_unit_rate": calculationData.inflationInUnitRate,
-       "is_loan": calculationData.isLoan,
-       "loan_amount_on_project": calculationData.loanAmountOnProject,
-       "loan_term": calculationData.loanTerm,
-       "interest_rate_on_loan": calculationData.interestRateOnLoan,
-       "reinvestment_rate": calculationData.reinvestmentRate,
-       "any_extra_cost_on_add_on_work": calculationData.anyExtraCostOnAddOnWork,
-       "gst_on_add_on_work": calculationData.gstOnAddOnWork,
-       "is_subsidy": calculationData.isSubsidy,
-       "subsidy_per_watt": calculationData.subsidyPerWatt,
+      "location": formData.location,
+      "city": formData.city,
+      "quotation_type": formData.quotationType,
+      "agent_code": formData.agentID,
+      "agent_name": formData.agentName,
+      "consumer_name": formData.customerName,
+      "consumer_address": formData.customerAddress,
+      "consumer_mobile_number": formData.customerPhoneNumber,
+      "consumer_email": formData.customerEmail,
+      "solar_module_name": formData.solarModule,
+      "solar_panel_type": formData.solarModuleType,
+      "number_of_panels": formData.numberOfPanels,
+      "solar_module_wattage": formData.solarModuleWattage,
+      "solar_structure": formData.solarStructure,
+      "total_kilowatts": formData.totalKiloWatts,
+      "solar_inverter_make": formData.solarInverter,
+      "inverter_capacity": formData.inverterCapacity,
+      "solar_cable": formData.solarCableSelect,
+      "switch_and_gear_protection_make": formData.switchGearAndProtection,
+      "sprinkler_installation": formData.sprinklerInstallation,
+      "rate_per_watt": calculationData.ratePerWatt,
+      "gst_per_watt": calculationData.gstPerWatt,
+      "electricity_unit_rate": calculationData.electricityUnitRate,
+      "inflation_in_unit_rate": calculationData.inflationInUnitRate,
+      "is_loan": calculationData.isLoan,
+      "loan_amount_on_project": calculationData.loanAmountOnProject,
+      "loan_term": calculationData.loanTerm,
+      "interest_rate_on_loan": calculationData.interestRateOnLoan,
+      "reinvestment_rate": calculationData.reinvestmentRate,
+      "any_extra_cost_on_add_on_work": calculationData.anyExtraCostOnAddOnWork,
+      "gst_on_add_on_work": calculationData.gstOnAddOnWork,
+      "is_subsidy": calculationData.isSubsidy,
+      "subsidy_per_watt": calculationData.subsidyPerWatt,
     }
     // const postObject = {
     //   location: "Ahmedabad",
@@ -511,12 +503,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
           toast.success(
             "Successfully created Quotation number - " +
             response.data.quotation_number,
-            {
-              position: "top-center",
-              theme: "colored",
-              autoClose: 2000,
-              hideProgressBar: true,
-            }
+
           );
         } else {
           setErrorMessage((prevErrorMessage) => [
@@ -569,7 +556,6 @@ const CommercialOrIndustrialQuotation = (props: any) => {
               style={{ opacity: opacity_value }}
               id="quotation"
             >
-              <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
               <label className="search-label">
                 Commercial/Industrial Quotation
               </label>
