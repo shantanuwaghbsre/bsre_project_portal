@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import Loading from "../Loading/Loading";
-import { toast } from 'react-toastify';
 import { useRole } from '../../Contexts/RoleContext';
 import CollapsibleTable from "./CollapsibleTable";
+import toast from 'react-hot-toast';
 
 
 const ViewAgent = (props: any) => {
