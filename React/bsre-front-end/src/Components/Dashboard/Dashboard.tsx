@@ -17,7 +17,7 @@ import Loading from "../Loading/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
 import { useRole } from "../../Contexts/RoleContext";
-import { toast, ToastContainer } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Dashboard = (props: any) => {
   //for showing columns in table record
@@ -102,7 +102,6 @@ const Dashboard = (props: any) => {
 
   return (
     <>
-      <ToastContainer />
       {loading ? (
         <div className="loadinginComponent">
           <Loading />
@@ -251,11 +250,12 @@ const Dashboard = (props: any) => {
                           );
                         })
                     ) : (
-                      <TableRow>
-                        <TableCell colSpan={8} className="Records_Not_Found">
-                          <span>Records Not Found</span>
-                        </TableCell>
-                      </TableRow>
+                      // <TableRow>
+                      //   <TableCell colSpan={8} className="Records_Not_Found">
+                      //     <span></span>
+                      //   </TableCell>
+                      // </TableRow>
+                      null
                     )}
                   </TableBody>
                 </Table>
