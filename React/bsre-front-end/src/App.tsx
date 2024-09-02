@@ -29,6 +29,7 @@ import ChangePwd from "./pages/ChangePwd/ChangePwd";
 import { useRole } from "./Contexts/RoleContext";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import NotAuthorized from "./Components/NotAuthorized/NotAuthorized";
+import { Toaster } from "react-hot-toast";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -90,6 +91,10 @@ const App = () => {
           padding: "0 !important",
           zIndex: "2",
         }}
+      />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
       />
       {isLoggedIn ? (
         <BrowserRouter>
