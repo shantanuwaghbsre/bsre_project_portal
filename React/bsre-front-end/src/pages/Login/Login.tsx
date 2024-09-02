@@ -81,6 +81,8 @@ const Login = () => {
                         login(response.data.role, username, selectedBranch);
                         toast.success(`Login successful ${username}`,);
                         navigate("/")
+                    } else {
+                        toast.error("login failed");
                     }
                 })
                 .catch(function (error) {
