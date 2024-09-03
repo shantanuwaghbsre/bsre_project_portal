@@ -184,6 +184,7 @@ const Login = () => {
                                     Login
                                 </Button>
                             </Stack>
+                            <Typography >don't have an account <a href="/signup">Register</a></Typography>
                         </Box>
                     </Container>
                 </>
