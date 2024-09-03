@@ -9,7 +9,6 @@ import {
     Stack,
     Typography,
     Paper,
-    Box,
     Link
 } from "@mui/material";
 import axios from "axios";
@@ -140,7 +139,6 @@ const Signup = (props: any) => {
                 </div>,
                 {
                     position: "top-right",
-                    autoClose: false,
                     theme: "colored",
                     hideProgressBar: false,
                     closeOnClick: true,
@@ -196,7 +194,6 @@ const Signup = (props: any) => {
                 </div>
             ) : (
                 <Paper sx={{ padding: 3, maxWidth: 1000, margin: 'auto' }}>
-                    <ToastContainer style={{ width: "400px", marginTop: "60px" }} />
                     <Stack spacing={2} sx={{ width: "100%", justifyContent: 'center', alignItems: 'center' }}>
                         <img src={logoUrl} alt="Logo" style={{ width: '50px', marginBottom: '20px' }} />
                         <Typography variant="h5" sx={{ textAlign: 'center', fontFamily: 'sans-serif', fontWeight: 'bold' }} gutterBottom>
