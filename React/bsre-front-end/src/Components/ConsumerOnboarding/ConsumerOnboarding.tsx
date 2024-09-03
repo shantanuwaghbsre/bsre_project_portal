@@ -53,6 +53,7 @@ const ConsumerOnboarding = (props: any) => {
   const [agentOptions, setAgentOptions] = useState([]);
   const [formData, setFormData] = useState(blankFormData);
   const [currentPage, setCurrentPage] = useState(1);
+  const [errors, setErrors] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -161,7 +162,8 @@ const ConsumerOnboarding = (props: any) => {
       postObject.append(key, value);
     }
 
-    axios
+    if(validateForm()){
+      axios
       .post(urls["onboardConsumer"], postObject)
       .then((response) => {
         console.log(response.data);
@@ -184,10 +186,14 @@ const ConsumerOnboarding = (props: any) => {
         toast.error("Consumer onboarding failed!")
         console.error(error);
       });
+    }
+   
   };
 
   const handleNextPage = () => {
-    setCurrentPage(currentPage + 1);
+    if(validateForm()){
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handlePreviousPage = () => {
@@ -209,7 +215,113 @@ const ConsumerOnboarding = (props: any) => {
     }));
   };
 
+  const validatePage1 = () => {
+    const errors = {};
+    
+    // Define regex patterns
+    const agentCodeRegex = /^[A-Z0-9]{5,10}$/; // Example pattern: 5-10 alphanumeric characters
+  
+    // Validate onboardedByAgentCode
+    if (!formData.onboardedByAgentCode || !agentCodeRegex.test(formData.onboardedByAgentCode)) {
+      errors.onboardedByAgentCode = 'Invalid agent code. Must be 5-10 alphanumeric characters.';
+    }
+  
+    return errors;
+  };
+  
+  const validatePage2 = () => {
+    const errors = {};
+  
+    // Define regex patterns
+    const mobileNumberRegex = /^[1-9]\d{9}$/; // 10 digit mobile number, starting with 1-9
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation pattern
+  
+    // Validate consumerName
+    if (!formData.consumerName || formData.consumerName.trim() === '') {
+      errors.consumerName = 'Name cannot be empty.';
+    }
+  
+    // Validate consumerAddress
+    if (!formData.consumerAddress || formData.consumerAddress.trim() === '') {
+      errors.consumerAddress = 'Address cannot be empty.';
+    }
+  
+    // Validate consumerMobileNumber
+    if (!formData.consumerMobileNumber || !mobileNumberRegex.test(formData.consumerMobileNumber)) {
+      errors.consumerMobileNumber = 'Invalid mobile number. Must be a 10-digit number starting with 1-9.';
+    }
+  
+    // Validate alternatePhoneNumber
+    if (!formData.alternatePhoneNumber && !mobileNumberRegex.test(formData.alternatePhoneNumber)) {
+      errors.alternatePhoneNumber = 'Invalid alternate phone number. Must be a 10-digit number starting with 1-9.';
+    }
+  
+    // Validate consumerEmail
+    if (!formData.consumerEmail || !emailRegex.test(formData.consumerEmail)) {
+      errors.consumerEmail = 'Invalid email address.';
+    }
+  
+    return errors;
+  };
+  
 
+  const validatePage3 = () => {
+    const errors = {};
+  
+    // Define regex patterns
+    const aadharCardRegex = /^[2-9]{1}[0-9]{11}$/; // Aadhar card number should be 12 digits long, starting with 2-9
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation pattern
+  
+    // Validate Aadhar card file
+    if (!files.aadharCard || files.aadharCard.size === 0) {
+      errors.aadharCard = 'Aadhar card file is missing or invalid';
+    }
+  
+    // Validate PAN card file
+    if (!files.panCard || files.panCard.size === 0) {
+      errors.panCard = 'PAN card file is missing or invalid';
+    }
+  
+    // Validate Passport photo file
+    if (files.passportPhoto && files.passportPhoto.size === 0) {
+      errors.passportPhoto = 'Passport photo file is invalid';
+    }
+  
+    // Validate Aadhar card number
+    if (!formData.aadharCardNumber || !aadharCardRegex.test(formData.aadharCardNumber)) {
+      errors.aadharCardNumber = 'Invalid Aadhar card number';
+    }
+  
+    // Validate PAN card number
+    if (!formData.panCardNumber || formData.panCardNumber.trim() === '') {
+      errors.panCardNumber = 'Invalid PAN card number its must be ten-character long alpha-numeric unique';
+    }
+  
+    return errors;
+  };
+  
+
+  const validateForm = () => {
+    let errors = {};
+    switch (currentPage) {
+        case 1:
+            errors = validatePage1();
+            break;
+        case 2:
+            errors = validatePage2();
+            break;
+        case 3:
+            errors = validatePage3();
+            break;
+        default:
+            break;
+    }
+    setErrors(errors);
+    Object.values(errors).forEach((message) => toast.error(message, {
+        position: "top-right"
+    }));
+    return Object.keys(errors).length === 0;
+};
   return (
     <Paper sx={{ width: "100%" }}>
       <div className="table-data">
@@ -412,6 +524,7 @@ const ConsumerOnboarding = (props: any) => {
                       name="aadharCardNumber"
                       value={formData.aadharCardNumber}
                       onChange={(e) => handleChange(e)}
+                      inputProps={{ maxLength: 12 }}
                     />
                   </TableCell>
                 </TableRow>
@@ -443,6 +556,7 @@ const ConsumerOnboarding = (props: any) => {
                       name="panCardNumber"
                       value={formData.panCardNumber}
                       onChange={(e) => handleChange(e)}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </TableCell>
                 </TableRow>
