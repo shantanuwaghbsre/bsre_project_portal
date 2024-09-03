@@ -132,7 +132,7 @@ const ViewQuotations = (props: any) => {
                       <TableRow>
                         <TableCell colSpan={8} className="Records_Not_Found">
                           <span>
-                            {"Records Not Found"}
+                            {"No Data"}
                           </span>
                         </TableCell>
                       </TableRow>}
