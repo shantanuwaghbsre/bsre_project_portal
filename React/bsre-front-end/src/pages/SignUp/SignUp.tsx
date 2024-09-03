@@ -242,8 +242,13 @@ const Signup = (props: any) => {
                                 variant="outlined"
                                 sx={{ width: "400px" }}
                                 value={formData["agentMobileNumber"]}
-                                onChange={(e) => handleFormChange("agentMobileNumber", e.target.value)}
-                                inputProps={{ maxLength: 10 }}  
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value) && value.length <= 10) {
+                                        handleFormChange("agentMobileNumber", value);
+                                    }
+                                }}
+                                inputProps={{ maxLength: 10 }}
                             />
                             <TextField
                                 label="Address"
