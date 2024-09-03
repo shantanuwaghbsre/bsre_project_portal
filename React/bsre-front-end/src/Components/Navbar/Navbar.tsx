@@ -244,7 +244,7 @@ export default function Navbar(props: any) {
                 <ListItemText primary="View Agents" />
               </ListItemButton>
             </ListItem>
-            <ListItem
+            {/* <ListItem
               disablePadding
               onClick={() => handleNavigation("/AddAgent")}
             >
@@ -254,7 +254,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Add Agent" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
           </List>
         </Collapse>
         <ListItem disablePadding onClick={handleCollapseConsumer}>
