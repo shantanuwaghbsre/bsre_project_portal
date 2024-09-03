@@ -54,6 +54,12 @@ const ConsumerOnboarding = (props: any) => {
   const [formData, setFormData] = useState(blankFormData);
   const [currentPage, setCurrentPage] = useState(1);
   const [errors, setErrors] = useState({});
+  const [filesNames, setFilesNames] = useState({
+    aadharCard: "",
+    panCard: "",
+    passportPhoto: "",
+  });
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -122,6 +128,11 @@ const ConsumerOnboarding = (props: any) => {
     ) {
       console.log(typeof e.target.files[0]);
       setFiles({ ...files, [e.target.name]: e.target.files[0] });
+      setFilesNames({
+        ...filesNames,
+        [e.target.name]: e.target.files[0].name,
+      })
+
     } else if (name == "otherDocuments") {
       setFiles((files) => ({
         ...files,
@@ -511,6 +522,7 @@ const ConsumerOnboarding = (props: any) => {
                         hidden
                       />
                     </Button>
+                    {files.aadharCard ? <p>{files.aadharCard.name}</p> : null}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -543,6 +555,7 @@ const ConsumerOnboarding = (props: any) => {
                         hidden
                       />
                     </Button>
+                    {files.panCard ? <p>{files.panCard.name}</p> : null}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -574,6 +587,7 @@ const ConsumerOnboarding = (props: any) => {
                         hidden
                       />
                     </Button>
+                    {files.passportPhoto ? <p>{files.passportPhoto.name}</p> : null}
                   </TableCell>
                 </TableRow>
                 <TableRow>
