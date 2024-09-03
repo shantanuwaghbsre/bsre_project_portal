@@ -312,7 +312,13 @@ const ConsumerOnboarding = (props: any) => {
                       type="text"
                       name="consumerMobileNumber"
                       value={formData.consumerMobileNumber}
-                      onChange={(e) => handleChange(e)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d{0,10}$/.test(value)) {
+                          handleChange(e);
+                        }
+                      }}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </TableCell>
                 </TableRow>
@@ -326,7 +332,13 @@ const ConsumerOnboarding = (props: any) => {
                       type="text"
                       name="alternatePhoneNumber"
                       value={formData.alternatePhoneNumber}
-                      onChange={(e) => handleChange(e)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d{0,10}$/.test(value)) {
+                          handleChange(e);
+                        }
+                      }}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </TableCell>
                 </TableRow>
