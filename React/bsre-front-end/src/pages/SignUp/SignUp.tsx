@@ -100,7 +100,7 @@ const Signup = (props: any) => {
                     setLoading(false);
                     if (response.data.completed) {
                         resetForm();
-                        toast.success(`Successfully created`, {
+                        toast.success(`Successfully created user ${response.data.agent_code}`, {
                             position: "top-center",
                             theme: "colored",
                             autoClose: 2000,
