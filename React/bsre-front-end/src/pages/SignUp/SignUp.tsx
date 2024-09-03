@@ -46,7 +46,6 @@ const Signup = (props: any) => {
 
     const agentStateOptions = {
         "Gujarat": [
-            'gbv',
             'Amreli',
             'Bhavnagar',
             'Bharuch',
