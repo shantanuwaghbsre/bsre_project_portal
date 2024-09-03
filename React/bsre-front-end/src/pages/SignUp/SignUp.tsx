@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import Loading from "../../Components/Loading/Loading";
 import toast from "react-hot-toast";
+import { kMaxLength } from "buffer";
 
 const urls = {
     submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
@@ -237,11 +238,17 @@ const Signup = (props: any) => {
                             </FormControl>
                             <TextField
                                 label="Agent Mobile Number"
-                                type="tel"
+                                type="number"
                                 variant="outlined"
                                 sx={{ width: "400px" }}
                                 value={formData["agentMobileNumber"]}
-                                onChange={(e) => handleFormChange("agentMobileNumber", e.target.value)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value) && value.length <= 10) {
+                                        handleFormChange("agentMobileNumber", value);
+                                    }
+                                }}
+                                inputProps={{ maxLength: 10 }}
                             />
                             <TextField
                                 label="Address"
