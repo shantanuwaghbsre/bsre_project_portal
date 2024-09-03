@@ -138,7 +138,6 @@ const StartProject = (props: any) => {
         event.preventDefault();
 
         const postObject = new FormData();
-        console.log(files);
         for (const [filename, file] of Object.entries(files)) {
             console.log(filename)
             if (filename == "other_documents") {
@@ -176,11 +175,109 @@ const StartProject = (props: any) => {
             });
     };
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    const validatePage1 = () => {
+        const errors = {};
+        if (!project.from_quotation) errors.from_quotation = 'Quotation is required';
+        return errors;
+    };
+
+    const validatePage2 = () => {
+        const errors = {};
+        if (project.meter_number?.length === 0) errors.meter_number = 'Meter number is required';
+
+        if (!emailRegex.test(project.project_email)) errors.project_email = 'Valid email is required';
+        // if (project.current_phase === "") errors.current_phase = 'Current phase is required';
+        // if (project.installation_phase === "") errors.installation_phase = 'Installation phase is required';
+        if (project.current_sanctioned_load === "") errors.current_sanctioned_load = 'Current sanctioned load is required';
+        if (project.average_consumption_of_unit === "") errors.average_consumption_of_unit = 'Average consumption is required';
+        if (project.consumer_number === "") errors.consumer_number = 'Consumer number is required';
+        if (files.property_tax === null || files.property_tax === undefined || files.property_tax.size === 0) {
+            errors.property_tax = 'Property tax is required';
+        }
+        // if (!files.electricity_bill !== "") errors.electricity_bill = 'Electricity bill is required';
+        if (files.electricity_bill === null || files.electricity_bill === undefined || files.electricity_bill.size === 0) {
+            errors.electricity_bill = 'Electricity bill is required';
+        }
+        if (files.cancelled_cheque === null || files.cancelled_cheque === undefined || files.cancelled_cheque.size === 0) {
+            errors.cancelled_cheque = 'cancelled cheque  is required';
+        }
+        if (files.other_documents === null || files.other_documents === undefined || files.other_documents.size === 0) {
+            errors.other_documents = 'other_documents cheque  is required';
+        }
+
+        return errors;
+    };
+
+    const validatePage3 = () => {
+        const errors = {};
+        if (!project.project_address) errors.project_address = 'Project address is required';
+        if (!project.latitude) errors.latitude = 'Latitude is required';
+        if (!project.longitude) errors.longitude = 'Longitude is required';
+        return errors;
+    };
+
+    const validatePage4 = () => {
+        const errors = {};
+        if (!project.total_kilowatts) errors.total_kilowatts = 'Total kilowatts is required';
+        if (!project.solar_panel_type) errors.solar_panel_type = 'Solar panel type is required';
+        if (!project.project_cost) errors.project_cost = 'Project cost is required';
+        return errors;
+    };
+
+    const validatePage5 = () => {
+        const errors = {};
+        if (!project.deposit_amount) errors.deposit_amount = 'Deposit amount is required';
+        if (!project.remaining_balance) errors.remaining_balance = 'Remaining balance is required';
+        if (!project.deposited_money_in_words) errors.deposited_money_in_words = 'Deposited money in words is required';
+        if (!project.payment_type) errors.payment_type = 'Payment type is required';
+        if (!project.transaction_number) errors.transaction_number = 'Transaction number is required';
+        if (!project.bank_details_with_branch) errors.bank_details_with_branch = 'Bank details with branch are required';
+        return errors;
+    };
+
+    const validatePage6 = () => {
+        const errors = {};
+        if (!project.national_portal_registration_number) errors.national_portal_registration_number = 'Registration number is required';
+        return errors;
+    };
+
+    const validateForm = () => {
+        let errors = {};
+        switch (currentPage) {
+            case 1:
+                errors = validatePage1();
+                break;
+            case 2:
+                errors = validatePage2();
+                break;
+            case 3:
+                errors = validatePage3();
+                break;
+            case 4:
+                errors = validatePage4();
+                break;
+            case 5:
+                errors = validatePage5();
+                break;
+            case 6:
+                errors = validatePage6();
+                break;
+            default:
+                break;
+        }
+        setErrors(errors);
+        Object.values(errors).forEach((message) => toast.error(message, {
+            position: "top-right"
+        }));
+        return Object.keys(errors).length === 0;
+    };
 
     const handleNextPage = () => {
-
-        setCurrentPage((prevPage) => prevPage + 1);
-
+        if (validateForm()) {
+            setCurrentPage((prev) => prev + 1);
+        }
     };
 
     const handlePreviousPage = () => {
@@ -224,13 +321,19 @@ const StartProject = (props: any) => {
                                     </TableCell>
                                     <TableCell>
                                         <FormControl sx={{ m: 1, minWidth: 220 }}>
-                                            <SelectListWithText searchResults={quotationSearchResults} value={project.from_quotation} change={handleInputChange} label="Select Quotation" />
+                                            <SelectListWithText
+                                                searchResults={quotationSearchResults}
+                                                value={project.from_quotation}
+                                                change={handleInputChange}
+                                                label="Select Quotation" />
                                         </FormControl>
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell colSpan={2} align='right'>
-                                        <button className="btn-next " type="button" onClick={handleNextPage}>
+                                        <button className="btn-next"
+                                            type="button"
+                                            onClick={handleNextPage}>
                                             Next
                                         </button>
                                     </TableCell>
@@ -296,7 +399,7 @@ const StartProject = (props: any) => {
                                     <TableCell>
                                         <TextField
                                             label="Project Email"
-                                            type="text"
+                                            type="email"
                                             name="project_email"
                                             value={project.project_email}
                                             onChange={(e) => handleInputChange(e.target.name, e.target.value)}
