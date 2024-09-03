@@ -158,7 +158,9 @@ const StartProject = (props: any) => {
 
         }
         console.log(postObject.toString(), "postObj")
-        axios.post(urls['createProjectURL'], postObject)
+
+        if(validateForm()){
+            axios.post(urls['createProjectURL'], postObject)
             .then(response => {
                 toast.success('Project created successfully')
                 if (response.data["success"] == true) {
@@ -173,6 +175,8 @@ const StartProject = (props: any) => {
                 toast.error("Project creation failed");
                 console.error(error);
             });
+        }
+        
     };
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -239,7 +243,7 @@ const StartProject = (props: any) => {
 
     const validatePage6 = () => {
         const errors = {};
-        if (!project.national_portal_registration_number) errors.national_portal_registration_number = 'Registration number is required';
+        if (project.national_portal_registration_number === "") errors.national_portal_registration_number = 'Registration number is required';
         return errors;
     };
 
