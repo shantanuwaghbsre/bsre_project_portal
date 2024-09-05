@@ -279,7 +279,7 @@ export default function Navbar(props: any) {
                 <ListItemText primary="View Consumers" />
               </ListItemButton>
             </ListItem>
-            <ListItem
+            {/* <ListItem
               disablePadding
               onClick={() => handleNavigation("/ConsumerOnboarding")}
             >
@@ -289,7 +289,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Onboard Consumer" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
           </List>
         </Collapse>
       </List>
