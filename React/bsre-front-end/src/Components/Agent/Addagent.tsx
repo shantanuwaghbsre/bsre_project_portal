@@ -7,14 +7,9 @@ import {
   TableCell,
   TableRow,
   Button,
-  Grid,
   FormControl,
   Select,
   MenuItem,
-  SelectChangeEvent,
-  List,
-  ListItem,
-  ListItemText,
   TableContainer,
   Paper,
 } from "@mui/material";
@@ -111,7 +106,6 @@ const AddAgent = (props: any) => {
             "Successfully created Agent - " + response.data.agent_code,
             {
               position: "top-center",
-              theme: "colored",
               autoClose: 2000,
               hideProgressBar: true,
             }
