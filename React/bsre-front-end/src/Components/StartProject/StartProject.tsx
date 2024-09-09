@@ -529,8 +529,8 @@ const StartProject = (props: any) => {
                       fullWidth
                       margin="normal"
                     >
-                      <MenuItem value={"  "}>1</MenuItem>
-                      <MenuItem value={" "}>3</MenuItem>
+                      <MenuItem value={"1"}>1</MenuItem>
+                      <MenuItem value={"3"}>3</MenuItem>
                     </TextField>
                   </TableCell>
                 </TableRow>
@@ -550,8 +550,8 @@ const StartProject = (props: any) => {
                       fullWidth
                       margin="normal"
                     >
-                      <MenuItem value={"  "}>1</MenuItem>
-                      <MenuItem value={" "}>3</MenuItem>
+                      <MenuItem value={"1"}>1</MenuItem>
+                      <MenuItem value={"3"}>3</MenuItem>
                     </TextField>
                   </TableCell>
                 </TableRow>
