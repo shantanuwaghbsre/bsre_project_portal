@@ -110,7 +110,7 @@ const Dashboard = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%", padding: "20px", margin: 'auto' }}>
+          <Paper sx={{ width: "100%", padding: "20px", margin: '20px' }}>
             <div className="table-data">
               <label className="search-label">
                 <Typography variant="h6" sx={{ fontWeight: "bold",  }}>Project List</Typography>
