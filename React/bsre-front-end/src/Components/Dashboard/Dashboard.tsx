@@ -9,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -43,14 +44,15 @@ const Dashboard = (props: any) => {
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
-  const { role, branchName, username } = useRole()
+  const { role, branchName, username } = useRole();
 
   const fetchData = async (page: number, limit: number) => {
     try {
       const response = await axios.get(
         import.meta.env.VITE_BACKEND_URL +
-        `/getAllProjects?role=${role}&branch=${branchName}&page=${page + 1
-        }&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}`
+          `/getAllProjects?role=${role}&branch=${branchName}&page=${
+            page + 1
+          }&limit=${limit}&searchTerm=${searchTerm}&searchDropdown=${searchDropdown}&agent_code=${username}`
       );
       setProjects(response.data["projects"]);
       setCount(response.data["count"] || 0);
@@ -108,10 +110,12 @@ const Dashboard = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%" }}>
+          <Paper sx={{ width: "100%", padding: "20px" }}>
             <div className="table-data">
-              <label className="search-label">Project List</label>
-              <div className="search-place">
+              <label className="search-label">
+                <Typography variant="h6" sx={{ fontWeight: "bold",  }}>Project List</Typography>
+              </label>
+              <div className="search-place" style={{marginBottom: "10px"}}>
                 <select
                   onChange={(e) => handleSelectChange(e)}
                   disabled={isDisabled}
@@ -150,8 +154,8 @@ const Dashboard = (props: any) => {
                           {key === "for_consumer_id"
                             ? "Consumer Id"
                             : key === "project_email"
-                              ? "Email Address"
-                              : key.replace(/_/g, " ")[0].toUpperCase() +
+                            ? "Email Address"
+                            : key.replace(/_/g, " ")[0].toUpperCase() +
                               key.replace(/_/g, " ").slice(1)}
                         </TableCell>
                       ))}
@@ -170,7 +174,10 @@ const Dashboard = (props: any) => {
                         projects.map((row, index) => (
                           <TableRow key={index}>
                             {Object.keys(row).map((key) => (
-                              <TableCell key={key}>
+                              <TableCell
+                                sx={{ whiteSpace: "nowrap" }}
+                                key={key}
+                              >
                                 {row[key] ? String(row[key]) : ""}
                               </TableCell>
                             ))}
@@ -198,16 +205,16 @@ const Dashboard = (props: any) => {
                         <TableRow />
                       )
                     ) : Object.values(projects).filter((index) => {
-                      if (searchTerm === "") {
-                        return index;
-                      } else if (
-                        index[searchDropdown]
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      ) {
-                        return index;
-                      }
-                    }).length ? (
+                        if (searchTerm === "") {
+                          return index;
+                        } else if (
+                          index[searchDropdown]
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                        ) {
+                          return index;
+                        }
+                      }).length ? (
                       Object.values(projects)
                         .filter((index) => {
                           if (searchTerm === "") {
@@ -249,14 +256,12 @@ const Dashboard = (props: any) => {
                             </TableRow>
                           );
                         })
-                    ) : (
-                      // <TableRow>
-                      //   <TableCell colSpan={8} className="Records_Not_Found">
-                      //     <span></span>
-                      //   </TableCell>
-                      // </TableRow>
-                      null
-                    )}
+                    ) : // <TableRow>
+                    //   <TableCell colSpan={8} className="Records_Not_Found">
+                    //     <span></span>
+                    //   </TableCell>
+                    // </TableRow>
+                    null}
                   </TableBody>
                 </Table>
               </TableContainer>
