@@ -188,6 +188,7 @@ const Signup = (props: any) => {
   };
 
   const handleFormChange = (field: string, value: any) => {
+  console.log(value)
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
