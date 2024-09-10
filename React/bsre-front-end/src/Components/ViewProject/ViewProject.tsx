@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { FormEvent, MouseEvent, useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   Table,
   TableBody,
@@ -18,9 +18,11 @@ import {
 } from "@mui/material";
 import CheckBox from "@mui/material/Checkbox";
 import MultiStepProgressBar from "../MultiStepProgressBar/MultiStepProgressBar";
+import toast from "react-hot-toast";
 
 const ViewProject = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
+  const navigate = useNavigate();
   const urls = {};
   const [options, setOptions] = useState([
     { label: "Property Tax", value: "property_tax" },
@@ -111,6 +113,10 @@ const ViewProject = (props: any) => {
     },
     phase_8: {
       consumer_number: "",
+      project_agreement: new Blob(),
+      vendor_agreement: new Blob(),
+      one_page_certificate: new Blob(),
+      four_page_certificate: new Blob(),
     },
     phase_9: {
       consumer_number: "",
@@ -144,6 +150,7 @@ const ViewProject = (props: any) => {
   const [file, setFile] = useState<File>();
   const [newNote, setNewNote] = useState("");
   const [fileChoice, setFileChoice] = useState(["", ""]);
+
   const [agreementValues, setAgreementValues] = useState<{
     [key: string]: any;
   }>({});
@@ -322,7 +329,7 @@ const ViewProject = (props: any) => {
           // console.log(project.phase_1)
         });
     }
-  }, [location.state.for_consumer_id, project.phase_1.consumer_name]);
+  }, [location?.state?.for_consumer_id, project?.phase_1?.consumer_name]);
   // if(!project.phase_1.consumer_name.length) {
   //   axios.get(import.meta.env.VITE_BACKEND_URL + `/getConsumerDetails?consumer_id=${location.state.for_consumer_id}`).then(
   //   (response_consumer_details) => {
@@ -438,7 +445,7 @@ const ViewProject = (props: any) => {
   };
 
   function handleInputChange(key: string, value: any): void {
-    console.log(key, value, project);
+    console.log("handleInputChange===>", key, value, project);
     if (value == undefined) {
       value = "";
     }
@@ -482,6 +489,7 @@ const ViewProject = (props: any) => {
         .post(import.meta.env.VITE_BACKEND_URL + "/updatePhaseData", postObject)
         .then((response) => {
           console.log(response);
+          toast.success("Data saved successfully");
         });
     } else {
       // check rights and add approval logic
@@ -576,7 +584,7 @@ const ViewProject = (props: any) => {
         console.error("Error decoding base64 string:", error);
       }
     } else {
-      url += `downloadFile?document_required=${documentRequired_}&document_type=${documentType}`;
+      url += `/downloadFile?document_required=${documentRequired_}&document_type=${documentType}`;
       if (documentRequired_ === "agreement") {
         for (let i in agreementValues) {
           url += `&${i}=${agreementValues[i]}`;
@@ -658,6 +666,61 @@ const ViewProject = (props: any) => {
       document.body.removeChild(link);
     }
   }
+  const DownloadPDF = ({ base64String, fileName, btnName }) => {
+    const handleDownload = (event) => {
+      event.preventDefault(); // Prevent the default form submission behavior
+
+      // Decode Base64 to binary
+      const byteCharacters = atob(base64String);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      // Create a Blob from the byte arrays
+      const blob = new Blob(byteArrays, { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      // Open the Blob URL in a new tab
+      const newTab = window.open();
+      // navigate()
+      if (newTab) {
+        newTab.location.href = url;
+        // Optional: Revoke the URL after a short delay to ensure it is not prematurely cleaned up
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute("download", `${fileName}.pdf`);
+        link.target = "_blank";
+
+        // Append the link to the document and trigger the click event
+        document.body.appendChild(link);
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
+      } else {
+        // Handle the case where the new tab could not be opened
+        console.error("Failed to open new tab");
+      }
+    };
+
+    return (
+      <Button variant="contained" onClick={handleDownload}>
+        {btnName}
+      </Button>
+    );
+  };
+
   return (
     <Paper sx={{ width: "100%" }}>
       <div
@@ -670,7 +733,9 @@ const ViewProject = (props: any) => {
           onPageNumberClick={setCurrentPage}
           project_in_phase={project.phase_1.project_in_phase}
         />
-        <h3 style={{marginTop:"50px"}}>Consumer Name:{project.phase_1.consumer_name}</h3>
+        <h3 style={{ marginTop: "50px" }}>
+          Consumer Name:{project.phase_1.consumer_name}
+        </h3>
         {/* <Table>
         <TableBody>
           <TableRow>
@@ -689,7 +754,7 @@ const ViewProject = (props: any) => {
         </TableBody>
       </Table> */}
         <span style={{ fontSize: "30px" }}>Phase {currentPage}</span>
-        {currentPage != 8 &&
+        {currentPage &&
           (!editable[currentPage - 1] ? (
             <Button onClick={() => handleEditable(currentPage)}>Edit</Button>
           ) : (
@@ -1910,65 +1975,109 @@ const ViewProject = (props: any) => {
           <form>
             <Table>
               <TableBody>
-                <TableRow>
-                  <Select
-                    value={fileChoice[0] + "_" + fileChoice[1]}
-                    onChange={(e) => {
-                      setFileChoice(e.target.value.split("_"));
-                    }}
-                    sx={{ minWidth: 320 }}
-                  >
-                    {phase_8_document_options.map((option) => (
-                      <MenuItem key={option.key_} value={option.key_}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </TableRow>
-                {fileChoice[0] == "agreement" && (
-                  <TableRow>
-                    <TableContainer component={Paper}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Field{fileChoice[2]}</TableCell>
-                            <TableCell>Value</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {Object.entries(inputOptions.agreement).map(
-                            (field) => (
-                              <TableRow key={field[0]}>
-                                <TableCell>
-                                  {field[1].replace(/_/g, " ")}
-                                </TableCell>
-                                <TableCell>
-                                  <TextField
-                                    onChange={(e) =>
-                                      setAgreementValues({
-                                        ...agreementValues,
-                                        [field[1]]: e.target.value,
-                                      })
-                                    }
-                                  ></TextField>
-                                </TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </TableRow>
-                )}
-                <TableRow>
+                {/* <TableRow>
+                  <InputLabel>Upload Residential Agreement</InputLabel>
                   <TableCell>
-                    <Button
-                      onClick={() =>
-                        handleDownload(fileChoice[0], fileChoice[1])
+                    <input
+                      type="file"
+                      name="residential_agreement"
+                      onChange={(e) =>
+                        handleInputChange("residential_agreement", e.target.files[0])
                       }
-                    >
-                      Download
-                    </Button>
+                    />
+                  </TableCell>
+                </TableRow> */}
+                <TableRow>
+                  <InputLabel>Upload Industrial Agreement</InputLabel>
+                  <TableCell>
+                    <input
+                      disabled={!editable[currentPage - 1]}
+                      type="file"
+                      name="project_agreement"
+                      onChange={(e) =>
+                        handleInputChange(
+                          "project_agreement",
+                          e.target.files[0]
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project?.phase_8?.project_agreement}
+                      btnName={"Download Industrial Agreement"}
+                      fileName={"four_page_certificate.pdf"}
+                      key={"Four Page Self Certificate"}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <InputLabel>Upload Vendor Agreement</InputLabel>
+                  <TableCell>
+                    <input
+                      type="file"
+                      disabled={!editable[currentPage - 1]}
+                      name="vendor_agreement"
+                      onChange={(e) =>
+                        handleInputChange("vendor_agreement", e.target.files[0])
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project?.phase_8?.vendor_agreement}
+                      btnName={"Download Vendor Agreement"}
+                      fileName={"four_page_certificate.pdf"}
+                      key={"Four Page Self Certificate"}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <InputLabel>Upload One Page Self Certificate</InputLabel>
+                  <TableCell>
+                    <input
+                      type="file"
+                      disabled={!editable[currentPage - 1]}
+                      name="on"
+                      onChange={(e) =>
+                        handleInputChange(
+                          "one_page_certificate",
+                          e.target.files[0]
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project?.phase_8?.one_page_certificate}
+                      btnName={"Download One Page Self Certificate"}
+                      fileName={"four_page_certificate.pdf"}
+                      key={"Four Page Self Certificate"}
+                    />
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <InputLabel>Upload Four Page Self Certificate</InputLabel>
+                  <TableCell>
+                    <input
+                      type="file"
+                      disabled={!editable[currentPage - 1]}
+                      name="four_page_certificate"
+                      onChange={(e) =>
+                        handleInputChange(
+                          "four_page_certificate",
+                          e.target.files[0]
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project?.phase_8?.four_page_certificate}
+                      btnName={"Download Four Page Self Certificate"}
+                      fileName={"four_page_certificate.pdf"}
+                      key={"Four Page Self Certificate"}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -1981,6 +2090,7 @@ const ViewProject = (props: any) => {
                       Previous
                     </button>
                   </TableCell>
+                  <TableCell align="right" style={{ border: "none" }}></TableCell>
                   <TableCell align="right" style={{ border: "none" }}>
                     {currentPage < project.phase_1.project_in_phase ? (
                       <button
@@ -2038,11 +2148,18 @@ const ViewProject = (props: any) => {
                           hidden
                         />
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={() => handleDownload("meter_report", "")}
                       >
                         Download
-                      </Button>
+                      </Button> */}
+                    </TableCell>
+                    <TableCell>
+                      <DownloadPDF
+                        base64String={project?.phase_9?.meter_report}
+                        btnName={"Download Meter Report"}
+                        fileName={"meter_report"}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -2068,11 +2185,18 @@ const ViewProject = (props: any) => {
                           hidden
                         />
                       </Button>
-                      <Button
-                        onClick={() => handleDownload("joint_inspection", "")}
+                      {/* <Button
+                        onClick={() => handleDownload("joint_inspection", "")}    
                       >
                         Download
-                      </Button>
+                      </Button> */}
+                    </TableCell>
+                    <TableCell>
+                      <DownloadPDF
+                        base64String={project?.phase_9?.joint_inspection}
+                        btnName={"Download joint inspection "}
+                        fileName={"joint_inspection"}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -2187,23 +2311,50 @@ const ViewProject = (props: any) => {
                         hidden
                       />
                     </Button>
-                    <Button
-                      onClick={() =>
-                        handleDownload("invoice_from_accounts", "")
-                      }
-                    >
-                      Download
-                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project.phase_10.invoice_from_accounts}
+                      btnName={"Download invoice_from_accounts"}
+                      fileName={"invoice_from_accounts"}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>
                     <InputLabel>DCR</InputLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <Button onClick={() => handleDownload("dcr", "")}>
                       Download
                     </Button>
+                  </TableCell> */}
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      disabled={!editable[currentPage - 1]}
+                    >
+                      Upload Dcr
+                      <input
+                        type="file"
+                        name="dcr"
+                        onChange={(e) =>
+                          handleInputChange("dcr", e.target.files[0])
+                        }
+                        hidden
+                      />
+                    </Button>
+                    {/* <Button onClick={() => handleDownload("dcr", "")}>
+                      Download
+                    </Button> */}
+                  </TableCell>
+                  <TableCell>
+                    <DownloadPDF
+                      base64String={project.phase_10.dcr}
+                      btnName={"Download dcr"}
+                      fileName={"dcr"}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
