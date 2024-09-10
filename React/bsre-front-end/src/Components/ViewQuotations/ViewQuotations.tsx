@@ -118,7 +118,7 @@ const ViewQuotations = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%", padding: "20px" }}>
+          <Paper sx={{ width: "100%", padding: "20px",margin: '20px' }}>
             <div className="table-data">
               <label className="search-label">
                 <Typography variant="h6" sx={{ fontWeight: "bold" }} noWrap >
