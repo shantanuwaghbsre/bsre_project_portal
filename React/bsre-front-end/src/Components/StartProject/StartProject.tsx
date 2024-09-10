@@ -32,7 +32,7 @@ const StartProject = (props: any) => {
         for_consumer_id: project.for_consumer_id,
       },
     });
-    const agentCode = _location.state.consumer.onboarded_by_agent_code;
+  const agentCode = _location.state.consumer.onboarded_by_agent_code;
   const [currentPage, setCurrentPage] = useState(1);
 
   const [project, setProject] = useState({
@@ -85,16 +85,17 @@ const StartProject = (props: any) => {
     string[]
   >([]);
   const [errors, setErrors] = useState({});
-  const {username} = useRole()
+  const { username } = useRole();
   console.log(username);
 
   const urls = {
-    searchQuotationURL: import.meta.env.VITE_BACKEND_URL + `/searchQuotations?agent_code=${agentCode}`,
+    searchQuotationURL:
+      import.meta.env.VITE_BACKEND_URL +
+      `/searchQuotations?agent_code=${agentCode}`,
     createProjectURL: import.meta.env.VITE_BACKEND_URL + "/createProject",
     searchSpecificQuotationURL:
       import.meta.env.VITE_BACKEND_URL + "/searchSpecificQuotation",
   };
-
 
   useEffect(() => {
     try {
@@ -901,16 +902,24 @@ const StartProject = (props: any) => {
                     <InputLabel>Payment Type</InputLabel>
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      label="Payment Type"
-                      type="text"
-                      name="payment_type"
-                      value={project.payment_type}
-                      onChange={(e) =>
-                        handleInputChange(e.target.name, e.target.value)
-                      }
-                    />
-                  </TableCell>
+                      <TextField
+                        select
+                        label="current phase"
+                        name="payment_type"
+                        sx={{ width: "15em" }}
+                        value={project.payment_type}
+                        onChange={(e) =>
+                          handleInputChange(e.target.name, e.target.value)
+                        }
+                        fullWidth
+                        margin="normal"
+                      >
+                        <MenuItem value={"cheque"}>Cheque</MenuItem>
+                        <MenuItem value={"cash"}>Cash</MenuItem>
+                        <MenuItem value={"neft"}>NEFT</MenuItem>
+                        <MenuItem value={"rtgs"}>RTGS</MenuItem>
+                      </TextField>
+                    </TableCell>
                 </TableRow>
 
                 <TableRow>
