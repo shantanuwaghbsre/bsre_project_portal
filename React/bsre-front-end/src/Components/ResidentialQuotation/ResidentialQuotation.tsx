@@ -453,6 +453,8 @@ const ResidentialQuotation = (props: any) => {
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "column",
+              padding: "20px",
+              margin: '20px'
             }}
           >
             <div className="table-data">
