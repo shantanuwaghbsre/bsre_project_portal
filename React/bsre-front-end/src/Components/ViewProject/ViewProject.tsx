@@ -1537,16 +1537,16 @@ const ViewProject = (props: any) => {
                   </TableCell>
                   <TableCell>
                     <CheckBox
-                      checked={project.phase_3.project_manager_approval}
+                      checked={project.phase_3.client_approved_cad}
                       onClick={() =>
                         handleInputChange(
-                          "project_manager_approval",
-                          !project.phase_3.project_manager_approval
+                          "client_approved_cad",
+                          !project.phase_3.client_approved_cad
                         )
                       }
                       disabled={!editable[currentPage - 1]}
                     />
-                    {project.phase_3.project_manager_approval}
+                    {project.phase_3.client_approved_cad}
                   </TableCell>
                 </TableRow>
                 <TableRow>
