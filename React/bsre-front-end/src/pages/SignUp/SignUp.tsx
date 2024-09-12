@@ -143,11 +143,7 @@ const Signup = (props: any) => {
         </div>,
         {
           position: "top-right",
-          theme: "colored",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
+          duration: 8000,
         }
       );
     }
