@@ -117,7 +117,7 @@ const ViewAllAgents = (props: any) => {
                                         {!Agents.length ?
                                             <TableRow>
                                                 <TableCell colSpan={8} className="Records_Not_Found">
-                                                    <span>Error 500:Internal Server Error</span>
+                                                    <span>No data</span>
                                                 </TableCell>
                                             </TableRow>
                                             : null
