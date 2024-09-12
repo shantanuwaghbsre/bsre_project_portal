@@ -515,10 +515,10 @@ const CommercialOrIndustrialQuotation = (props: any) => {
             "Error while creating Quotation",
           ]);
         }
-        toast.error( "Error while creating Quotation");
+        // toast.error("Error while creating Quotation");
       })
       .catch(function (error) {
-        toast.error(error.message);
+        toast.error("Error while creating Quotation");
         console.log(error);
       });
   };
