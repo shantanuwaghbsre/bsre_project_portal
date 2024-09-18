@@ -79,7 +79,9 @@ const Login = () => {
 
                         // Use the role from the response to login
                         login(response.data.role, username, selectedBranch);
-                        toast.success(`Login successful ${username}`,);
+                        toast.success(`Login successful ${username}`,{
+                            duration: 10000,
+                        });
                         navigate("/")
                     } else {
                         toast.error("login failed");
