@@ -30,7 +30,6 @@ import Logout from "@mui/icons-material/Logout";
 import { deepOrange } from "@mui/material/colors";
 import { useRole } from "../../Contexts/RoleContext";
 
-
 const drawerWidth = 245;
 
 interface Props {
@@ -50,7 +49,7 @@ export default function Navbar(props: any) {
   const [isCollapseConsumer, setIsCollapseConsumer] = useState(false);
   const [isCollapseHome, setIsCollapseHome] = useState(false);
   const { logout, username } = useRole();
-  const naviate = useNavigate()
+  const naviate = useNavigate();
   const handleDrawerClose = () => {
     setIsClosing(true);
     setMobileOpen(false);
@@ -95,8 +94,8 @@ export default function Navbar(props: any) {
   };
   const handleLogout = () => {
     // props.logout();
-    logout()
-    naviate('/login')
+    logout();
+    naviate("/login");
     // localStorage.removeItem("token");
     window.location.replace(import.meta.env.VITE_KEYCLOAK_URL);
     setAnchorEl(null);
@@ -104,7 +103,7 @@ export default function Navbar(props: any) {
   const handleChangePwd = () => {
     setAnchorEl(null);
     Navigate("/change-password");
-  }
+  };
 
   const drawer = (
     <div>
@@ -169,7 +168,7 @@ export default function Navbar(props: any) {
                 <ListItemText primary="Quotations" />
               </ListItemButton>
             </ListItem>
-            <ListItem
+            {/* <ListItem
               disablePadding
               onClick={() => handleNavigation("/ResidentialQuotation")}
             >
@@ -179,8 +178,8 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Residential" />
               </ListItemButton>
-            </ListItem>
-            <ListItem
+            </ListItem> */}
+            {/* <ListItem
               disablePadding
               onClick={() =>
                 handleNavigation("/CommercialOrIndustrialQuotation")
@@ -192,7 +191,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Commercial/Industrial" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem disablePadding onClick={() => handleNavigation("/kusum")}>
               <ListItemButton>
                 <ListItemIcon>
@@ -411,7 +410,7 @@ export default function Navbar(props: any) {
               </MenuItem>
 
               <Divider />
-              <MenuItem onClick={handleChangePwd} >
+              <MenuItem onClick={handleChangePwd}>
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>
