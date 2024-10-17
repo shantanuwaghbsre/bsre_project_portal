@@ -20,11 +20,13 @@ import {
   SelectChangeEvent,
   FormControl,
   InputLabel,
+  Stack,
 } from "@mui/material";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import { useRole } from "../../Contexts/RoleContext";
 import toast from "react-hot-toast";
+import Base64ToPdf from "../Base64ToPdf/Base64ToPdf";
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
 
@@ -78,8 +80,9 @@ const ResidentialQuotation = (props: any) => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const date = new Date();
-  let currentDate = `${date.getDate()}-${date.getMonth() + 1
-    }-${date.getFullYear()}`;
+  let currentDate = `${date.getDate()}-${
+    date.getMonth() + 1
+  }-${date.getFullYear()}`;
 
   const [formData, setFormData] = useState({
     solarModule: "",
@@ -108,7 +111,7 @@ const ResidentialQuotation = (props: any) => {
     customerEmail: "",
     discomOrTorrentCharges: "",
   });
-
+  const [pdfView, setPdfView] = useState("");
   console.log("formData", formData);
 
   const handleFormChange = (field: any, value: any) => {
@@ -123,7 +126,7 @@ const ResidentialQuotation = (props: any) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState<Boolean>(false);
   const [loading, setLoading] = useState(false);
-  const { role, username, branchName } = useRole()
+  const { role, username, branchName } = useRole();
 
   const resetForm = () => {
     setFormData({
@@ -171,13 +174,6 @@ const ResidentialQuotation = (props: any) => {
         </div>,
         {
           position: "top-right",
-          autoClose: false,
-          theme: "colored",
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         }
       );
     }
@@ -260,7 +256,7 @@ const ResidentialQuotation = (props: any) => {
       axios
         .post(urls["calculateURL"], postObject)
         .then(function (response) {
-          console.log(response.data, "calculateURL")
+          console.log(response.data, "calculateURL");
           toast.success(`GUVNL Amount Calculated Successfully !`);
           if (response.data["guvnl_amount"] == null) {
             setErrorMessage([
@@ -282,7 +278,9 @@ const ResidentialQuotation = (props: any) => {
           }
         })
         .catch(function (error) {
-          toast.error("Error calculating GUVNL Amount. Please check your inputs.");
+          toast.error(
+            "Error calculating GUVNL Amount. Please check your inputs."
+          );
           console.log(error);
         });
     }
@@ -307,9 +305,7 @@ const ResidentialQuotation = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-
         setAgentOptions(response.data);
-
       })
       .catch(function (error) {
         console.log(error);
@@ -357,7 +353,10 @@ const ResidentialQuotation = (props: any) => {
   const urls = {
     calculateURL: import.meta.env.VITE_BACKEND_URL + "/calculate",
     submitURL: import.meta.env.VITE_BACKEND_URL + "/submitResidentialQuotation",
-    getAgentsURL: import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
+    generatePdfUrl: import.meta.env.VITE_BACKEND_URL + "/generatePdf",
+    getAgentsURL:
+      import.meta.env.VITE_BACKEND_URL +
+      `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
   };
 
   const handleSubmit = () => {
@@ -399,14 +398,15 @@ const ResidentialQuotation = (props: any) => {
         setLoading(false);
         if (response.data.completed) {
           resetForm();
-          toast.success(`Successfully created Quotation ${response.data.quotation_number}`,
+          toast.success(
+            `Successfully created Quotation ${response.data.quotation_number}`,
             {
               duration: 10000,
             }
           );
           setSuccessMessage(
             "Successfully created Quotation number - " +
-            response.data.quotation_number
+              response.data.quotation_number
           );
         } else {
           setErrorMessage((prevErrorMessage) => [
@@ -422,7 +422,7 @@ const ResidentialQuotation = (props: any) => {
   };
 
   function handleAgentSelect(e: SelectChangeEvent<string>): void {
-    console.log(e.target.value, "handleAgentSelect")
+    console.log(e.target.value, "handleAgentSelect");
     handleFormChange("agentID", e.target.value);
     for (let i = 0; i < agentOptions?.length; i++) {
       if (agentOptions[i]["agent_code"] == e.target.value) {
@@ -430,6 +430,54 @@ const ResidentialQuotation = (props: any) => {
       }
     }
   }
+  const generatePdf = () => {
+    setLoading(true);
+    const postObject = {
+      consumer_mobile_number: formData["customerPhoneNumber"],
+      consumer_address: formData["customerAddress"],
+      solar_module_wattage: formData["solarModuleWattage"], //rename
+      total_kilowatts: formData["totalKiloWatts"],
+      number_of_panels: formData["numberOfPanels"],
+      subsidy: formData["calculatedSubsidy"],
+      guvnl_amount: formData["calculatedGUVNLAmount"],
+      net_guvnl_system_price:
+        formData["calculatedGUVNLAmount"] - formData["calculatedSubsidy"],
+      discom_or_torrent: formData["discomOrTorrent"], //add this
+      phase: formData["phase"], // add this
+      installation_ac_mcb_switch_charges:
+        formData["installmentAcMcbSwitchCharge"],
+      geb_agreement_fees: formData["gebAgreementFees"],
+      project_cost: formData["projectCost"],
+      quotation_type: "Residential",
+      agent_code: formData["agentID"], // try\
+      agent_name: formData["agentName"],
+      location: formData["location"], //change this
+      structure: formData["structure"],
+      mounting_quantity: formData["moduleMountingStructureQuantity"],
+      mounting_description: formData["moduleMountingStructureDescription"],
+      mounting_structure_make: formData["moduleMountingStructureMake"],
+      solar_inverter_make: formData["solarInverter"],
+      solar_panel_type: formData["solarModuleType"],
+      solar_module_name: formData["solarModule"],
+      consumer_name: formData["customerName"],
+      consumer_email: formData["customerEmail"],
+      discom_or_torrent_charges: formData["discomOrTorrentCharges"],
+    };
+
+    axios
+      .post(urls["generatePdfUrl"], postObject)
+      .then((response) => {
+        setPdfView(response.data);
+        console.log(response.data);
+        toast.success("PDF generated successfully");
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        toast.error("Error while generating PDF");
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -454,7 +502,7 @@ const ResidentialQuotation = (props: any) => {
               alignItems: "center",
               flexDirection: "column",
               padding: "20px",
-              margin: '20px'
+              margin: "20px",
             }}
           >
             <div className="table-data">
@@ -493,8 +541,8 @@ const ResidentialQuotation = (props: any) => {
                     </TableRow>
                     <TableRow>
                       <TableCell>Agent ID</TableCell>
-                      {
-                        role !== "Agent" ? <TableCell>
+                      {role !== "Agent" ? (
+                        <TableCell>
                           <Select
                             value={formData["agentID"]}
                             onChange={(e) => handleAgentSelect(e)}
@@ -508,24 +556,19 @@ const ResidentialQuotation = (props: any) => {
                               </MenuItem>
                             ))}
                           </Select>
-                        </TableCell> : <TableCell>
+                        </TableCell>
+                      ) : (
+                        <TableCell>
                           <Select
                             value={formData["agentID"]}
                             onChange={(e) => handleAgentSelect(e)}
                           >
-
-                            <MenuItem
-                              key={username}
-                              value={username}
-                            >
+                            <MenuItem key={username} value={username}>
                               {username}
                             </MenuItem>
-
                           </Select>
                         </TableCell>
-                      }
-
-
+                      )}
                     </TableRow>
                     <TableRow>
                       <TableCell>Agent Name</TableCell>
@@ -983,24 +1026,35 @@ const ResidentialQuotation = (props: any) => {
               </TableContainer>
               <br />
               <br />
-              <Button
-                variant="contained"
-                onClick={() => validateAndCalculate()}
-              >
-                Validate and Calculate
-              </Button>
-              &nbsp;
-              {formData["projectCost"] > 0 &&
-                isFormValid &&
-                errorMessage.length == 0 && (
-                  <Button variant="contained" onClick={() => handleSubmit()}>
-                    Submit
-                  </Button>
-                )}
+              <Stack sx={{ flexDirection: "row" }}>
+                <Button
+                  variant="contained"
+                  onClick={() => validateAndCalculate()}
+                >
+                  Validate and Calculate
+                </Button>
+                &nbsp;
+                {formData["projectCost"] > 0 &&
+                  isFormValid &&
+                  errorMessage.length == 0 && (
+                    <Stack sx={{ flexDirection: "row", gap: 1 }}>
+                      <Button variant="contained" onClick={() => generatePdf()}>
+                        Generate Pdf
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleSubmit()}
+                      >
+                        Submit
+                      </Button>
+                    </Stack>
+                  )}
+              </Stack>
             </div>
           </Paper>
         </>
       )}
+      <Base64ToPdf b64={pdfView} />
     </>
   );
 };
