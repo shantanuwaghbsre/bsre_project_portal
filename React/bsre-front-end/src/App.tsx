@@ -79,15 +79,9 @@ const App = () => {
   //   initializeKeycloak();
   // }, []);
 
-
-
   return (
     <>
-
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
+      <Toaster position="top-center" reverseOrder={false} />
       {isLoggedIn ? (
         <BrowserRouter>
           <Navbar />
@@ -120,7 +114,8 @@ const App = () => {
                     element={
                       <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
                         <ViewQuotations />
-                      </PrivateRoute>}
+                      </PrivateRoute>
+                    }
                   />
                   <Route
                     path="/ConsumerOnboarding"
@@ -138,21 +133,30 @@ const App = () => {
                       </PrivateRoute>
                     }
                   />
-                  <Route path="/kusum" element={
-                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
-                      <Kusum />
-                    </PrivateRoute>
-                  } />
-                  <Route path="/ppa" element={
-                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
-                      <Ppa />
-                    </PrivateRoute>
-                  } />
-                  <Route path="/solarpark" element={
-                    <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
-                      <SolarPark />
-                    </PrivateRoute>
-                  } />
+                  <Route
+                    path="/kusum"
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <Kusum />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/ppa"
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <Ppa />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/solarpark"
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <SolarPark />
+                      </PrivateRoute>
+                    }
+                  />
                   <Route
                     path="/ViewAllConsumers"
                     element={
@@ -187,9 +191,7 @@ const App = () => {
                   />
                   <Route
                     path="/CommercialOrIndustrialQuotation"
-                    element={
-                      <CommercialOrIndustrialQuotation />
-                    }
+                    element={<CommercialOrIndustrialQuotation />}
                   />
                   <Route
                     path="/StartProject"
@@ -210,48 +212,35 @@ const App = () => {
                   />
                   <Route
                     path="/ViewProject"
-                    element={<PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
-
-                      <ViewProject />
-                    </PrivateRoute>
+                    element={
+                      <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
+                        <ViewProject />
+                      </PrivateRoute>
                     }
                   />
-                  <Route
-                    path="/change-password"
-                    element={<ChangePwd />}
-                  />
-                  <Route
-                    path="/not-authorized"
-                    element={<NotAuthorized />}
-                  />
+                  <Route path="/change-password" element={<ChangePwd />} />
+                  <Route path="/not-authorized" element={<NotAuthorized />} />
                   <Route path="/*" element={<ErrorPage />} />
                 </Routes>
               </Typography>
             </Box>
           </Box>
         </BrowserRouter>
-      )
-        :
-        (
-          <BrowserRouter>
-            <div style={{ color: "#000", display: "flex", justifyContent: "center" }}>
-              <Routes>
-                <Route
-                  path="/login"
-                  element={<Login />}
-                />
-                <Route
-                  path="/"
-                  element={<Login />}
-                />
+      ) : (
+        <BrowserRouter>
+          <div
+            style={{ color: "#000", display: "flex", justifyContent: "center" }}
+          >
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Login />} />
 
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/*" element={<ErrorPage />} />
-              </Routes>
-            </div>
-          </BrowserRouter>
-        )
-      }
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/*" element={<ErrorPage />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      )}
     </>
   );
 };
