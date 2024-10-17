@@ -11,14 +11,17 @@ import {
   Button,
   Tooltip,
   Typography,
+  Drawer,
+  Stack,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../Loading/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
 import { useRole } from "../../Contexts/RoleContext";
 import toast from "react-hot-toast";
+import Base64ToPdf from "../Base64ToPdf/Base64ToPdf";
 
 const ViewQuotations = (props: any) => {
   //for showing columns in table record
@@ -41,10 +44,20 @@ const ViewQuotations = (props: any) => {
   const [isSearching, setIsSearching] = useState(false);
   const [norecords, setNorecords] = useState("");
   const [searchDropdown, setSearchDropdown] = useState("all");
+  const navigate = useNavigate();
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
   const { branchName, role, username } = useRole();
+
+  const [viewPdfConsumer, setViewPdfConsumer] = useState("");
+
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const toggleDrawer = () => {
+    setIsOpen(!isOpen); // Toggle between true and false
+  };
+
   const fetchData = async (page: number, limit: number) => {
     try {
       const response = await axios.get(
@@ -110,6 +123,31 @@ const ViewQuotations = (props: any) => {
     setLoading(true);
   };
 
+  const showPdfOfQuotation = async (quotation: any) => {
+    setIsOpen(!isOpen);
+    const param = `${encodeURIComponent(
+      quotation["Agent code"]
+    )}/${encodeURIComponent(
+      quotation["Quotation number"].replace(/\//g, "_")
+    )}_${encodeURIComponent(quotation["Consumer name"])}.pdf`;
+
+    // Prepare param, making sure to encode special characters for URLs
+
+    const getPdfOfConsumer = async () => {
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:5001/viewquotationpdf?view_consumerquotation=${param}`
+        );
+        return res;
+      } catch (error) {
+        console.log("Error fetching PDF:", error);
+      }
+    };
+
+    const res = await getPdfOfConsumer();
+    setViewPdfConsumer(res.data);
+  };
+
   return (
     <>
       {loading ? (
@@ -118,10 +156,10 @@ const ViewQuotations = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%", padding: "20px",margin: '20px' }}>
+          <Paper sx={{ width: "100%", padding: "20px", margin: "20px" }}>
             <div className="table-data">
               <label className="search-label">
-                <Typography variant="h6" sx={{ fontWeight: "bold" }} noWrap >
+                <Typography variant="h6" sx={{ fontWeight: "bold" }} noWrap>
                   Quotations
                 </Typography>
               </label>
@@ -201,6 +239,18 @@ const ViewQuotations = (props: any) => {
                               View
                             </Button>
                           </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              startIcon={<InfoIcon />}
+                              onClick={() =>
+                                showPdfOfQuotation(quotations[index])
+                              }
+                              sx={{ whiteSpace: "nowrap" }}
+                            >
+                              View Pdf
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))
                     ) : (
@@ -228,6 +278,15 @@ const ViewQuotations = (props: any) => {
           </Paper>
         </>
       )}
+      <Drawer
+        anchor="right"
+        open={isOpen} // Use the new isOpen state
+        onClose={toggleDrawer} // Call toggleDrawer directly
+      >
+        <Stack sx={{ padding: "20px 40px" }}>
+          <Base64ToPdf b64={viewPdfConsumer} />
+        </Stack>
+      </Drawer>
     </>
   );
 };
