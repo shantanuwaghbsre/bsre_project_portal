@@ -17,6 +17,7 @@ import {
   SelectChangeEvent,
   InputLabel,
   FormControl,
+  Stack,
 } from "@mui/material";
 import axios from "axios";
 import Loading from "../Loading/Loading";
@@ -555,13 +556,16 @@ const CommercialOrIndustrialQuotation = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%", overflow: "hidden" }}>
+          <Paper sx={{ width: "100%", overflow: "hidden", padding: "20px" }}>
             <div
               className="table-data"
               style={{ opacity: opacity_value }}
               id="quotation"
             >
-              <label className="search-label">
+              <label
+                className="search-label"
+                style={{ fontSize: "20px", fontWeight: "bold" }}
+              >
                 Commercial/Industrial Quotation
               </label>
               <TableContainer component={Paper}>
@@ -707,12 +711,12 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                         </FormControl>
                       </TableCell>
                     </TableRow>
-                    {/* <TableRow>
+                    <TableRow>
                            <TableCell>Agent Name</TableCell>
                            <TableCell colSpan={3}>
                               {formData["agentName"]}
                            </TableCell>
-                        </TableRow> */}
+                        </TableRow>
                     <TableRow>
                       <TableCell>Customer Name:</TableCell>
                       <TableCell colSpan={3}>
@@ -1547,22 +1551,24 @@ const CommercialOrIndustrialQuotation = (props: any) => {
               </TableContainer>
               <br />
               <br />
-              <Button variant="contained" onClick={() => resetForm()}>
-                Reset
-              </Button>
-              &nbsp;
-              <Button
-                variant="contained"
-                onClick={() => validateAndCalculate()}
-              >
-                Validate and Calculate
-              </Button>
-              &nbsp;
-              {isFormValid && errorMessage.length == 0 && (
-                <Button variant="contained" onClick={() => handleSubmit()}>
-                  Submit
+              <Stack direction="row" spacing={2} mb={2}>
+                <Button variant="contained" onClick={() => resetForm()}>
+                  Reset
                 </Button>
-              )}
+                &nbsp;
+                <Button
+                  variant="contained"
+                  onClick={() => validateAndCalculate()}
+                >
+                  Validate and Calculate
+                </Button>
+                &nbsp;
+                {isFormValid && errorMessage.length == 0 && (
+                  <Button variant="contained" onClick={() => handleSubmit()}>
+                    Submit
+                  </Button>
+                )}
+              </Stack>
             </div>
           </Paper>
         </>
