@@ -48,7 +48,7 @@ export default function Navbar(props: any) {
   const [isCollapseAgent, setIsCollapseAgent] = useState(false);
   const [isCollapseConsumer, setIsCollapseConsumer] = useState(false);
   const [isCollapseHome, setIsCollapseHome] = useState(false);
-  const { logout, username } = useRole();
+  const { logout, username, role } = useRole();
   const naviate = useNavigate();
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -146,6 +146,16 @@ export default function Navbar(props: any) {
             <ListItemText primary="Home" />
           </ListItemButton>
         </ListItem>
+        {role === "Admin" ? (
+          <ListItem disablePadding onClick={() => naviate("/guvnlPrices")}>
+            <ListItemButton>
+              <ListItemIcon>
+                <HomeIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Guvnl Prices" />
+            </ListItemButton>
+          </ListItem>
+        ) : null}
         <ListItem disablePadding onClick={handleCollapseQuotation}>
           <ListItemButton>
             <ListItemIcon>
@@ -168,7 +178,7 @@ export default function Navbar(props: any) {
                 <ListItemText primary="Quotations" />
               </ListItemButton>
             </ListItem>
-            {/* <ListItem
+            <ListItem
               disablePadding
               onClick={() => handleNavigation("/ResidentialQuotation")}
             >
@@ -178,7 +188,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Residential" />
               </ListItemButton>
-            </ListItem> */}
+            </ListItem>
             {/* <ListItem
               disablePadding
               onClick={() =>
