@@ -29,6 +29,7 @@ import { useRole } from "./Contexts/RoleContext";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import NotAuthorized from "./Components/NotAuthorized/NotAuthorized";
 import { Toaster } from "react-hot-toast";
+import GuvnlPricesTable from "./pages/GuvnlPricesTable/GuvnlPricesTable";
 
 let initOptions = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -106,6 +107,14 @@ const App = () => {
                     element={
                       <PrivateRoute allowedRoles={["Agent", "BM", "Admin"]}>
                         <ResidentialQuotation />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/GuvnlPrices"
+                    element={
+                      <PrivateRoute allowedRoles={["Admin"]}>
+                        <GuvnlPricesTable />
                       </PrivateRoute>
                     }
                   />
