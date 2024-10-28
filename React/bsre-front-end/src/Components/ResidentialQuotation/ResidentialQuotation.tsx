@@ -121,6 +121,7 @@ const ResidentialQuotation = (props: any) => {
       ...prevData,
       [field]: value,
     }));
+    setShowPdf(false);
   };
   const [stateOptions, setStateOptions] = useState([]);
   const [agentOptions, setAgentOptions] = useState([]);
@@ -128,6 +129,7 @@ const ResidentialQuotation = (props: any) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState<Boolean>(false);
   const [loading, setLoading] = useState(false);
+  const [showPdf, setShowPdf] = useState(false);
   const { role, username, branchName } = useRole();
 
   const resetForm = () => {
@@ -505,7 +507,7 @@ const ResidentialQuotation = (props: any) => {
         setPdfView(response.data);
         console.log(response.data);
         toast.success("PDF generated successfully");
-
+        setShowPdf(true);
         setLoading(false);
       })
       .catch((error) => {
@@ -1120,7 +1122,8 @@ const ResidentialQuotation = (props: any) => {
           </Paper>
         </>
       )}
-      <Base64ToPdf b64={pdfView} />
+
+      {showPdf ? <Base64ToPdf b64={pdfView} /> : null}
     </>
   );
 };
