@@ -202,23 +202,23 @@ export default function Navbar(props: any) {
                 <ListItemText primary="Commercial/Industrial" />
               </ListItemButton>
             </ListItem> */}
-            <ListItem disablePadding onClick={() => handleNavigation("/kusum")}>
+            {/* <ListItem disablePadding onClick={() => handleNavigation("/kusum")}>
               <ListItemButton>
                 <ListItemIcon>
                   <FormatQuoteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText primary="Kusum" />
               </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding onClick={() => handleNavigation("/ppa")}>
+            </ListItem> */}
+            {/* <ListItem disablePadding onClick={() => handleNavigation("/ppa")}>
               <ListItemButton>
                 <ListItemIcon>
                   <FormatQuoteIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText primary="Ppa" />
               </ListItemButton>
-            </ListItem>
-            <ListItem
+            </ListItem> */}
+            {/* <ListItem
               disablePadding
               onClick={() => handleNavigation("/solarpark")}
             >
@@ -228,7 +228,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Solar Park" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
           </List>
         </Collapse>
         <ListItem disablePadding onClick={handleCollapseAgent}>
