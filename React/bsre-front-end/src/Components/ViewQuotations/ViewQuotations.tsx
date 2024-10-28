@@ -130,13 +130,15 @@ const ViewQuotations = (props: any) => {
     )}/${encodeURIComponent(
       quotation["Quotation number"].replace(/\//g, "_")
     )}_${encodeURIComponent(quotation["Consumer name"])}.pdf`;
-
+    console.log(param, "paramparam");
     // Prepare param, making sure to encode special characters for URLs
 
     const getPdfOfConsumer = async () => {
       try {
         const res = await axios.get(
-          `http://127.0.0.1:5001/viewquotationpdf?view_consumerquotation=${param}`
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/viewquotationpdf?view_consumerquotation=${param}`
         );
         return res;
       } catch (error) {
