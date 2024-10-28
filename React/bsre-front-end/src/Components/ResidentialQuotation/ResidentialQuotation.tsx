@@ -27,6 +27,7 @@ import Loading from "../Loading/Loading";
 import { useRole } from "../../Contexts/RoleContext";
 import toast from "react-hot-toast";
 import Base64ToPdf from "../Base64ToPdf/Base64ToPdf";
+import { calculateAmount } from "../../utilities/utilities";
 const ResidentialQuotation = (props: any) => {
   axios.defaults.headers.common["token"] = props.token;
 
@@ -110,6 +111,7 @@ const ResidentialQuotation = (props: any) => {
     projectCost: 0,
     customerEmail: "",
     discomOrTorrentCharges: "",
+    gst: 0,
   });
   const [pdfView, setPdfView] = useState("");
   console.log("formData", formData);
@@ -156,6 +158,7 @@ const ResidentialQuotation = (props: any) => {
       projectCost: 0,
       customerEmail: "",
       discomOrTorrentCharges: "",
+      gst: 0,
     });
     setErrorMessage([]);
     setIsFormValid(false);
@@ -211,7 +214,7 @@ const ResidentialQuotation = (props: any) => {
       formData["numberOfPanels"] == 14 ||
       formData["numberOfPanels"] == 16 ||
       formData["numberOfPanels"] == 17 ||
-      formData["numberOfPanels"] > 18
+      formData["numberOfPanels"] == 20
     ) {
       errorMessage_.push("Please select correct number of panels.");
     }
@@ -257,7 +260,6 @@ const ResidentialQuotation = (props: any) => {
         .post(urls["calculateURL"], postObject)
         .then(function (response) {
           console.log(response.data, "calculateURL");
-          toast.success(`GUVNL Amount Calculated Successfully !`);
           if (response.data["guvnl_amount"] == null) {
             setErrorMessage([
               "Error calculating GUVNL Amount. Please check your inputs.",
@@ -269,13 +271,42 @@ const ResidentialQuotation = (props: any) => {
                 response.data["discom_or_torrent_charges"],
               ["calculatedGUVNLAmount"]: response.data["guvnl_amount"],
               ["calculatedSubsidy"]: response.data["subsidy"],
-              ["projectCost"]:
-                response.data["guvnl_amount"] -
-                response.data["subsidy"] +
-                formData["gebAgreementFees"] +
-                formData["installmentAcMcbSwitchCharge"],
+              ["projectCost"]: Number(
+                (
+                  response.data["guvnl_amount"] +
+                  calculateAmount(response.data["guvnl_amount"]) +
+                  formData["installmentAcMcbSwitchCharge"] +
+                  formData["gebAgreementFees"] +
+                  response.data["discom_or_torrent_charges"]
+                ).toFixed(2)
+              ),
+              ["gst"]: calculateAmount(response.data["guvnl_amount"]),
+
+              // +)
+
+              // response.data["subsidy"] +
+              // calculateAmount(response.data["guvnl_amount"]),
+              //  +
+              // formData["gebAgreementFees"] +
+              // formData["installmentAcMcbSwitchCharge"],
+
+              // formData["installmentAcMcbSwitchCharge"] +
+              //               formData["gebAgreementFees"] +
+              //               formData["discomOrTorrentCharges"]
             }));
+            console.log(
+              calculateAmount(response.data["guvnl_amount"]),
+              "guvnl_amountForFinal"
+            );
+
+            toast.success(`GUVNL Amount Calculated Successfully !`);
           }
+          console.log(
+            "calculateURL",
+            formData["installmentAcMcbSwitchCharge"],
+            formData["gebAgreementFees"],
+            response.data["discom_or_torrent_charges"]
+          );
         })
         .catch(function (error) {
           toast.error(
@@ -285,6 +316,8 @@ const ResidentialQuotation = (props: any) => {
         });
     }
   };
+
+  useEffect(() => {}, []);
 
   const handleClose = () => {
     setErrorMessage([]);
@@ -391,6 +424,7 @@ const ResidentialQuotation = (props: any) => {
       consumer_name: formData["customerName"],
       consumer_email: formData["customerEmail"],
       discom_or_torrent_charges: formData["discomOrTorrentCharges"],
+      gst: formData["gst"],
     };
     axios
       .post(urls["submitURL"], postObject)
@@ -462,6 +496,7 @@ const ResidentialQuotation = (props: any) => {
       consumer_name: formData["customerName"],
       consumer_email: formData["customerEmail"],
       discom_or_torrent_charges: formData["discomOrTorrentCharges"],
+      gst: formData["gst"],
     };
 
     axios
@@ -1014,10 +1049,41 @@ const ResidentialQuotation = (props: any) => {
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell colSpan={2}>PROJECT COST</TableCell>
+                      <TableCell colSpan={2}>Project Cost</TableCell>
                       <TableCell colSpan={3}>
-                        <b className="final-price">
-                          ₹{formData["projectCost"].toLocaleString("en-IN")}
+                        <b className="project-price">
+                          ₹
+                          {formData["calculatedGUVNLAmount"].toLocaleString(
+                            "en-IN"
+                          )}
+                        </b>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>Gst-Price</TableCell>
+                      <TableCell colSpan={3}>
+                        <b className="gst-price">
+                          ₹
+                          {calculateAmount(
+                            formData["calculatedGUVNLAmount"]
+                          ).toLocaleString("en-IN")}
+                        </b>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={2}>
+                        PROJECT COST + GST + Installation AC MCB Switch charges
+                        ({formData["installmentAcMcbSwitchCharge"]}) + GEB
+                        AGREEMENT FEES ({formData["gebAgreementFees"]}) + DISCOM
+                        and Phase ({formData["discomOrTorrentCharges"]})
+                      </TableCell>
+                      <TableCell colSpan={3}>
+                        <b className="project-cost">
+                          ₹
+                          {formData["projectCost"]
+                            .toFixed(2)
+                            // @ts-ignore
+                            .toLocaleString("en-IN")}
                         </b>
                       </TableCell>
                     </TableRow>
