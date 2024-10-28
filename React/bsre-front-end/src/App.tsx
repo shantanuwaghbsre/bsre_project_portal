@@ -137,7 +137,7 @@ const App = () => {
                   <Route
                     path="/AddAgent"
                     element={
-                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
+                      <PrivateRoute allowedRoles={["BM", "Admin"]}>
                         <AddAgent />
                       </PrivateRoute>
                     }
@@ -185,7 +185,7 @@ const App = () => {
                   <Route
                     path="/ViewAllAgents"
                     element={
-                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
+                      <PrivateRoute allowedRoles={["BM", "Admin"]}>
                         <ViewAllAgents />
                       </PrivateRoute>
                     }
@@ -193,7 +193,7 @@ const App = () => {
                   <Route
                     path="/ViewAgent"
                     element={
-                      <PrivateRoute allowedRoles={["", "BM", "Admin"]}>
+                      <PrivateRoute allowedRoles={["BM", "Admin"]}>
                         <ViewAgent />
                       </PrivateRoute>
                     }
