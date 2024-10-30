@@ -189,7 +189,7 @@ export default function Navbar(props: any) {
                 <ListItemText primary="Residential" />
               </ListItemButton>
             </ListItem>
-            {/* <ListItem
+            <ListItem
               disablePadding
               onClick={() =>
                 handleNavigation("/CommercialOrIndustrialQuotation")
@@ -201,7 +201,7 @@ export default function Navbar(props: any) {
                 </ListItemIcon>
                 <ListItemText primary="Commercial/Industrial" />
               </ListItemButton>
-            </ListItem> */}
+            </ListItem>
             {/* <ListItem disablePadding onClick={() => handleNavigation("/kusum")}>
               <ListItemButton>
                 <ListItemIcon>
