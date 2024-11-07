@@ -397,7 +397,7 @@ const CommercialOrIndustrialQuotation = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-        setAgentOptions(response.data);
+        setAgentOptions(response.data.data);
       })
       .catch(function (error) {
         // toast.error(error.message);
@@ -712,11 +712,9 @@ const CommercialOrIndustrialQuotation = (props: any) => {
                       </TableCell>
                     </TableRow>
                     <TableRow>
-                           <TableCell>Agent Name</TableCell>
-                           <TableCell colSpan={3}>
-                              {formData["agentName"]}
-                           </TableCell>
-                        </TableRow>
+                      <TableCell>Agent Name</TableCell>
+                      <TableCell colSpan={3}>{formData["agentName"]}</TableCell>
+                    </TableRow>
                     <TableRow>
                       <TableCell>Customer Name:</TableCell>
                       <TableCell colSpan={3}>
