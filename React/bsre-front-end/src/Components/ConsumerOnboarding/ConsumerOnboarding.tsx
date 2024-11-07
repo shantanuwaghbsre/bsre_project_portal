@@ -24,11 +24,8 @@ import ViewAllConsumers from "../ViewAllConsumers/ViewAllConsumers";
 import { useRole } from "../../Contexts/RoleContext";
 import toast from "react-hot-toast";
 
-
-
-
 const ConsumerOnboarding = (props: any) => {
-  const { branchName, role, username } = useRole()
+  const { branchName, role, username } = useRole();
   axios.defaults.headers.common["token"] = props.token;
   const blankFormData = {
     consumerName: "",
@@ -45,7 +42,9 @@ const ConsumerOnboarding = (props: any) => {
   const urls = {
     calculateURL: import.meta.env.VITE_BACKEND_URL + `/calculate`,
     onboardConsumer: import.meta.env.VITE_BACKEND_URL + `/onboardConsumer`,
-    getAgentsURL: import.meta.env.VITE_BACKEND_URL + `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
+    getAgentsURL:
+      import.meta.env.VITE_BACKEND_URL +
+      `/getAgents?role=${role}&branch=${branchName}&agent_code=${username}`,
     getLocationsURL: import.meta.env.VITE_BACKEND_URL + `/getLocations`,
     getConsumerURL: import.meta.env.VITE_BACKEND_URL + `/getConsumer`,
   };
@@ -70,7 +69,7 @@ const ConsumerOnboarding = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-        setAgentOptions(response.data);
+        setAgentOptions(response.data.data);
       })
       .catch(function (error) {
         // toast.error(error.message);
@@ -131,8 +130,7 @@ const ConsumerOnboarding = (props: any) => {
       setFilesNames({
         ...filesNames,
         [e.target.name]: e.target.files[0].name,
-      })
-
+      });
     } else if (name == "otherDocuments") {
       setFiles((files) => ({
         ...files,
@@ -173,36 +171,35 @@ const ConsumerOnboarding = (props: any) => {
       postObject.append(key, value);
     }
 
-    if(validateForm()){
+    if (validateForm()) {
       axios
-      .post(urls["onboardConsumer"], postObject)
-      .then((response) => {
-        console.log(response.data);
-        if (response.data["success"] == true) {
-          toast.success("Consumer onboarding successful!")
-          axios
-            .get(urls["getConsumerURL"], {
-              params: { consumer_id: response.data["consumer_id"] },
-            })
+        .post(urls["onboardConsumer"], postObject)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data["success"] == true) {
+            toast.success("Consumer onboarding successful!");
+            axios
+              .get(urls["getConsumerURL"], {
+                params: { consumer_id: response.data["consumer_id"] },
+              })
 
-            .then((response_) => {
-              console.log(response_.data);
-              goToConsumer(response_.data);
-            });
-        } else {
-          toast.error("Consumer onboarding failed!")
-        }
-      })
-      .catch((error) => {
-        toast.error("Consumer onboarding failed!")
-        console.error(error);
-      });
+              .then((response_) => {
+                console.log(response_.data);
+                goToConsumer(response_.data);
+              });
+          } else {
+            toast.error("Consumer onboarding failed!");
+          }
+        })
+        .catch((error) => {
+          toast.error("Consumer onboarding failed!");
+          console.error(error);
+        });
     }
-   
   };
 
   const handleNextPage = () => {
-    if(validateForm()){
+    if (validateForm()) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -228,111 +225,127 @@ const ConsumerOnboarding = (props: any) => {
 
   const validatePage1 = () => {
     const errors = {};
-    
+
     // Define regex patterns
     const agentCodeRegex = /^[A-Z0-9]{5,10}$/; // Example pattern: 5-10 alphanumeric characters
-  
+
     // Validate onboardedByAgentCode
-    if (!formData.onboardedByAgentCode || !agentCodeRegex.test(formData.onboardedByAgentCode)) {
-      errors.onboardedByAgentCode = 'Invalid agent code. Must be 5-10 alphanumeric characters.';
+    if (
+      !formData.onboardedByAgentCode ||
+      !agentCodeRegex.test(formData.onboardedByAgentCode)
+    ) {
+      errors.onboardedByAgentCode =
+        "Invalid agent code. Must be 5-10 alphanumeric characters.";
     }
-  
+
     return errors;
   };
-  
+
   const validatePage2 = () => {
     const errors = {};
-  
+
     // Define regex patterns
     const mobileNumberRegex = /^[1-9]\d{9}$/; // 10 digit mobile number, starting with 1-9
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation pattern
-  
+
     // Validate consumerName
-    if (!formData.consumerName || formData.consumerName.trim() === '') {
-      errors.consumerName = 'Name cannot be empty.';
+    if (!formData.consumerName || formData.consumerName.trim() === "") {
+      errors.consumerName = "Name cannot be empty.";
     }
-  
+
     // Validate consumerAddress
-    if (!formData.consumerAddress || formData.consumerAddress.trim() === '') {
-      errors.consumerAddress = 'Address cannot be empty.';
+    if (!formData.consumerAddress || formData.consumerAddress.trim() === "") {
+      errors.consumerAddress = "Address cannot be empty.";
     }
-  
+
     // Validate consumerMobileNumber
-    if (!formData.consumerMobileNumber || !mobileNumberRegex.test(formData.consumerMobileNumber)) {
-      errors.consumerMobileNumber = 'Invalid mobile number. Must be a 10-digit number starting with 1-9.';
+    if (
+      !formData.consumerMobileNumber ||
+      !mobileNumberRegex.test(formData.consumerMobileNumber)
+    ) {
+      errors.consumerMobileNumber =
+        "Invalid mobile number. Must be a 10-digit number starting with 1-9.";
     }
-  
+
     // Validate alternatePhoneNumber
-    if (!formData.alternatePhoneNumber && !mobileNumberRegex.test(formData.alternatePhoneNumber)) {
-      errors.alternatePhoneNumber = 'Invalid alternate phone number. Must be a 10-digit number starting with 1-9.';
+    if (
+      !formData.alternatePhoneNumber &&
+      !mobileNumberRegex.test(formData.alternatePhoneNumber)
+    ) {
+      errors.alternatePhoneNumber =
+        "Invalid alternate phone number. Must be a 10-digit number starting with 1-9.";
     }
-  
+
     // Validate consumerEmail
     if (!formData.consumerEmail || !emailRegex.test(formData.consumerEmail)) {
-      errors.consumerEmail = 'Invalid email address.';
+      errors.consumerEmail = "Invalid email address.";
     }
-  
+
     return errors;
   };
-  
 
   const validatePage3 = () => {
     const errors = {};
-  
+
     // Define regex patterns
     const aadharCardRegex = /^[2-9]{1}[0-9]{11}$/; // Aadhar card number should be 12 digits long, starting with 2-9
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation pattern
-  
+
     // Validate Aadhar card file
     if (!files.aadharCard || files.aadharCard.size === 0) {
-      errors.aadharCard = 'Aadhar card file is missing or invalid';
+      errors.aadharCard = "Aadhar card file is missing or invalid";
     }
-  
+
     // Validate PAN card file
     if (!files.panCard || files.panCard.size === 0) {
-      errors.panCard = 'PAN card file is missing or invalid';
+      errors.panCard = "PAN card file is missing or invalid";
     }
-  
+
     // Validate Passport photo file
     if (files.passportPhoto && files.passportPhoto.size === 0) {
-      errors.passportPhoto = 'Passport photo file is invalid';
+      errors.passportPhoto = "Passport photo file is invalid";
     }
-  
+
     // Validate Aadhar card number
-    if (!formData.aadharCardNumber || !aadharCardRegex.test(formData.aadharCardNumber)) {
-      errors.aadharCardNumber = 'Invalid Aadhar card number';
+    if (
+      !formData.aadharCardNumber ||
+      !aadharCardRegex.test(formData.aadharCardNumber)
+    ) {
+      errors.aadharCardNumber = "Invalid Aadhar card number";
     }
-  
+
     // Validate PAN card number
-    if (!formData.panCardNumber || formData.panCardNumber.trim() === '') {
-      errors.panCardNumber = 'Invalid PAN card number its must be ten-character long alpha-numeric unique';
+    if (!formData.panCardNumber || formData.panCardNumber.trim() === "") {
+      errors.panCardNumber =
+        "Invalid PAN card number its must be ten-character long alpha-numeric unique";
     }
-  
+
     return errors;
   };
-  
 
   const validateForm = () => {
     let errors = {};
     switch (currentPage) {
-        case 1:
-            errors = validatePage1();
-            break;
-        case 2:
-            errors = validatePage2();
-            break;
-        case 3:
-            errors = validatePage3();
-            break;
-        default:
-            break;
+      case 1:
+        errors = validatePage1();
+        break;
+      case 2:
+        errors = validatePage2();
+        break;
+      case 3:
+        errors = validatePage3();
+        break;
+      default:
+        break;
     }
     setErrors(errors);
-    Object.values(errors).forEach((message) => toast.error(message, {
-        position: "top-right"
-    }));
+    Object.values(errors).forEach((message) =>
+      toast.error(message, {
+        position: "top-right",
+      })
+    );
     return Object.keys(errors).length === 0;
-};
+  };
   return (
     <Paper sx={{ width: "100%" }}>
       <div className="table-data">
@@ -359,20 +372,20 @@ const ConsumerOnboarding = (props: any) => {
                         value={formData.onboardedByAgentCode}
                         onChange={(e) => handleChange(e)}
                       >
-                        {role !== "Agent" ? agentOptions?.map((option) => (
-                          <MenuItem
-                            key={option["agent_code"]}
-                            value={option["agent_code"]}
-                          >
-                            {option["agent_code"]}
-                          </MenuItem>
-                        ))
-                          : <MenuItem
-                            key={username}
-                            value={username}
-                          >
+                        {role !== "Agent" ? (
+                          agentOptions?.map((option) => (
+                            <MenuItem
+                              key={option["agent_code"]}
+                              value={option["agent_code"]}
+                            >
+                              {option["agent_code"]}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem key={username} value={username}>
                             {username}
-                          </MenuItem>}
+                          </MenuItem>
+                        )}
                       </Select>
                     </FormControl>
                   </TableCell>
@@ -587,7 +600,9 @@ const ConsumerOnboarding = (props: any) => {
                         hidden
                       />
                     </Button>
-                    {files.passportPhoto ? <p>{files.passportPhoto.name}</p> : null}
+                    {files.passportPhoto ? (
+                      <p>{files.passportPhoto.name}</p>
+                    ) : null}
                   </TableCell>
                 </TableRow>
                 <TableRow>
