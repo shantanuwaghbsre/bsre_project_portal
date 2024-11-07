@@ -340,7 +340,7 @@ const ResidentialQuotation = (props: any) => {
     axios
       .get(urls["getAgentsURL"])
       .then(function (response) {
-        setAgentOptions(response.data);
+        setAgentOptions(response.data.data);
       })
       .catch(function (error) {
         console.log(error);
