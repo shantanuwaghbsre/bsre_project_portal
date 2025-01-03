@@ -54,6 +54,8 @@ const ViewQuotations = (props: any) => {
 
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const [showPdfLoading, setShowPdfLoading] = useState(false);
+
   const toggleDrawer = () => {
     setIsOpen(!isOpen); // Toggle between true and false
   };
@@ -130,19 +132,20 @@ const ViewQuotations = (props: any) => {
     )}/${encodeURIComponent(
       quotation["Quotation number"].replace(/\//g, "_")
     )}_${encodeURIComponent(quotation["Consumer name"])}.pdf`;
-    console.log(param, "paramparam");
-    // Prepare param, making sure to encode special characters for URLs
 
     const getPdfOfConsumer = async () => {
+      setShowPdfLoading(true);
       try {
         const res = await axios.get(
           `${
             import.meta.env.VITE_BACKEND_URL
           }/viewquotationpdf?view_consumerquotation=${param}`
         );
+        setShowPdfLoading(false);
         return res;
       } catch (error) {
         console.log("Error fetching PDF:", error);
+        setShowPdfLoading(false);
       }
     };
 
@@ -250,7 +253,7 @@ const ViewQuotations = (props: any) => {
                               }
                               sx={{ whiteSpace: "nowrap" }}
                             >
-                              View Pdf
+                              {showPdfLoading ? "Loading..." : "View PDF"}
                             </Button>
                           </TableCell>
                         </TableRow>
