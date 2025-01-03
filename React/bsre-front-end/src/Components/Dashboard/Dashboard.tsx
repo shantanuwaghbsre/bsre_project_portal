@@ -30,6 +30,7 @@ const Dashboard = (props: any) => {
     "Email Address",
     "Project in phase",
     "Project type",
+    "Mail Sent to Consumer",
     "Action",
   ];
   axios.defaults.headers.common["token"] = props.token;
@@ -41,6 +42,8 @@ const Dashboard = (props: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState("all");
+  const [isMailSeding, setIsMailSeding] = useState(false);
+  const [sendingMailConsumerId, setSendingMailConsumerId] = useState("");
   // this will be use for disable input field while searching
   const [isDisabled, setIsDisabled] = useState(true);
   const [count, setCount] = useState(0);
@@ -100,6 +103,36 @@ const Dashboard = (props: any) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setLoading(true);
+  };
+
+  const mailSendToConsumer = async (consumer_id: string) => {
+    setIsMailSeding(true);
+    setSendingMailConsumerId(consumer_id);
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL +
+          `/send_mail_to_consumer?consumer_id=${consumer_id}`
+      );
+      console.log(response, "response");
+      fetchData(page, rowsPerPage);
+      setIsMailSeding(false);
+    } catch (error) {
+      // toast.error(error.message)
+      console.error("Error fetching data:", error);
+      setIsMailSeding(false);
+    }
+  };
+  // Helper function for determining the button label
+  const getButtonLabel = (isMailSeding, sendingMailConsumerId, row) => {
+    if (isMailSeding && sendingMailConsumerId === row.for_consumer_id) {
+      return "Sending...";
+    }
+    return row.z_send_mail === null ? "Send Mail" : "Mail Sent";
+  };
+
+  // Function to handle the mail-sending logic
+  const handleMailSend = (consumerId) => {
+    mailSendToConsumer(consumerId);
   };
 
   return (
@@ -180,7 +213,14 @@ const Dashboard = (props: any) => {
                                 sx={{ whiteSpace: "nowrap" }}
                                 key={key}
                               >
-                                {row[key] ? String(row[key]) : ""}
+                                {key === "z_send_mail"
+                                  ? row[key] === null
+                                    ? "Not Sent"
+                                    : "Sent"
+                                  : row[key]
+                                  ? String(row[key])
+                                  : ""}
+                                {/* {row[key] ? String(row[key]) : ""} */}
                               </TableCell>
                             ))}
                             <TableCell>
@@ -205,9 +245,22 @@ const Dashboard = (props: any) => {
                               <Button
                                 variant="contained"
                                 startIcon={<MailRounded />}
+                                disabled={
+                                  (isMailSeding &&
+                                    sendingMailConsumerId ===
+                                      row.for_consumer_id) ||
+                                  row.z_send_mail !== null
+                                }
                                 sx={{ whiteSpace: "nowrap" }}
+                                onClick={() =>
+                                  handleMailSend(row.for_consumer_id)
+                                }
                               >
-                                Send Email
+                                {getButtonLabel(
+                                  isMailSeding,
+                                  sendingMailConsumerId,
+                                  row
+                                )}
                               </Button>
                             </TableCell>
                           </TableRow>
