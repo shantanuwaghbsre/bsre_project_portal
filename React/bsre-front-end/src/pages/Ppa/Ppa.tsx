@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const Ppa = () => {
-    return (
-        <div>Ppa</div>
-    )
-}
+const Ppa: React.FC = () => {
+  return <div>Ppa</div>;
+};
 
-export default Ppa
+export default Ppa;
