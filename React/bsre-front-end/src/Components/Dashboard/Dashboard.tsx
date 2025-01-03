@@ -295,8 +295,17 @@ const Dashboard = (props: any) => {
                           return (
                             <TableRow key={index}>
                               {Object.keys(row).map((key) => (
-                                <TableCell key={key}>
-                                  {row[key] ? String(row[key]) : ""}
+                                <TableCell
+                                  key={key}
+                                  sx={{ whiteSpace: "nowrap" }}
+                                >
+                                  {key === "z_send_mail"
+                                    ? row[key] === null
+                                      ? "Not Sent"
+                                      : "Sent"
+                                    : row[key]
+                                    ? String(row[key])
+                                    : ""}
                                 </TableCell>
                               ))}
                               <TableCell>
@@ -315,6 +324,28 @@ const Dashboard = (props: any) => {
                                   }}
                                 >
                                   View
+                                </Button>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="contained"
+                                  startIcon={<MailRounded />}
+                                  disabled={
+                                    (isMailSeding &&
+                                      sendingMailConsumerId ===
+                                        row.for_consumer_id) ||
+                                    row.z_send_mail !== null
+                                  }
+                                  sx={{ whiteSpace: "nowrap" }}
+                                  onClick={() =>
+                                    handleMailSend(row.for_consumer_id)
+                                  }
+                                >
+                                  {getButtonLabel(
+                                    isMailSeding,
+                                    sendingMailConsumerId,
+                                    row
+                                  )}
                                 </Button>
                               </TableCell>
                             </TableRow>
