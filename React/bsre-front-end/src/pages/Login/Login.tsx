@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stack,
   TextField,
@@ -8,7 +8,6 @@ import {
   Box,
   Container,
 } from "@mui/material";
-import { useState } from "react";
 
 import axios from "axios";
 import Loading from "../../Components/Loading/Loading";
@@ -36,7 +35,7 @@ const branches = [
   "Surat",
 ]; // Example branches
 
-const Login = () => {
+const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
