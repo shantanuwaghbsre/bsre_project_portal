@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const Kusum = () => {
-    return (
-        <div>Kusum</div>
-    )
-}
+const Kusum: React.FC = () => {
+  return <div>Kusum</div>;
+};
 
-export default Kusum
+export default Kusum;
