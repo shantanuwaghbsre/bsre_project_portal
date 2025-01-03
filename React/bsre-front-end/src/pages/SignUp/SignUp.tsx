@@ -14,7 +14,6 @@ import {
 import axios from "axios";
 import Loading from "../../Components/Loading/Loading";
 import toast from "react-hot-toast";
-import { kMaxLength } from "buffer";
 
 const urls = {
   submitURL: import.meta.env.VITE_BACKEND_URL + "/addAgent",
@@ -25,7 +24,7 @@ const urls = {
 // Logo URL
 const logoUrl = "/Images/BS-LOGO.jpg";
 
-const Signup = (props: any) => {
+const Signup: React.FC = (props: any) => {
   const blankFormData = {
     agentName: "",
     agentBranch: "",
@@ -184,7 +183,7 @@ const Signup = (props: any) => {
   };
 
   const handleFormChange = (field: string, value: any) => {
-  console.log(value)
+    console.log(value);
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
