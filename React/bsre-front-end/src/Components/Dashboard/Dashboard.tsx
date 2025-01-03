@@ -17,8 +17,8 @@ import { Link } from "react-router-dom";
 import Loading from "../Loading/Loading";
 import SearchIcon from "@mui/icons-material/Search";
 import InfoIcon from "@mui/icons-material/Info";
+import { MailRounded } from "@mui/icons-material";
 import { useRole } from "../../Contexts/RoleContext";
-import toast from "react-hot-toast";
 
 const Dashboard = (props: any) => {
   //for showing columns in table record
@@ -110,12 +110,14 @@ const Dashboard = (props: any) => {
         </div>
       ) : (
         <>
-          <Paper sx={{ width: "100%", padding: "20px", margin: '20px' }}>
+          <Paper sx={{ width: "100%", padding: "20px", margin: "20px" }}>
             <div className="table-data">
               <label className="search-label">
-                <Typography variant="h6" sx={{ fontWeight: "bold",  }}>Project List</Typography>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  Project List
+                </Typography>
               </label>
-              <div className="search-place" style={{marginBottom: "10px"}}>
+              <div className="search-place" style={{ marginBottom: "10px" }}>
                 <select
                   onChange={(e) => handleSelectChange(e)}
                   disabled={isDisabled}
@@ -197,6 +199,15 @@ const Dashboard = (props: any) => {
                                 }}
                               >
                                 View
+                              </Button>
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="contained"
+                                startIcon={<MailRounded />}
+                                sx={{ whiteSpace: "nowrap" }}
+                              >
+                                Send Email
                               </Button>
                             </TableCell>
                           </TableRow>
